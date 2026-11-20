@@ -515,7 +515,7 @@ const GrimorioModal = memo(function GrimorioModal({
           exit={{ opacity: 0 }}
           transition={{ duration: 0.2 }}
           onClick={function (e) { if (e.target === e.currentTarget && onClose) onClose(); }}
-          className="fixed inset-0 z-[80] flex items-center justify-center p-2.5 sm:p-5 lg:p-8 bg-[#030108]/92"
+          className="fixed inset-0 z-[80] flex items-center justify-center p-2.5 sm:p-5 lg:p-8 bg-[#030108]/95"
         >
           <motion.div
             key="grimorio-panel"
@@ -524,7 +524,7 @@ const GrimorioModal = memo(function GrimorioModal({
             exit={{ opacity: 0, scale: 0.96, y: 12 }}
             transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
             style={{ contain: "layout style" }}
-            className="relative w-full max-w-5xl max-h-[90vh] flex flex-col rounded-3xl bg-[#090513] border-2 border-[#d4af37]/75 shadow-[0_28px_80px_rgba(0,0,0,0.95)] overflow-hidden text-amber-50 select-text"
+            className="relative w-full max-w-5xl max-h-[92dvh] flex flex-col rounded-3xl bg-[#090513] border-2 border-[#d4af37]/75 shadow-[0_28px_80px_rgba(0,0,0,0.95)] overflow-hidden text-amber-50 select-text"
           >
             {/* CABECERA DEL GRIMORIO PERSONAL */}
             <header className="flex-shrink-0 px-4 sm:px-6 lg:px-8 pt-4 sm:pt-5 pb-4 bg-gradient-to-b from-[#170c2b] to-[#090513] border-b border-amber-500/30 space-y-3.5">

@@ -590,25 +590,26 @@ const OracleDialogueBox = memo(function OracleDialogueBox({ phase, revealedCard,
       animate={{ opacity: isHidden ? 0 : 1, y: isHidden ? -8 : 0 }}
       transition={{ duration: 0.25 }}
       style={{ contain: 'layout style', pointerEvents: isHidden ? 'none' : 'auto' }}
-      className="relative w-[92%] max-w-2xl lg:max-w-3xl xl:max-w-4xl mt-1 lg:mt-2 px-4 sm:px-6 lg:px-8 py-2.5 sm:py-3 lg:py-3.5 rounded-2xl bg-[#090512]/94 border border-[#d4af37]/65 shadow-[0_12px_36px_rgba(0,0,0,0.88)]"
+      className="relative w-[92%] max-w-2xl lg:max-w-3xl xl:max-w-4xl mt-1 lg:mt-2 px-4 sm:px-6 lg:px-8 py-2.5 sm:py-3 lg:py-3.5 rounded-2xl bg-[#090512]/95 border border-[#d4af37]/65 shadow-[0_12px_36px_rgba(0,0,0,0.88)]"
     >
-      <div className="flex items-center justify-between mb-1">
-        <span style={{ fontFamily: "'Cinzel', serif" }} className="flex items-center gap-2 text-[10px] sm:text-[11px] lg:text-xs xl:text-sm uppercase tracking-[0.22em] sm:tracking-[0.26em] text-amber-400 font-bold">
-          <span>Sibilia del Velo • Voz del Oráculo</span>
-          <span className={"inline-block w-1.5 h-1.5 rounded-full bg-amber-400 transition-opacity duration-200 " + (isTyping ? "opacity-100" : "opacity-40")} />
+      <div className="flex items-center justify-between gap-2 mb-1">
+        <span style={{ fontFamily: "'Cinzel', serif" }} className="flex items-center gap-1.5 sm:gap-2 text-[9px] sm:text-[11px] lg:text-xs xl:text-sm uppercase tracking-[0.14em] sm:tracking-[0.24em] text-amber-400 font-bold min-w-0 truncate">
+          <span className="truncate">Sibilia del Velo • Oráculo</span>
+          <span className={"inline-block w-1.5 h-1.5 flex-shrink-0 rounded-full bg-amber-400 transition-opacity duration-200 " + (isTyping ? "opacity-100" : "opacity-40")} />
         </span>
-        <span className="text-[9px] sm:text-[10px] lg:text-xs uppercase tracking-widest text-purple-300/75 font-semibold w-28 sm:w-36 text-right truncate">
+        <span className="text-[9px] sm:text-[10px] lg:text-xs uppercase tracking-wider text-purple-300/80 font-semibold flex-shrink-0 whitespace-nowrap">
           {actBadge}
         </span>
       </div>
-      {/* Altura fija + texto completo pre-reservado en opacity-0 = CERO Layout Shifts por carácter */}
-      <p
-        style={{ contain: 'layout size' }}
-        className="text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl text-amber-50/95 italic h-[3.6rem] sm:h-[3.9rem] lg:h-[4.6rem] leading-snug overflow-hidden"
-      >
-        <span>“{visiblePart}</span>
-        <span className="opacity-0 pointer-events-none select-none" aria-hidden="true">{hiddenPart}”</span>
-      </p>
+      {/* Grid superpuesto: reserva el alto exacto del texto completo sin cortar líneas en móvil y con 0 CLS */}
+      <div className="grid text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl text-amber-50/95 italic leading-snug min-h-[3.6rem] sm:min-h-[3.9rem] lg:min-h-[4.4rem]">
+        <p className="col-start-1 row-start-1 opacity-0 pointer-events-none select-none" aria-hidden="true">
+          “{oracleDialogue}”
+        </p>
+        <p className="col-start-1 row-start-1">
+          “{visiblePart}”
+        </p>
+      </div>
     </motion.div>
   );
 });
@@ -1016,20 +1017,22 @@ function TarotSpreadApp() {
   // =========================================================================
   // ESCALADO RESPONSIVO SIN ANIMAR HEIGHT (CERO LAYOUT SHIFTS)
   // =========================================================================
+  const isSmallMobile = viewportW < 420;
   const isMobile = viewportW < 640;
   const isDesktop = viewportW >= 1024;
   const isWideDesktop = viewportW >= 1440 && viewportH >= 820;
   const isCompactOracle = phase === 'CRACKING' || phase === 'REVEAL';
 
-  const baseOracleScale = isMobile ? 0.84 : isWideDesktop ? 1.28 : isDesktop ? 1.14 : 0.96;
+  const baseOracleScale = isSmallMobile ? 0.68 : isMobile ? 0.76 : isWideDesktop ? 1.28 : isDesktop ? 1.14 : 0.96;
   const oracleScale = isCompactOracle ? baseOracleScale * 0.72 : baseOracleScale;
   // Altura del contenedor fija por viewport (nunca cambia entre fases = 0 CLS)
   const fixedOracleBoxHeight = Math.round(244 * baseOracleScale);
 
   const spreadStep = useMemo(() => {
-    const maxStep = isWideDesktop ? 132 : isDesktop ? 108 : 78;
-    return Math.min(maxStep, Math.max(28, (viewportW - 150) / 6));
-  }, [viewportW, isDesktop, isWideDesktop]);
+    const maxStep = isWideDesktop ? 132 : isDesktop ? 108 : isMobile ? 48 : 78;
+    const margin = isMobile ? 124 : 150;
+    return Math.min(maxStep, Math.max(26, (viewportW - margin) / 6));
+  }, [viewportW, isMobile, isDesktop, isWideDesktop]);
 
   const isReversed = revealedCard?.isReversed || false;
   const activeMeaning = revealedCard?.meaning;
@@ -1054,7 +1057,7 @@ function TarotSpreadApp() {
   const hasBakedBackSprite = Boolean(window.CardBackSprite);
 
   return (
-    <div style={{ background: 'radial-gradient(ellipse at 50% 25%, #190e30 0%, #090510 55%, #040207 100%)' }} className="relative w-screen h-screen overflow-hidden select-none text-amber-50">
+    <div style={{ background: 'radial-gradient(ellipse at 50% 25%, #190e30 0%, #090510 55%, #040207 100%)' }} className="fixed inset-0 overflow-hidden select-none text-amber-50">
       {!hasBakedBackSprite && CardBackDefs && <CardBackDefs />}
       {SharedArtDefs && <SharedArtDefs />}
 
@@ -1070,7 +1073,7 @@ function TarotSpreadApp() {
             type="button"
             onClick={() => openGrimoire('codice')}
             style={{ fontFamily: "'Cinzel', serif" }}
-            className="group flex items-center gap-2 sm:gap-3 px-3.5 sm:px-4 py-1.5 rounded-full bg-[#120a22]/94 hover:bg-[#1e1138] border border-[#d4af37]/60 hover:border-amber-300 text-[10px] sm:text-xs text-amber-200 transition-colors cursor-pointer shadow-[0_0_16px_rgba(212,175,55,0.18)]"
+            className="group flex items-center gap-2 sm:gap-3 px-3.5 sm:px-4 py-1.5 rounded-full bg-[#120a22]/95 hover:bg-[#1e1138] border border-[#d4af37]/60 hover:border-amber-300 text-[10px] sm:text-xs text-amber-200 transition-colors cursor-pointer shadow-[0_0_16px_rgba(212,175,55,0.18)]"
           >
             <BookOpen className="w-3.5 h-3.5 text-amber-400 group-hover:text-amber-200 transition-colors" />
             <span>
@@ -1114,7 +1117,7 @@ function TarotSpreadApp() {
           />
         </section>
 
-        <main className="relative z-30 flex-1 flex flex-col items-center justify-start lg:justify-center w-full pt-12 sm:pt-14 lg:pt-14" style={{ perspective: '1200px', contain: 'layout' }}>
+        <main className="relative z-30 flex-1 flex flex-col items-center justify-start lg:justify-center w-full pt-14 sm:pt-16 lg:pt-16" style={{ perspective: '1200px', contain: 'layout' }}>
           {/* ALTAR DE CUSTODIA EN SLOT ABSOLUTO SUPERIOR (NUNCA EMPUJA EL MAZO NI CAUSA CLS) */}
           <div className="absolute top-1 left-1/2 -translate-x-1/2 z-30 w-full flex justify-center pointer-events-none px-2">
             <AnimatePresence>
@@ -1283,7 +1286,7 @@ function TarotSpreadApp() {
               )}
 
               {spreadMode === 'trina' && currentTrinaInfo && (
-                <span style={{ fontFamily: "'Cinzel', serif" }} className="absolute bottom-0 left-1/2 -translate-x-1/2 whitespace-nowrap px-4 py-1 rounded-full bg-[#090513]/92 border border-purple-400/40 text-[10px] sm:text-xs uppercase tracking-[0.22em] text-purple-200/90 pointer-events-none">
+                <span style={{ fontFamily: "'Cinzel', serif" }} className="absolute bottom-0 left-1/2 -translate-x-1/2 whitespace-nowrap px-4 py-1 rounded-full bg-[#090513]/95 border border-purple-400/40 text-[10px] sm:text-xs uppercase tracking-[0.22em] text-purple-200/90 pointer-events-none">
                   ✦ {currentTrinaInfo.shuffleName} ✦
                 </span>
               )}
@@ -1333,7 +1336,7 @@ function TarotSpreadApp() {
                     onMouseLeave={() => { if (phase === 'SPREAD') setHoveredSpreadIdx(null); }}
                     onClick={(e) => handleSelect(card, i, e)}
                     style={{ willChange: 'transform' }}
-                    className="absolute w-28 h-44 sm:w-36 sm:h-56 lg:w-[180px] lg:h-[276px] xl:w-[208px] xl:h-[320px] cursor-pointer"
+                    className="absolute w-24 h-36 sm:w-36 sm:h-56 lg:w-[180px] lg:h-[276px] xl:w-[208px] xl:h-[320px] cursor-pointer"
                   >
                     <CardBackOrnament isCracking={isChosen && phase === 'CRACKING'} quality={quality} fastMotion={false} />
                   </motion.div>
@@ -1370,17 +1373,47 @@ function TarotSpreadApp() {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.3 }}
             style={{
-              background: 'radial-gradient(ellipse at 50% 20%, rgba(25, 14, 48, 0.92) 0%, rgba(9, 5, 16, 0.96) 60%, rgba(4, 2, 7, 0.98) 100%)',
+              background: 'radial-gradient(ellipse at 50% 20%, rgba(25, 14, 48, 0.95) 0%, rgba(9, 5, 16, 0.98) 60%, rgba(4, 2, 7, 1) 100%)',
               WebkitOverflowScrolling: 'touch'
             }}
-            className="absolute inset-0 z-50 overflow-y-auto custom-scrollbar pt-20 lg:pt-24 pb-16 px-3 sm:px-6 lg:px-10 flex flex-col lg:flex-row items-center lg:items-start justify-center gap-6 sm:gap-8 lg:gap-10 xl:gap-12"
+            className="fixed inset-0 z-50 overflow-y-auto overflow-x-hidden custom-scrollbar pt-3 sm:pt-6 lg:pt-14 pb-20 px-3 sm:px-6 lg:px-10"
           >
+            {/* Barra superior fija en móvil/tablet para volver o abrir el Grimorio sin quedar atrapado */}
+            <div className="sticky top-2 z-50 max-w-6xl mx-auto mb-5 lg:hidden px-3 py-2 rounded-2xl bg-[#07040f] border border-[#d4af37]/60 shadow-[0_10px_28px_rgba(0,0,0,0.92)] flex items-center justify-between gap-2">
+              <button
+                type="button"
+                onClick={handleReset}
+                style={{ fontFamily: "'Cinzel', serif" }}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#241608] border border-[#d4af37] text-amber-200 text-[10px] uppercase tracking-wider font-bold cursor-pointer"
+              >
+                <RotateCcw className="w-3.5 h-3.5" /> Nueva Tirada
+              </button>
+              <div className="flex items-center gap-1.5">
+                <button
+                  type="button"
+                  onClick={() => openGrimoire('codice')}
+                  style={{ fontFamily: "'Cinzel', serif" }}
+                  className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-full bg-[#140b26] border border-amber-400/50 text-amber-200 text-[10px] uppercase tracking-wider cursor-pointer"
+                >
+                  <BookOpen className="w-3 h-3 text-amber-300" /> Grimorio
+                </button>
+                <a
+                  href={"carta.html?arcano=" + revealedCard.id + (isReversed ? "&modo=sombra" : "")}
+                  style={{ fontFamily: "'Cinzel', serif" }}
+                  className="px-2.5 py-1.5 rounded-full bg-purple-950/90 border border-purple-400/60 text-purple-200 text-[10px] uppercase tracking-wider"
+                >
+                  ✦ Códice
+                </a>
+              </div>
+            </div>
+
+            <div className="max-w-6xl mx-auto flex flex-col lg:flex-row items-center lg:items-start justify-start lg:justify-center gap-6 sm:gap-8 lg:gap-10 xl:gap-12">
             {/* COLUMNA IZQUIERDA: DIORAMA 2.5D + PALABRAS CLAVE + CONMUTADOR DE POLARIDAD */}
             <motion.div
-              initial={{ rotateY: 180, scale: 1.08, y: 0 }}
+              initial={{ rotateY: 180, scale: 1.06, y: 0 }}
               animate={{ rotateY: 0, scale: 1, y: 0 }}
               transition={{ type: 'spring', stiffness: 75, damping: 15 }}
-              className="relative flex flex-col items-center gap-3.5 flex-shrink-0 z-40 mt-4 lg:mt-0 lg:sticky lg:top-8"
+              className="relative flex flex-col items-center gap-3.5 flex-shrink-0 z-40 mt-1 lg:mt-0 lg:sticky lg:top-8"
             >
               <RevealedCardDiorama25D
                 card={revealedCard}
@@ -1406,7 +1439,7 @@ function TarotSpreadApp() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.18, duration: 0.42 }}
               style={{ contain: 'layout style' }}
-              className={"w-full max-w-2xl xl:max-w-3xl rounded-2xl bg-[#090513]/96 border p-4 sm:p-6 lg:p-7 shadow-[0_18px_50px_rgba(0,0,0,0.92)] space-y-4 " + (isReversed ? "border-purple-400/70" : "border-[#d4af37]/75")}
+              className={"w-full max-w-2xl xl:max-w-3xl rounded-2xl bg-[#090513]/95 border p-4 sm:p-6 lg:p-7 shadow-[0_18px_50px_rgba(0,0,0,0.92)] space-y-4 " + (isReversed ? "border-purple-400/70" : "border-[#d4af37]/75")}
             >
               {/* 1. BANNER DE SINCRONICIDAD KÁRMICA */}
               {activeSynchronicity && (
@@ -1776,6 +1809,7 @@ function TarotSpreadApp() {
                 )}
               </div>
             </motion.div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

@@ -364,12 +364,12 @@ const TrinaAltarTray = memo(function TrinaAltarTray({ pickedCards, currentAct, p
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -8 }}
       transition={{ duration: 0.28 }}
-      className="relative z-30 flex items-center justify-center gap-2.5 sm:gap-5 px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-2xl bg-[#090514]/94 border border-[#d4af37]/45 shadow-[0_10px_28px_rgba(0,0,0,0.82)]"
+      className="relative z-30 flex items-center justify-center gap-1.5 sm:gap-4 px-2 sm:px-4 py-1.5 sm:py-2 max-w-[96vw] rounded-2xl bg-[#090514]/95 border border-[#d4af37]/50 shadow-[0_10px_28px_rgba(0,0,0,0.85)]"
       style={{ contain: "layout style" }}
     >
       <div
         aria-hidden
-        className="absolute left-10 right-10 top-1/2 -translate-y-1/2 h-[1.5px] pointer-events-none"
+        className="absolute left-6 right-6 sm:left-10 sm:right-10 top-1/2 -translate-y-1/2 h-[1.5px] pointer-events-none"
         style={{
           background: "linear-gradient(90deg, rgba(253,224,71,0.15) 0%, rgba(253,224,71,0.65) 50%, rgba(192,132,252,0.55) 100%)"
         }}
@@ -384,22 +384,22 @@ const TrinaAltarTray = memo(function TrinaAltarTray({ pickedCards, currentAct, p
             key={slot.key}
             animate={
               isConverging
-                ? { scale: 1.06, x: (1 - idx) * 16 }
-                : { scale: isCurrent ? 1.04 : 1, x: 0 }
+                ? { scale: 1.05, x: (1 - idx) * 12 }
+                : { scale: isCurrent ? 1.03 : 1, x: 0 }
             }
             transition={{ duration: 0.4 }}
             className={
-              "relative z-10 flex items-center gap-2 sm:gap-2.5 px-2.5 sm:px-3.5 py-1.5 rounded-xl border transition-colors duration-300 " +
+              "relative z-10 flex items-center gap-1.5 sm:gap-2.5 px-2 sm:px-3.5 py-1.5 rounded-xl border transition-colors duration-300 " +
               (isSealed
                 ? "bg-gradient-to-r from-[#261606] via-[#1b0f2d] to-[#261606] border-amber-300 shadow-[0_0_14px_rgba(251,191,36,0.38)]"
                 : isCurrent
                 ? "bg-[#160b2a] border-amber-400/80 shadow-[0_0_12px_rgba(251,191,36,0.24)]"
-                : "bg-[#080410]/95 border-white/15 opacity-65")
+                : "bg-[#080410]/95 border-white/15 opacity-70")
             }
           >
             <div
               className={
-                "w-5 h-7 sm:w-6 sm:h-9 rounded-[4px] border flex items-center justify-center flex-shrink-0 " +
+                "hidden sm:flex w-6 h-9 rounded-[4px] border items-center justify-center flex-shrink-0 " +
                 (isSealed
                   ? "bg-gradient-to-b from-amber-400 via-amber-600 to-purple-900 border-amber-100 text-black"
                   : isCurrent
@@ -414,17 +414,17 @@ const TrinaAltarTray = memo(function TrinaAltarTray({ pickedCards, currentAct, p
               )}
             </div>
 
-            <div className="flex flex-col text-left leading-tight w-[66px] sm:w-[78px]">
+            <div className="flex flex-col text-center sm:text-left leading-tight">
               <span
                 style={{ fontFamily: "'Cinzel', serif" }}
                 className={
-                  "text-[9px] sm:text-[10px] uppercase tracking-[0.14em] font-bold truncate " +
-                  (isSealed ? "text-amber-300" : isCurrent ? "text-amber-200" : "text-purple-200/55")
+                  "text-[9px] sm:text-[11px] uppercase tracking-[0.04em] sm:tracking-[0.09em] font-bold whitespace-nowrap " +
+                  (isSealed ? "text-amber-300" : isCurrent ? "text-amber-200" : "text-purple-200/65")
                 }
               >
                 {slot.numeral}. {slot.name}
               </span>
-              <span className="text-[9px] sm:text-[10px] text-amber-100/70 truncate">
+              <span className="text-[9px] sm:text-[10px] text-amber-100/75 whitespace-nowrap">
                 {isSealed ? "✦ Sellada" : isCurrent ? (phase === "SHUFFLING" ? "Barajando..." : "Elegí carta") : "En espera"}
               </span>
             </div>
@@ -635,7 +635,7 @@ const AstralThreadBridge = memo(function AstralThreadBridge({ bridge, targetId, 
         whileInView={{ opacity: 1, scale: 1 }}
         viewport={{ once: true, amount: 0.35 }}
         transition={{ duration: 0.45 }}
-        className="relative z-10 w-full max-w-2xl px-5 sm:px-7 py-4 sm:py-5 rounded-2xl bg-[#0b0618]/96 border text-center shadow-[0_14px_36px_rgba(0,0,0,0.85)]"
+        className="relative z-10 w-full max-w-2xl px-5 sm:px-7 py-4 sm:py-5 rounded-2xl bg-[#0b0618]/95 border text-center shadow-[0_14px_36px_rgba(0,0,0,0.85)]"
         style={{
           borderColor: bridge.fromPolarity !== bridge.toPolarity ? "rgba(216,180,254,0.55)" : "rgba(212,175,55,0.55)"
         }}
@@ -668,7 +668,7 @@ const AstralThreadBridge = memo(function AstralThreadBridge({ bridge, targetId, 
           type="button"
           onClick={function () { onJumpTo && onJumpTo(targetId); }}
           style={{ fontFamily: "'Cinzel', serif" }}
-          className="mt-3 inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-amber-500/12 hover:bg-amber-500/25 border border-amber-400/45 text-[10px] sm:text-xs uppercase tracking-[0.18em] text-amber-200 transition-colors cursor-pointer"
+          className="mt-3 inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-amber-500/15 hover:bg-amber-500/25 border border-amber-400/45 text-[10px] sm:text-xs uppercase tracking-[0.18em] text-amber-200 transition-colors cursor-pointer"
         >
           <span>{bridge.ctaText}</span>
           <ChevronDownIcon className="w-3.5 h-3.5 trina-arrow-float" />
@@ -783,7 +783,7 @@ const TrinaCardStation = memo(function TrinaCardStation({
       transition={{ duration: 0.48, ease: [0.22, 1, 0.36, 1] }}
       style={{ contain: "layout style paint" }}
       className={
-        "relative w-full max-w-5xl mx-auto rounded-3xl bg-[#090513]/96 border p-4 sm:p-6 lg:p-8 shadow-[0_18px_50px_rgba(0,0,0,0.88)] " +
+        "relative scroll-mt-28 sm:scroll-mt-24 w-full max-w-5xl mx-auto rounded-3xl bg-[#090513]/95 border p-4 sm:p-6 lg:p-8 shadow-[0_18px_50px_rgba(0,0,0,0.88)] " +
         (isRev ? "border-purple-400/65" : "border-[#d4af37]/70")
       }
     >
@@ -824,7 +824,7 @@ const TrinaCardStation = memo(function TrinaCardStation({
         <a
           href={"carta.html?arcano=" + card.id + (isRev ? "&modo=sombra" : "")}
           style={{ fontFamily: "'Cinzel', serif" }}
-          className="px-3.5 py-1.5 rounded-full bg-purple-500/18 hover:bg-purple-500/35 border border-purple-400/55 text-purple-200 text-[11px] sm:text-xs uppercase tracking-wider transition-colors"
+          className="px-3.5 py-1.5 rounded-full bg-purple-500/20 hover:bg-purple-500/35 border border-purple-400/55 text-purple-200 text-[11px] sm:text-xs uppercase tracking-wider transition-colors"
         >
           ✦ Códice Completo
         </a>
@@ -842,7 +842,7 @@ const TrinaCardStation = memo(function TrinaCardStation({
             onTogglePolarity={onTogglePolarity}
           />
           <div className="flex flex-wrap justify-center gap-1.5 max-w-[260px]">
-            <span className="px-2.5 py-0.5 rounded-md bg-amber-500/12 border border-amber-400/35 text-[11px] text-amber-200">
+            <span className="px-2.5 py-0.5 rounded-md bg-amber-500/15 border border-amber-400/35 text-[11px] text-amber-200">
               {posData.element}
             </span>
             {card.correspondences && card.correspondences.astro && (
@@ -868,7 +868,7 @@ const TrinaCardStation = memo(function TrinaCardStation({
               "p-4 sm:p-5 rounded-2xl border-l-4 shadow-md space-y-1.5 " +
               (isRev
                 ? "bg-gradient-to-r from-purple-950/60 via-[#150a26] to-transparent border-purple-400"
-                : "bg-gradient-to-r from-amber-500/18 via-[#190e26] to-transparent border-amber-400")
+                : "bg-gradient-to-r from-amber-500/20 via-[#190e26] to-transparent border-amber-400")
             }
           >
             <div style={{ fontFamily: "'Cinzel', serif" }} className="text-[11px] uppercase tracking-[0.22em] font-bold text-amber-300 flex items-center gap-1.5">
@@ -1123,16 +1123,16 @@ const TrinaVerticalReveal = memo(function TrinaVerticalReveal({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.35 }}
-      className="absolute inset-0 z-50 overflow-y-auto overflow-x-hidden px-3 sm:px-6 lg:px-10 pt-16 sm:pt-20 pb-20"
+      className="fixed inset-0 z-50 overflow-y-auto overflow-x-hidden px-3 sm:px-6 lg:px-10 pt-3 sm:pt-5 pb-20"
       style={{
-        background: "radial-gradient(ellipse at 50% 15%, rgba(28, 15, 52, 0.94) 0%, rgba(9, 5, 16, 0.97) 58%, rgba(4, 2, 7, 0.99) 100%)",
+        background: "radial-gradient(ellipse at 50% 15%, rgba(28, 15, 52, 0.96) 0%, rgba(9, 5, 16, 0.98) 58%, rgba(4, 2, 7, 1) 100%)",
         WebkitOverflowScrolling: "touch"
       }}
     >
-      {/* Barra flotante superior (sin backdrop-blur pesado) */}
-      <div className="sticky top-2 z-40 max-w-5xl mx-auto mb-6 px-3 sm:px-5 py-2.5 rounded-2xl bg-[#07040f]/96 border border-[#d4af37]/50 shadow-[0_12px_30px_rgba(0,0,0,0.85)] flex flex-wrap items-center justify-between gap-2">
-        <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
-          <span style={{ fontFamily: "'Cinzel Decorative', serif" }} className="text-xs sm:text-sm text-amber-300 font-bold mr-1 hidden md:inline">
+      {/* Barra flotante superior OPACA y con z-50 (nunca se trasluce ni se pisa) */}
+      <div className="sticky top-2 z-50 max-w-5xl mx-auto mb-6 px-2.5 sm:px-5 py-2 sm:py-2.5 rounded-2xl bg-[#07040f] border border-[#d4af37]/65 shadow-[0_14px_34px_rgba(0,0,0,0.95)] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto pb-0.5 sm:pb-0">
+          <span style={{ fontFamily: "'Cinzel Decorative', serif" }} className="text-xs sm:text-sm text-amber-300 font-bold mr-1 hidden lg:inline whitespace-nowrap">
             ✦ El Hilo de las Tres Lunas
           </span>
           {triadArr.map(function (item) {
@@ -1143,10 +1143,10 @@ const TrinaVerticalReveal = memo(function TrinaVerticalReveal({
                 onClick={function () { scrollToElement(item.id); }}
                 style={{ fontFamily: "'Cinzel', serif" }}
                 className={
-                  "px-2.5 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs uppercase tracking-wider border transition-colors cursor-pointer " +
+                  "flex-shrink-0 whitespace-nowrap px-2.5 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs uppercase tracking-wider border transition-colors cursor-pointer " +
                   (item.card.isReversed
-                    ? "bg-purple-950/60 border-purple-400/50 text-purple-200 hover:bg-purple-900/70"
-                    : "bg-amber-500/12 border-amber-400/45 text-amber-200 hover:bg-amber-500/25")
+                    ? "bg-[#221036] border-purple-400/60 text-purple-200 hover:bg-purple-900/80"
+                    : "bg-[#241608] border-amber-400/55 text-amber-200 hover:bg-amber-500/25")
                 }
               >
                 {item.pos.numeral}. {item.pos.label}
@@ -1157,19 +1157,19 @@ const TrinaVerticalReveal = memo(function TrinaVerticalReveal({
             type="button"
             onClick={function () { scrollToElement("trina-verdict"); }}
             style={{ fontFamily: "'Cinzel', serif" }}
-            className="px-2.5 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs uppercase tracking-wider bg-gradient-to-r from-amber-500/25 to-purple-500/25 border border-amber-300/60 text-amber-100 hover:brightness-125 transition-colors cursor-pointer"
+            className="flex-shrink-0 whitespace-nowrap px-2.5 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs uppercase tracking-wider bg-[#1d1130] border border-amber-300/65 text-amber-100 hover:bg-amber-500/25 transition-colors cursor-pointer"
           >
             ✦ Veredicto
           </button>
         </div>
 
-        <div className="flex items-center gap-1.5 sm:gap-2">
+        <div className="flex items-center justify-end gap-1.5 sm:gap-2 flex-shrink-0">
           {onOpenGrimoire && (
             <button
               type="button"
               onClick={function () { onOpenGrimoire("diary"); }}
               style={{ fontFamily: "'Cinzel', serif" }}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#140b26] hover:bg-purple-500/25 border border-purple-400/50 text-purple-200 text-[10px] sm:text-xs uppercase tracking-wider transition-colors cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-3 py-1 sm:py-1.5 rounded-full bg-[#140b26] hover:bg-purple-500/25 border border-purple-400/55 text-purple-200 text-[10px] sm:text-xs uppercase tracking-wider whitespace-nowrap transition-colors cursor-pointer"
             >
               ✦ Grimorio
             </button>
@@ -1178,7 +1178,7 @@ const TrinaVerticalReveal = memo(function TrinaVerticalReveal({
             type="button"
             onClick={onReset}
             style={{ fontFamily: "'Cinzel', serif" }}
-            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-amber-500/15 hover:bg-amber-500/30 border border-[#d4af37] text-amber-200 text-[11px] sm:text-xs uppercase tracking-wider transition-colors cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-3 sm:px-3.5 py-1 sm:py-1.5 rounded-full bg-[#241608] hover:bg-amber-500/30 border border-[#d4af37] text-amber-200 text-[10px] sm:text-xs uppercase tracking-wider whitespace-nowrap transition-colors cursor-pointer"
           >
             <RotateCcwIcon className="w-3.5 h-3.5" /> Nueva Tirada
           </button>
@@ -1187,7 +1187,7 @@ const TrinaVerticalReveal = memo(function TrinaVerticalReveal({
 
       {/* Cabecera Ceremonial de Apertura */}
       <header className="max-w-3xl mx-auto text-center mb-6 space-y-2">
-        <span style={{ fontFamily: "'Cinzel', serif" }} className="inline-block px-4 py-1 rounded-full bg-amber-500/12 border border-amber-400/40 text-[10px] sm:text-xs uppercase tracking-[0.26em] text-amber-300 font-bold">
+        <span style={{ fontFamily: "'Cinzel', serif" }} className="inline-block px-4 py-1 rounded-full bg-amber-500/15 border border-amber-400/40 text-[10px] sm:text-xs uppercase tracking-[0.26em] text-amber-300 font-bold">
           ✦ {verdict.arcBadge} • {verdict.elementBalance.label}
         </span>
         <h2 style={{ fontFamily: "'Cinzel Decorative', serif" }} className="text-2xl sm:text-3xl md:text-4xl text-amber-200 font-bold">
@@ -1264,7 +1264,7 @@ const TrinaVerticalReveal = memo(function TrinaVerticalReveal({
         viewport={{ once: true, amount: 0.18 }}
         transition={{ duration: 0.5 }}
         style={{ contain: "layout style paint" }}
-        className="relative max-w-4xl mx-auto rounded-3xl bg-gradient-to-b from-[#170c2c] via-[#0c0618] to-[#06030c] border-2 border-[#d4af37] p-6 sm:p-8 lg:p-10 text-center shadow-[0_0_55px_rgba(212,175,55,0.2)] space-y-6"
+        className="relative scroll-mt-28 sm:scroll-mt-24 max-w-4xl mx-auto rounded-3xl bg-gradient-to-b from-[#170c2c] via-[#0c0618] to-[#06030c] border-2 border-[#d4af37] p-5 sm:p-8 lg:p-10 text-center shadow-[0_0_55px_rgba(212,175,55,0.2)] space-y-6"
       >
         <div className="space-y-2">
           <span style={{ fontFamily: "'Cinzel', serif" }} className="text-[11px] sm:text-xs uppercase tracking-[0.28em] text-amber-400 font-bold block">
@@ -1328,7 +1328,7 @@ const TrinaVerticalReveal = memo(function TrinaVerticalReveal({
           </div>
         </div>
 
-        <div className="p-4 sm:p-5 rounded-2xl bg-amber-500/12 border border-amber-400/45">
+        <div className="p-4 sm:p-5 rounded-2xl bg-amber-500/15 border border-amber-400/45">
           <span style={{ fontFamily: "'Cinzel', serif" }} className="text-[11px] uppercase tracking-[0.24em] text-amber-300 font-bold block mb-1">
             ✦ Sentencia de Cierre de Sibilia
           </span>
