@@ -970,30 +970,35 @@ const ALL_56_MINOR_CARDS = Object.keys(RAW_CARDS_SPEC).flatMap((suitKey) => {
     name: item.name,
     subtitle: item.subtitle,
     palette: suitMeta.palette,
-    
+
     // Propiedades exclusivas de los menores
     suit: suitKey,
     suitName: suitMeta.name,
     alchemicalSymbol: suitMeta.symbol,
     isCourt: item.isCourt || false,
-    
+
     // NORMALIZACIÓN 1: Agrupamos las correspondencias igual que en los Mayores
     correspondences: {
       element: suitMeta.element,
       astro: suitMeta.astro,
       yesNo: item.yesNo,
-      keywords: [] // Agregamos un arreglo vacío para que el Layout no tire error "undefined"
+      keywords: []
     },
-    
+
     // NORMALIZACIÓN 2: Alineamos los nombres de los textos
     meaning: item.meaning,
-    lightAndShadow: item.shadow, // Transformamos "shadow" en "lightAndShadow"
+    lightAndShadow: item.shadow,
     domains: item.domains,
     counsel: item.counsel,
-    
+
     nodes: item.nodes.map((n, idx) => ({ ...n, id: `n${idx + 1}` }))
   }));
 });
 
-// Alias estándar para mantener simetría con MAJOR_ARCANA de datos_cartas.js
+// Alias estándar y exposición global para mantener simetría con MAJOR_ARCANA de datos_cartas.js
 const MINOR_ARCANA = ALL_56_MINOR_CARDS;
+if (typeof window !== 'undefined') {
+  window.SUITS_META = SUITS_META;
+  window.ALL_56_MINOR_CARDS = ALL_56_MINOR_CARDS;
+  window.MINOR_ARCANA = MINOR_ARCANA;
+}

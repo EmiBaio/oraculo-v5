@@ -1,6 +1,6 @@
 // ============================================================================
 // ARCHIVO: layout_arcano.js
-// Layout Maestro GIGA SEO + Diorama 2.5D + Grimorio Polimórfico (Solar y Lunar)
+// Layout Maestro GIGA SEO + Diorama 2.5D GPU (0 Re-renders) + Grimorio Polimórfico
 // Incluye Selector de 5 Octavas, Cábala/Qliphoth, Clínica Junguiana y Psicomagia
 // Compatible con protocolo local file:/// (Sin bloqueo CORS de Babel y con Scope Aislado)
 // ============================================================================
@@ -10,6 +10,18 @@ const { useState, useEffect, useRef, useMemo, useCallback, memo } = React;
 const sound = window.sound;
 const SharedArtDefs = window.SharedArtDefs;
 const ArcanaDioramaArt = window.ArcanaDioramaArt;
+
+// Copia segura al portapapeles: delega en window.copyTextSafe (motor_tarot.js)
+function copyTextSafe(text) {
+  if (!text) return Promise.resolve(false);
+  if (typeof window.copyTextSafe === 'function') {
+    return window.copyTextSafe(text);
+  }
+  if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+    return navigator.clipboard.writeText(text).then(() => true).catch(() => false);
+  }
+  return Promise.resolve(false);
+}
 
 // --- ÍCONOS SVG ---
 const Sparkles = ({ className = "w-4 h-4" }) => (
@@ -71,20 +83,56 @@ function getAuthorPairForCard(cardId) {
   return { author: TAROT_MASTERS[primaryIdx], reviewer: TAROT_MASTERS[finalReviewerIdx] };
 }
 
+// --- DIORAMA 2.5D OPTIMIZADO: TRANSFORMACIONES DIRECTAS EN GPU (0 RE-RENDERS POR PIXEL) ---
 const RevealedCardDiorama25D = memo(function RevealedCardDiorama25D({ card, activeNode, onSelectNode, isReversed, setIsReversed }) {
   const cardRef = useRef(null);
-  const [tilt, setTilt] = useState({ rx: 0, ry: 0, gx: 50, gy: 50 });
+  const glareRef = useRef(null);
+  const rafRef = useRef(0);
+  const pendingRef = useRef(null);
 
-  const updateTilt = (clientX, clientY) => {
+  useEffect(() => {
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, []);
+
+  const applyTiltFrame = useCallback(() => {
+    rafRef.current = 0;
+    const p = pendingRef.current;
+    if (!p || !cardRef.current) return;
+    cardRef.current.style.transition = p.isReset ? 'transform 0.35s cubic-bezier(0.22, 1, 0.36, 1)' : 'transform 0.08s linear';
+    cardRef.current.style.transform = "rotateX(" + p.rx.toFixed(2) + "deg) rotateY(" + p.ry.toFixed(2) + "deg)";
+    if (glareRef.current) {
+      glareRef.current.style.transition = p.isReset ? 'transform 0.35s cubic-bezier(0.22, 1, 0.36, 1)' : 'transform 0.08s linear';
+      glareRef.current.style.transform = "translate3d(" + p.gx.toFixed(1) + "px, " + p.gy.toFixed(1) + "px, 0)";
+    }
+  }, []);
+
+  const updateTilt = useCallback((clientX, clientY) => {
     if (!cardRef.current) return;
     const rect = cardRef.current.getBoundingClientRect();
     const px = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
     const py = Math.max(0, Math.min(1, (clientY - rect.top) / rect.height));
-    setTilt({ ry: (px - 0.5) * 28, rx: (0.5 - py) * 26, gx: px * 100, gy: py * 100 });
-  };
+    pendingRef.current = {
+      ry: (px - 0.5) * 28,
+      rx: (0.5 - py) * 26,
+      gx: (px - 0.5) * rect.width * 0.72,
+      gy: (py - 0.5) * rect.height * 0.72,
+      isReset: false
+    };
+    if (!rafRef.current) {
+      rafRef.current = requestAnimationFrame(applyTiltFrame);
+    }
+  }, [applyTiltFrame]);
 
-  const resetTilt = () => setTilt({ rx: 0, ry: 0, gx: 50, gy: 50 });
-  const dynamicAltText = card.imageAlt || "Ilustración esotérica de la carta " + card.name + " (" + card.numeral + ") del Tarot Velo Astral: " + card.subtitle + ". Destacan los símbolos " + (card.nodes || []).map(n => n.title).join(", ") + ".";
+  const resetTilt = useCallback(() => {
+    pendingRef.current = { rx: 0, ry: 0, gx: 0, gy: 0, isReset: true };
+    if (!rafRef.current) {
+      rafRef.current = requestAnimationFrame(applyTiltFrame);
+    }
+  }, [applyTiltFrame]);
+
+  const dynamicAltText = card.imageAlt || "Ilustración esotérica de la carta " + card.name + " (" + card.numeral + ") del Tarot Velo Astral: " + card.subtitle + ". Destacan los símbolos " + (card.nodes || []).map((n) => n.title).join(", ") + ".";
 
   return (
     <div className="flex flex-col items-center gap-6" style={{ perspective: '1300px' }}>
@@ -97,52 +145,68 @@ const RevealedCardDiorama25D = memo(function RevealedCardDiorama25D({ card, acti
         onTouchMove={(e) => e.touches[0] && updateTilt(e.touches[0].clientX, e.touches[0].clientY)}
         onTouchEnd={resetTilt}
         style={{
-          transform: "rotateX(" + tilt.rx + "deg) rotateY(" + tilt.ry + "deg) rotateZ(" + (isReversed ? 180 : 0) + "deg)",
+          transform: 'rotateX(0deg) rotateY(0deg)',
           transformStyle: 'preserve-3d',
-          transition: 'transform 0.25s cubic-bezier(0.22, 1, 0.36, 1)',
+          willChange: 'transform',
           boxShadow: isReversed
             ? "0 25px 60px -10px rgba(0,0,0,0.95), 0 0 45px rgba(168, 85, 247, 0.55)"
             : "0 25px 60px -10px rgba(0,0,0,0.95), 0 0 40px " + (card.palette?.glow || "rgba(251,191,36,0.5)")
         }}
-        className={"relative w-[265px] h-[420px] rounded-2xl bg-[#07050a] ring-2 ring-offset-4 ring-offset-[#07040e] cursor-grab select-none " + (isReversed ? "ring-purple-400" : "ring-amber-300")}
+        className={"relative w-[265px] h-[420px] rounded-2xl bg-[#07050a] ring-2 ring-offset-4 ring-offset-[#07040e] cursor-grab active:cursor-grabbing select-none transition-shadow duration-500 " + (isReversed ? "ring-purple-400" : "ring-amber-300")}
       >
         <span className="sr-only">{dynamicAltText}</span>
-        <div className="absolute inset-1 rounded-xl overflow-hidden" style={{ transform: 'translateZ(-32px)' }}><ArcanaDioramaArt card={card} layer="background" /></div>
-        <div className="absolute inset-0 pointer-events-none" style={{ transform: 'translateZ(10px)' }}><ArcanaDioramaArt card={card} layer="midground" /></div>
-        <div className="absolute inset-0 pointer-events-none" style={{ transform: 'translateZ(28px)' }}><ArcanaDioramaArt card={card} layer="character" /></div>
 
-        <div className="absolute inset-0" style={{ transform: 'translateZ(46px)' }}>
-          <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-full pointer-events-none">
-            <polyline points={(card.nodes || []).map(n => n.x + "," + n.y).join(' ')} fill="none" stroke={isReversed ? "#c084fc" : "#fde047"} strokeWidth="0.65" strokeDasharray="2 1.5" opacity="0.85" />
-          </svg>
-          {(card.nodes || []).map((node, idx) => {
-            const isSelected = activeNode?.id === node.id;
-            return (
-              <button
-                key={node.id}
-                type="button"
-                onMouseEnter={() => { sound?.playSkyrimNodeChime(idx); onSelectNode(node); }}
-                onClick={(e) => { e.stopPropagation(); sound?.playSkyrimNodeChime(idx); onSelectNode(node); }}
-                style={{ left: node.x + "%", top: node.y + "%" }}
-                className="absolute -translate-x-1/2 -translate-y-1/2 group focus:outline-none pointer-events-auto cursor-pointer"
-              >
-                <span className={"absolute -inset-2.5 rounded-full transition-all duration-300 " + (isSelected ? (isReversed ? "bg-purple-400/40 scale-125 animate-ping" : "bg-amber-400/35 scale-125 animate-ping") : "bg-amber-300/15 group-hover:scale-125")} />
-                <span className={"relative flex items-center justify-center w-5 h-5 rounded-full border transition-all duration-300 " + (isSelected ? (isReversed ? "bg-purple-300 border-white text-black scale-125 shadow-[0_0_16px_#c084fc]" : "bg-amber-300 border-white text-black scale-125 shadow-[0_0_16px_#fde047]") : "bg-[#0f081d]/90 border-amber-400 text-amber-300")}>
-                  <Sparkles className="w-2.5 h-2.5" />
-                </span>
-              </button>
-            );
-          })}
+        <div
+          className="absolute inset-0"
+          style={{
+            transformStyle: 'preserve-3d',
+            transform: isReversed ? 'rotateZ(180deg)' : 'none',
+            transition: 'transform 0.65s cubic-bezier(0.22, 1, 0.36, 1)'
+          }}
+        >
+          <div className="absolute inset-1 rounded-xl overflow-hidden" style={{ transform: 'translateZ(-32px)' }}><ArcanaDioramaArt card={card} layer="background" /></div>
+          <div className="absolute inset-0 pointer-events-none" style={{ transform: 'translateZ(10px)' }}><ArcanaDioramaArt card={card} layer="midground" /></div>
+          <div className="absolute inset-0 pointer-events-none" style={{ transform: 'translateZ(28px)' }}><ArcanaDioramaArt card={card} layer="character" /></div>
+
+          <div className="absolute inset-0" style={{ transform: 'translateZ(46px)' }}>
+            <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-full pointer-events-none">
+              <polyline points={(card.nodes || []).map((n) => n.x + "," + n.y).join(' ')} fill="none" stroke={isReversed ? "#c084fc" : "#fde047"} strokeWidth="0.65" strokeDasharray="2 1.5" opacity="0.85" />
+            </svg>
+            {(card.nodes || []).map((node, idx) => {
+              const isSelected = activeNode?.id === node.id;
+              return (
+                <button
+                  key={node.id}
+                  type="button"
+                  onMouseEnter={() => { sound?.playSkyrimNodeChime(idx); onSelectNode(node); }}
+                  onClick={(e) => { e.stopPropagation(); sound?.playSkyrimNodeChime(idx); onSelectNode(node); }}
+                  style={{ left: node.x + "%", top: node.y + "%" }}
+                  className="absolute -translate-x-1/2 -translate-y-1/2 group focus:outline-none pointer-events-auto cursor-pointer"
+                >
+                  <span className={"absolute -inset-2.5 rounded-full transition-transform duration-200 " + (isSelected ? (isReversed ? "bg-purple-400/38 scale-125" : "bg-amber-400/34 scale-125") : "bg-amber-300/15 group-hover:scale-125")} />
+                  <span className={"relative flex items-center justify-center w-5 h-5 rounded-full border transition-transform duration-200 " + (isSelected ? (isReversed ? "bg-purple-300 border-white text-black scale-125 shadow-[0_0_16px_#c084fc]" : "bg-amber-300 border-white text-black scale-125 shadow-[0_0_16px_#fde047]") : "bg-[#0f081d]/90 border-amber-400 text-amber-300")}>
+                    <Sparkles className="w-2.5 h-2.5" />
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="absolute inset-0 pointer-events-none" style={{ transform: 'translateZ(54px)' }}><ArcanaDioramaArt card={card} layer="frame" /></div>
         </div>
 
-        <div className="absolute inset-0 pointer-events-none" style={{ transform: 'translateZ(54px)' }}><ArcanaDioramaArt card={card} layer="frame" /></div>
-        <div
-          style={{
-            background: "radial-gradient(circle at " + tilt.gx + "% " + tilt.gy + "%, rgba(254, 240, 138, 0.3) 0%, rgba(192, 132, 252, 0.12) 38%, transparent 70%)",
-            transform: 'translateZ(60px)'
-          }}
-          className="absolute inset-0 rounded-2xl pointer-events-none mix-blend-screen"
-        />
+        {/* Brillo especular GPU por translate3d (0 repaint de gradiente) */}
+        <div className="absolute inset-0 rounded-2xl overflow-hidden pointer-events-none mix-blend-screen" style={{ transform: 'translateZ(60px)' }}>
+          <div
+            ref={glareRef}
+            style={{
+              transform: 'translate3d(0px, 0px, 0)',
+              willChange: 'transform',
+              background: "radial-gradient(circle at 50% 50%, rgba(254, 240, 138, 0.30) 0%, rgba(192, 132, 252, 0.12) 38%, transparent 68%)"
+            }}
+            className="absolute -inset-1/2 pointer-events-none"
+          />
+        </div>
       </div>
 
       <button
@@ -178,6 +242,13 @@ window.ArcanaPageLayout = function ArcanaPageLayout({ card, neighbors }) {
   const [octaveIdx, setOctaveIdx] = useState(0);
   const [copied, setCopied] = useState(false);
   const [actSealed, setActSealed] = useState(false);
+  const shareTimerRef = useRef(null);
+
+  useEffect(() => {
+    return () => {
+      if (shareTimerRef.current) clearTimeout(shareTimerRef.current);
+    };
+  }, []);
 
   // Resolver la carta en la octava (0..4) y polaridad (Solar/Lunar) activas
   const activeCard = useMemo(() => {
@@ -222,13 +293,23 @@ window.ArcanaPageLayout = function ArcanaPageLayout({ card, neighbors }) {
         actObj.command
       );
     }
-    if (actObj.talismanPhrase && navigator.clipboard) {
-      navigator.clipboard.writeText(actObj.talismanPhrase).catch(() => {});
+    if (actObj.talismanPhrase) {
+      copyTextSafe(actObj.talismanPhrase);
     }
     sound?.playSkyrimNodeChime?.(2);
     sound?.playHarpNote?.(5);
     setActSealed(true);
   }, [activeCard, isReversed]);
+
+  const handleShare = useCallback(() => {
+    copyTextSafe(window.location.href).then((ok) => {
+      if (!ok) return;
+      sound?.playSkyrimNodeChime?.(1);
+      setCopied(true);
+      if (shareTimerRef.current) clearTimeout(shareTimerRef.current);
+      shareTimerRef.current = setTimeout(() => setCopied(false), 2200);
+    });
+  }, []);
 
   if (!activeCard) return null;
 
@@ -286,18 +367,13 @@ window.ArcanaPageLayout = function ArcanaPageLayout({ card, neighbors }) {
     ]
   };
 
-  const handleShare = () => {
-    navigator.clipboard?.writeText(window.location.href);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2200);
-  };
-
   return (
     <div style={{ background: 'radial-gradient(ellipse at 50% 25%, #190e30 0%, #090510 55%, #040207 100%)' }} className="min-h-screen text-amber-50 selection:bg-amber-400 selection:text-black">
-      <SharedArtDefs />
+      {SharedArtDefs && <SharedArtDefs />}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdSchema) }} />
 
-      <header className="sticky top-0 z-40 backdrop-blur-md bg-[#040207]/85 border-b border-[#d4af37]/30 px-4 sm:px-8 py-3">
+      {/* Cabecera sticky opaca para 60+ FPS al scrollear */}
+      <header className="sticky top-0 z-40 bg-[#040207]/96 border-b border-[#d4af37]/30 shadow-[0_8px_24px_rgba(0,0,0,0.75)] px-4 sm:px-8 py-3">
         <div className="max-w-5xl mx-auto flex items-center justify-between gap-2">
           <nav aria-label="Breadcrumb" className="font-['Cinzel'] text-[10px] sm:text-xs uppercase tracking-[0.2em] text-amber-200/70">
             <a href="oraculo.html" className="hover:text-amber-300">Oráculo</a>
@@ -753,7 +829,7 @@ window.ArcanaPageLayout = function ArcanaPageLayout({ card, neighbors }) {
               {neighbors.prev && (
                 <a
                   href={"?arcano=" + neighbors.prev.id}
-                  onClick={(e) => { e.preventDefault(); window.TarotRouter.navigateTo(neighbors.prev.id); }}
+                  onClick={(e) => { e.preventDefault(); window.TarotRouter?.navigateTo(neighbors.prev.id); }}
                   className="group p-4 rounded-xl bg-[#090513]/90 border border-amber-500/35 hover:border-amber-300 transition-all flex items-center gap-4"
                 >
                   <div className="w-12 h-16 bg-[#120824] rounded-md border border-amber-500/30 flex items-center justify-center font-['Cinzel_Decorative'] text-amber-300 font-bold">{neighbors.prev.numeral}</div>
@@ -766,7 +842,7 @@ window.ArcanaPageLayout = function ArcanaPageLayout({ card, neighbors }) {
               {neighbors.next && (
                 <a
                   href={"?arcano=" + neighbors.next.id}
-                  onClick={(e) => { e.preventDefault(); window.TarotRouter.navigateTo(neighbors.next.id); }}
+                  onClick={(e) => { e.preventDefault(); window.TarotRouter?.navigateTo(neighbors.next.id); }}
                   className="group p-4 rounded-xl bg-[#090513]/90 border border-amber-500/35 hover:border-amber-300 transition-all flex items-center justify-end gap-4 text-right"
                 >
                   <div>
@@ -788,7 +864,7 @@ window.ArcanaPageLayout = function ArcanaPageLayout({ card, neighbors }) {
                     <a
                       key={rel.id}
                       href={"?arcano=" + rel.id}
-                      onClick={(e) => { e.preventDefault(); window.TarotRouter.navigateTo(rel.id); }}
+                      onClick={(e) => { e.preventDefault(); window.TarotRouter?.navigateTo(rel.id); }}
                       className="p-3 rounded-xl bg-[#090513]/80 border border-purple-500/30 hover:border-amber-300 transition text-center"
                     >
                       <span className="font-['Cinzel_Decorative'] text-xs text-amber-300 block">{rel.numeral}</span>
@@ -811,6 +887,7 @@ window.ArcanaPageLayout = function ArcanaPageLayout({ card, neighbors }) {
     const wrapped = "(function() {\n" + LAYOUT_ARCANO_SOURCE + "\n})();";
     const compiled = Babel.transform(wrapped, { presets: [['react', { runtime: 'classic' }]] }).code;
     (0, eval)(compiled);
+    console.log("%c✦ Layout Maestro del Códice (Diorama 2.5D GPU • 0 Re-renders) activo.", "color: #fde047; font-weight: bold;");
   } else {
     console.error('Babel no está cargado antes de layout_arcano.js');
   }
