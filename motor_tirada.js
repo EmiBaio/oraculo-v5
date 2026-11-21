@@ -235,61 +235,113 @@ function makeShardSprites() {
 }
 
 // ============================================================================
-// PARTICLE CANVAS OPTIMIZADO (DPR <= 1.5 + TECHO EQUILIBRADO PARA 60+ FPS)
+// PARTICLE CANVAS OPTIMIZADO (FAST-PATH MÓVIL 60 FPS • BATCHED STROKES • DPR 1 EN MÓVIL)
 // ============================================================================
-const ParticleCanvas = forwardRef(function ParticleCanvas({ originRef, quality = 'HIGH' }, ref) {
+const ParticleCanvas = forwardRef(function ParticleCanvas({ originRef, quality = 'HIGH', isMobile = false }, ref) {
   const canvasRef = useRef(null); const reduce = useReducedMotion();
-  const S = useRef({ parts: [], shards: [], raf: 0, last: 0, charge: null, acc: 0, sprite: null, shardSprites: null, ctx: null, w: 0, h: 0, dpr: 1 });
-  const maxParts = quality === 'ULTRA' ? 680 : quality === 'HIGH' ? 500 : quality === 'MEDIUM' ? 260 : 110;
+  const isLite = isMobile || quality === 'LOW';
+  const S = useRef({ parts: [], shards: [], raf: 0, last: 0, charge: null, acc: 0, sprite: null, shardSprites: null, ctx: null, w: 0, h: 0, dpr: 1, lite: false });
+  S.current.lite = isLite;
+  const maxParts = isLite ? 72 : quality === 'ULTRA' ? 560 : quality === 'HIGH' ? 400 : 180;
   const origin = useCallback(() => {
     const r = originRef?.current?.getBoundingClientRect();
-    return r ? { x: r.left + r.width / 2, y: r.top + r.height / 2, w: r.width, h: r.height } : { x: S.current.w / 2, y: S.current.h / 2, w: 240, h: 380 };
+    return r ? { x: r.left + r.width / 2, y: r.top + r.height / 2, w: r.width, h: r.height } : { x: S.current.w / 2, y: S.current.h / 2, w: 220, h: 340 };
   }, [originRef]);
   const spawn = useCallback((p) => { if (S.current.parts.length < maxParts) S.current.parts.push(p); }, [maxParts]);
-  const spawnShard = useCallback((sh) => { if (S.current.shards.length < 28) S.current.shards.push(sh); }, []);
+  const spawnShard = useCallback((sh) => { if (S.current.shards.length < 24) S.current.shards.push(sh); }, []);
 
   const loop = useCallback((now) => {
     const s = S.current; const { ctx, sprite, shardSprites } = s; if (!ctx) return;
     const dt = Math.min((now - s.last) / 1000, 0.033); s.last = now;
     const dpr = s.dpr;
+    const lite = s.lite;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.clearRect(0, 0, s.w, s.h);
 
-    ctx.globalCompositeOperation = 'lighter';
+    // En móvil evitamos 'lighter' (evita read-modify-write en GPUs tile-based)
+    ctx.globalCompositeOperation = lite ? 'source-over' : 'lighter';
     if (s.charge) {
       const t = (now - s.charge.start) / s.charge.dur;
       if (t >= 1) s.charge = null;
       else {
-        const o = origin(); const big = Math.max(o.w, o.h); s.acc += (42 + t * t * 220) * dt;
+        const o = origin(); const big = Math.max(o.w, o.h);
+        s.acc += (lite ? (16 + t * t * 58) : (38 + t * t * 190)) * dt;
         while (s.acc >= 1) {
-          s.acc -= 1; const a = Math.random() * TAU; const R = rand(big * 0.55, big * 1.15);
+          s.acc -= 1; const a = Math.random() * TAU; const R = rand(big * 0.55, big * 1.05);
           const x0 = o.x + Math.cos(a) * R; const y0 = o.y + Math.sin(a) * R;
-          spawn({ kind: 3, x0, y0, x: x0, y: y0, px: x0, py: y0, tx: o.x + rand(-0.2, 0.2) * o.w, ty: o.y + rand(-0.2, 0.2) * o.h, life: rand(0.42, 0.82), age: 0, size: rand(7, 16), seed: Math.random() * 10 });
+          spawn({ kind: 3, x0, y0, x: x0, y: y0, px: x0, py: y0, tx: o.x + rand(-0.18, 0.18) * o.w, ty: o.y + rand(-0.18, 0.18) * o.h, life: rand(0.36, 0.68), age: 0, size: rand(7, 14), seed: Math.random() * 10 });
         }
       }
     }
 
-    const arr = s.parts; ctx.lineCap = 'round';
+    const arr = s.parts;
+    // Lote único de chispas (kind === 0) para evitar decenas de ctx.stroke() y allocs hsla por frame
+    let hasWarmSparks = false;
+    let hasBrightSparks = false;
+    ctx.lineCap = 'round';
+
+    // Paso 1: actualizar física y dibujar sprites (kind 1, 2, 3)
     for (let i = arr.length - 1; i >= 0; i--) {
       const p = arr[i]; p.age += dt;
       if (p.age >= p.life) { arr[i] = arr[arr.length - 1]; arr.pop(); continue; }
       const k = p.age / p.life;
 
       if (p.kind === 0) {
-        const f = Math.exp(-p.drag * dt); p.vx *= f; p.vy = p.vy * f + p.g * dt; p.x += p.vx * dt; p.y += p.vy * dt; const a = Math.pow(1 - k, 1.6); const tx = p.x - p.vx * 0.042; const ty = p.y - p.vy * 0.042;
-        ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(tx, ty); ctx.strokeStyle = "hsla(" + p.hue + ",100%," + Math.min(96, p.l + 8) + "%," + a + ")"; ctx.lineWidth = p.size * 1.4; ctx.stroke();
+        const f = Math.exp(-p.drag * dt); p.vx *= f; p.vy = p.vy * f + p.g * dt; p.x += p.vx * dt; p.y += p.vy * dt;
+        p._k = k;
+        if (k < 0.45) hasBrightSparks = true; else hasWarmSparks = true;
       } else if (p.kind === 1) {
-        const f = Math.exp(-p.drag * dt); p.vx *= f; p.vy = p.vy * f + p.g * dt; p.x += p.vx * dt + Math.sin(p.age * 2.4 + p.seed) * 14 * dt; p.y += p.vy * dt; const flick = 0.78 + 0.22 * Math.sin(p.age * 16 + p.seed * 3); const a = (1 - k) * Math.min(1, k / 0.08) * flick; const sz = p.size * (1 - k * 0.5);
-        ctx.globalAlpha = a; ctx.drawImage(sprite, p.x - sz * 0.5, p.y - sz * 0.5, sz, sz); ctx.globalAlpha = 1;
+        const f = Math.exp(-p.drag * dt); p.vx *= f; p.vy = p.vy * f + p.g * dt; p.x += p.vx * dt + Math.sin(p.age * 2.4 + p.seed) * 14 * dt; p.y += p.vy * dt;
+        const flick = lite ? 0.9 : (0.78 + 0.22 * Math.sin(p.age * 16 + p.seed * 3));
+        const a = (1 - k) * Math.min(1, k / 0.08) * flick;
+        const sz = p.size * (1 - k * 0.5);
+        ctx.globalAlpha = a; ctx.drawImage(sprite, p.x - sz * 0.5, p.y - sz * 0.5, sz, sz);
       } else if (p.kind === 2) {
-        const f = Math.exp(-p.drag * dt); p.vx *= f; p.vy = p.vy * f + p.g * dt; p.x += p.vx * dt; p.y += p.vy * dt; const tw = 0.5 + 0.5 * Math.sin(p.age * p.tw + p.seed); const a = (1 - k) * tw; const R = p.size * (0.6 + 0.8 * tw);
-        ctx.globalAlpha = a * 0.65; ctx.drawImage(sprite, p.x - R * 2, p.y - R * 2, R * 4, R * 4); ctx.globalAlpha = 1;
+        const f = Math.exp(-p.drag * dt); p.vx *= f; p.vy = p.vy * f + p.g * dt; p.x += p.vx * dt; p.y += p.vy * dt;
+        const tw = 0.5 + 0.5 * Math.sin(p.age * p.tw + p.seed);
+        const a = (1 - k) * tw;
+        const R = p.size * (0.6 + 0.8 * tw);
+        ctx.globalAlpha = a * 0.65; ctx.drawImage(sprite, p.x - R * 2, p.y - R * 2, R * 4, R * 4);
       } else {
-        p.px = p.x; p.py = p.y; const e = k * k * k; p.x = p.x0 + (p.tx - p.x0) * e + Math.sin(k * 6 + p.seed) * (1 - k) * 18; p.y = p.y0 + (p.ty - p.y0) * e + Math.cos(k * 6 + p.seed) * (1 - k) * 18;
-        const a = Math.min(1, k / 0.2) * (1 - k * 0.4); ctx.globalAlpha = a; const sz = p.size * (0.5 + (1 - k) * 0.5); ctx.drawImage(sprite, p.x - sz * 0.5, p.y - sz * 0.5, sz, sz);
-        ctx.globalAlpha = 1;
+        const e = k * k * k;
+        p.x = p.x0 + (p.tx - p.x0) * e + Math.sin(k * 6 + p.seed) * (1 - k) * 16;
+        p.y = p.y0 + (p.ty - p.y0) * e + Math.cos(k * 6 + p.seed) * (1 - k) * 16;
+        const a = Math.min(1, k / 0.2) * (1 - k * 0.4);
+        const sz = p.size * (0.5 + (1 - k) * 0.5);
+        ctx.globalAlpha = a; ctx.drawImage(sprite, p.x - sz * 0.5, p.y - sz * 0.5, sz, sz);
       }
     }
+
+    // Paso 2: chispas en solo 2 llamadas de stroke (máxima fluidez en móvil y PC)
+    if (hasBrightSparks) {
+      ctx.globalAlpha = 0.95;
+      ctx.strokeStyle = '#fff5c8';
+      ctx.lineWidth = lite ? 2.2 : 2.5;
+      ctx.beginPath();
+      for (let i = 0; i < arr.length; i++) {
+        const p = arr[i];
+        if (p.kind === 0 && p._k < 0.45) {
+          ctx.moveTo(p.x, p.y);
+          ctx.lineTo(p.x - p.vx * 0.038, p.y - p.vy * 0.038);
+        }
+      }
+      ctx.stroke();
+    }
+    if (hasWarmSparks) {
+      ctx.globalAlpha = 0.52;
+      ctx.strokeStyle = '#f59e0b';
+      ctx.lineWidth = lite ? 1.5 : 1.8;
+      ctx.beginPath();
+      for (let i = 0; i < arr.length; i++) {
+        const p = arr[i];
+        if (p.kind === 0 && p._k >= 0.45) {
+          ctx.moveTo(p.x, p.y);
+          ctx.lineTo(p.x - p.vx * 0.035, p.y - p.vy * 0.035);
+        }
+      }
+      ctx.stroke();
+    }
+    ctx.globalAlpha = 1;
 
     const shards = s.shards;
     if (shards.length > 0 && shardSprites) {
@@ -333,11 +385,12 @@ const ParticleCanvas = forwardRef(function ParticleCanvas({ originRef, quality =
   const ensureRunning = useCallback(() => { const s = S.current; if (!s.raf) { s.last = performance.now(); s.raf = requestAnimationFrame(loop); } }, [loop]);
   useEffect(() => {
     const canvas = canvasRef.current; const s = S.current;
-    s.ctx = canvas.getContext('2d');
+    s.ctx = canvas.getContext('2d', { alpha: true, desynchronized: true }) || canvas.getContext('2d');
     s.sprite = makeGlowSprite();
     s.shardSprites = makeShardSprites();
     const resize = () => {
-      s.dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+      const mobileNow = window.innerWidth < 768;
+      s.dpr = mobileNow ? 1 : Math.min(window.devicePixelRatio || 1, 1.5);
       s.w = window.innerWidth;
       s.h = window.innerHeight;
       canvas.width = Math.round(s.w * s.dpr);
@@ -354,30 +407,36 @@ const ParticleCanvas = forwardRef(function ParticleCanvas({ originRef, quality =
     burst(customOrigin) {
       const o = customOrigin || origin();
       const isMicro = Boolean(customOrigin);
-      const kMult = quality === 'ULTRA' ? 0.85 : quality === 'HIGH' ? 0.7 : quality === 'MEDIUM' ? 0.42 : 0.16;
-      const k = (reduce ? 0.2 : kMult) * (isMicro ? 0.45 : 1);
+      const lite = S.current.lite;
+      const kMult = lite ? 0.22 : quality === 'ULTRA' ? 0.82 : quality === 'HIGH' ? 0.65 : 0.36;
+      const k = (reduce ? 0.16 : kMult) * (isMicro ? 0.42 : 1);
       const n = (c) => Math.round(c * k);
-      const inCard = () => ({ x: o.x + rand(-0.4, 0.4) * (o.w || 220), y: o.y + rand(-0.4, 0.4) * (o.h || 220) });
+      const lifeScale = lite ? 0.62 : 1;
+      const inCard = () => ({ x: o.x + rand(-0.36, 0.36) * (o.w || 200), y: o.y + rand(-0.36, 0.36) * (o.h || 200) });
 
-      for (let i = 0; i < n(140); i++) { const a = Math.random() * TAU; const sp = 250 + Math.pow(Math.random(), 2) * 1400; const pos = inCard(); spawn({ kind: 0, ...pos, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp, drag: 2.5, g: 380, life: rand(0.48, 1.15), age: 0, size: rand(1.1, 2.3), hue: rand(38, 54), l: rand(68, 92) }); }
-      const ringN = n(36); for (let i = 0; i < ringN; i++) { const a = (i / ringN) * TAU; spawn({ kind: 0, x: o.x, y: o.y, vx: Math.cos(a) * 1080, vy: Math.sin(a) * 1080, drag: 2.8, g: 0, life: 0.68, age: 0, size: 2.2, hue: 46, l: 88 }); }
-      for (let i = 0; i < n(95); i++) { const a = Math.random() * TAU; const sp = rand(60, 480); const pos = inCard(); spawn({ kind: 1, ...pos, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp - 80, drag: 1.15, g: -70, life: rand(1.3, 2.5), age: 0, size: rand(7, 22), seed: Math.random() * 10 }); }
-      for (let i = 0; i < n(42); i++) { const a = Math.random() * TAU; const sp = rand(60, 460); const pos = inCard(); spawn({ kind: 2, ...pos, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp, drag: 1.5, g: -20, life: rand(1.0, 2.1), age: 0, size: rand(2, 4.5), tw: rand(8, 18), seed: Math.random() * 10, rot: 0, spin: 0 }); }
+      for (let i = 0; i < n(120); i++) { const a = Math.random() * TAU; const sp = (lite ? 220 : 250) + Math.pow(Math.random(), 2) * (lite ? 900 : 1350); const pos = inCard(); spawn({ kind: 0, ...pos, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp, drag: 2.6, g: 360, life: rand(0.42, 0.95) * lifeScale, age: 0, size: rand(1.1, 2.2), _k: 0 }); }
+      const ringN = n(32); for (let i = 0; i < ringN; i++) { const a = (i / ringN) * TAU; spawn({ kind: 0, x: o.x, y: o.y, vx: Math.cos(a) * (lite ? 760 : 1060), vy: Math.sin(a) * (lite ? 760 : 1060), drag: 2.9, g: 0, life: 0.62 * lifeScale, age: 0, size: 2.1, _k: 0 }); }
+      for (let i = 0; i < n(80); i++) { const a = Math.random() * TAU; const sp = rand(60, lite ? 340 : 460); const pos = inCard(); spawn({ kind: 1, ...pos, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp - 70, drag: 1.25, g: -65, life: rand(0.95, 1.9) * lifeScale, age: 0, size: rand(8, lite ? 18 : 22), seed: Math.random() * 10 }); }
+      if (!lite) {
+        for (let i = 0; i < n(38); i++) { const a = Math.random() * TAU; const sp = rand(60, 440); const pos = inCard(); spawn({ kind: 2, ...pos, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp, drag: 1.5, g: -20, life: rand(0.9, 1.9), age: 0, size: rand(2, 4.2), tw: rand(8, 18), seed: Math.random() * 10 }); }
+      }
 
-      if (quality === 'ULTRA' && !reduce && !isMicro) {
-        for (let i = 0; i < 22; i++) {
+      if (quality === 'ULTRA' && !lite && !reduce && !isMicro) {
+        for (let i = 0; i < 20; i++) {
           const a = Math.random() * TAU;
-          const sp = rand(280, 1850);
+          const sp = rand(280, 1800);
           const pos = inCard();
           spawnShard({
             ...pos, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp - 120,
-            drag: 0.9, g: 580, life: rand(0.7, 1.25), age: 0, size: rand(18, 42),
+            drag: 0.9, g: 580, life: rand(0.7, 1.2), age: 0, size: rand(18, 40),
             rot: Math.random() * TAU, spin: rand(-10, 10),
             flip: Math.random() * TAU, flipSpeed: rand(6, 14),
             variant: i % 3
           });
         }
-        if (navigator.vibrate) navigator.vibrate([40, 60, 100]);
+      }
+      if (lite && !isMicro && navigator.vibrate) {
+        try { navigator.vibrate(35); } catch (e) {}
       }
 
       ensureRunning();
@@ -404,10 +463,13 @@ function buildCracks(seed, quality = 'HIGH') {
   return cracks;
 }
 
-const CrackOverlay = memo(function CrackOverlay({ seed = 7, quality = 'HIGH' }) {
-  const cracks = useMemo(() => buildCracks(seed, quality), [seed, quality]); const CH = T.CHARGE / 1000;
-  // Capas de halo sin feGaussianBlur: trazo ancho traslúcido + núcleo dorado + blanco
-  const layers = [{ sw: 14, stroke: '#f59e0b', op: 0.34 }, { sw: 5, stroke: '#fde047', op: 0.96 }, { sw: 1.8, stroke: '#fffdf0', op: 1 }];
+const CrackOverlay = memo(function CrackOverlay({ seed = 7, quality = 'HIGH', isMobile = false }) {
+  const isLite = isMobile || quality === 'LOW';
+  const cracks = useMemo(() => buildCracks(seed, isLite ? 'LOW' : quality), [seed, quality, isLite]); const CH = T.CHARGE / 1000;
+  // En móvil: 1 sola capa SVG nítida sin mix-blend-screen (3x menos repintado de GPU)
+  const layers = isLite
+    ? [{ sw: 5.5, stroke: '#fef08a', op: 0.98 }]
+    : [{ sw: 14, stroke: '#f59e0b', op: 0.34 }, { sw: 5, stroke: '#fde047', op: 0.96 }, { sw: 1.8, stroke: '#fffdf0', op: 1 }];
   return (
     <motion.div className="pointer-events-none absolute inset-0 z-50 rounded-xl overflow-hidden" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, transition: { duration: 0.12 } }}>
       <svg viewBox="0 0 500 740" className="absolute inset-0 h-full w-full">
@@ -417,7 +479,7 @@ const CrackOverlay = memo(function CrackOverlay({ seed = 7, quality = 'HIGH' }) 
           </g>
         ))}
       </svg>
-      <motion.div className="absolute inset-0 mix-blend-screen" style={{ background: 'radial-gradient(circle at center, rgba(255,250,225,0.95) 0%, rgba(253,224,71,0.7) 28%, rgba(245,158,11,0.35) 52%, transparent 72%)' }} initial={{ opacity: 0, scale: 0.3 }} animate={{ opacity: [0, 0.45, 1], scale: [0.3, 1, 1.85] }} transition={{ duration: CH, times: [0, 0.6, 1], ease: EASE_IN_EXPO }} />
+      <motion.div className={"absolute inset-0 " + (isLite ? "" : "mix-blend-screen")} style={{ background: 'radial-gradient(circle at center, rgba(255,250,225,0.92) 0%, rgba(253,224,71,0.62) 30%, rgba(245,158,11,0.28) 54%, transparent 74%)', willChange: 'transform, opacity' }} initial={{ opacity: 0, scale: 0.35 }} animate={{ opacity: [0, 0.45, 0.98], scale: [0.35, 1, 1.65] }} transition={{ duration: CH, times: [0, 0.6, 1], ease: EASE_IN_EXPO }} />
     </motion.div>
   );
 });
@@ -425,7 +487,7 @@ const CrackOverlay = memo(function CrackOverlay({ seed = 7, quality = 'HIGH' }) 
 // ============================================================================
 // DORSO DE CARTA AAA EN TEXTURA PNG PRE-HORNEADA (1 CAPA GPU = 0 LAG EN CLICK/HOVER)
 // ============================================================================
-const CardBackOrnament = memo(function CardBackOrnament({ isCracking, quality, fastMotion = false }) {
+const CardBackOrnament = memo(function CardBackOrnament({ isCracking, quality, fastMotion = false, isMobile = false }) {
   const BakedSprite = window.CardBackSprite;
 
   return (
@@ -443,14 +505,18 @@ const CardBackOrnament = memo(function CardBackOrnament({ isCracking, quality, f
           <rect x="16" y="16" width="480" height="736" rx="28" fill="#17111f" stroke="#d4af37" strokeWidth="6" />
         </svg>
       )}
-      <AnimatePresence>{isCracking && <CrackOverlay quality={quality} />}</AnimatePresence>
+      <AnimatePresence>{isCracking && <CrackOverlay quality={quality} isMobile={isMobile} />}</AnimatePresence>
     </div>
   );
 });
 
-function runRevealSequence({ onCharge, onDip, onDetonate, onSettle }) {
+function runRevealSequence({ onCharge, onDip, onDetonate, onReveal, onSettle }) {
   const ids = []; const at = (ms, fn) => fn && ids.push(setTimeout(fn, ms));
-  onCharge?.(); at(T.CHARGE - T.DIP, onDip); at(T.CHARGE, onDetonate); at(T.CHARGE + T.SETTLE, onSettle);
+  onCharge?.();
+  at(T.CHARGE - T.DIP, onDip);
+  at(T.CHARGE, onDetonate);
+  at(T.CHARGE + 95, onReveal);
+  at(T.CHARGE + T.SETTLE, onSettle);
   return () => ids.forEach(clearTimeout);
 }
 
@@ -484,15 +550,19 @@ function useTrauma(targetRef, { maxOffset = 18, maxAngle = 1.5, decay = 1.7 } = 
   return { addTrauma, rumble, stopRumble };
 }
 
-// RevealStage optimizado: los rayos cónicos desaparecen suavemente tras el impacto (0 GPU leak al scrollear)
-const RevealStage = memo(function RevealStage({ phase, burst, origin, spreadMode }) {
+// RevealStage optimizado: fast-path móvil sin conic-gradient 125vmax ni mix-blend-screen
+const RevealStage = memo(function RevealStage({ phase, burst, origin, spreadMode, isMobile = false, quality = 'HIGH' }) {
   const ox = origin ? origin.x + "px" : '50%'; const oy = origin ? origin.y + "px" : '50%'; const CH = T.CHARGE / 1000;
+  const isLite = isMobile || quality === 'LOW';
+  const rings = isLite ? [0] : [0, 1, 2];
   return (
     <div aria-hidden className="pointer-events-none fixed inset-0 z-[55] overflow-hidden">
-      <motion.div className="absolute inset-0" style={{ background: 'radial-gradient(circle at 50% 50%, transparent 25%, rgba(4,2,12,0.88) 100%)' }} initial={false} animate={{ opacity: phase === 'SPREAD' || phase === 'IDLE' ? 0 : phase === 'CRACKING' ? 1 : 0.45 }} transition={phase === 'CRACKING' ? { duration: CH, ease: 'easeIn' } : { duration: 0.9, ease: 'easeOut' }} />
+      {!isLite && (
+        <motion.div className="absolute inset-0" style={{ background: 'radial-gradient(circle at 50% 50%, transparent 25%, rgba(4,2,12,0.88) 100%)' }} initial={false} animate={{ opacity: phase === 'SPREAD' || phase === 'IDLE' ? 0 : phase === 'CRACKING' ? 1 : 0.45 }} transition={phase === 'CRACKING' ? { duration: CH, ease: 'easeIn' } : { duration: 0.9, ease: 'easeOut' }} />
+      )}
       {burst > 0 && (
         <React.Fragment>
-          {spreadMode !== 'trina' && (
+          {!isLite && spreadMode !== 'trina' && (
             <motion.div
               key={"rays-" + burst}
               className="absolute mix-blend-screen"
@@ -513,8 +583,38 @@ const RevealStage = memo(function RevealStage({ phase, burst, origin, spreadMode
               transition={{ duration: 2.4, times: [0, 0.16, 0.55, 1], ease: 'easeOut' }}
             />
           )}
-          <motion.div key={"flash-" + burst} className="absolute inset-0" style={{ background: "radial-gradient(circle at " + ox + " " + oy + ", #fff 0%, rgba(255,246,214,0.95) 14%, rgba(253,224,71,0.58) 38%, rgba(245,158,11,0.16) 62%, transparent 80%)" }} initial={{ opacity: 0 }} animate={{ opacity: [0, 1, 0.48, 0] }} transition={{ duration: 0.85, times: [0, 0.08, 0.32, 1], ease: 'easeOut' }} />
-          {[0, 1, 2].map((i) => (<motion.div key={"ring-" + burst + "-" + i} className="absolute rounded-full" style={{ left: ox, top: oy, width: 220, height: 220, marginLeft: -110, marginTop: -110, border: (3 - i) + "px solid rgba(255,236,170,0.88)", willChange: 'transform, opacity' }} initial={{ scale: 0.2, opacity: 0.92 }} animate={{ scale: 4.6 + i * 1.1, opacity: 0 }} transition={{ duration: 1.0 + i * 0.14, delay: i * 0.08, ease: EASE_OUT_EXPO }} />))}
+          <motion.div
+            key={"flash-" + burst}
+            className="absolute inset-0"
+            style={{
+              background: isLite
+                ? "radial-gradient(circle at " + ox + " " + oy + ", #fffbe6 0%, rgba(253,224,71,0.82) 24%, rgba(245,158,11,0.28) 54%, transparent 82%)"
+                : "radial-gradient(circle at " + ox + " " + oy + ", #fff 0%, rgba(255,246,214,0.95) 14%, rgba(253,224,71,0.58) 38%, rgba(245,158,11,0.16) 62%, transparent 80%)",
+              willChange: 'opacity'
+            }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: [0, 1, 0.52, 0] }}
+            transition={{ duration: isLite ? 0.58 : 0.85, times: [0, 0.12, 0.38, 1], ease: 'easeOut' }}
+          />
+          {rings.map((i) => (
+            <motion.div
+              key={"ring-" + burst + "-" + i}
+              className="absolute rounded-full"
+              style={{
+                left: ox,
+                top: oy,
+                width: isLite ? 160 : 220,
+                height: isLite ? 160 : 220,
+                marginLeft: isLite ? -80 : -110,
+                marginTop: isLite ? -80 : -110,
+                border: (isLite ? 2 : 3 - i) + "px solid rgba(255,236,170,0.88)",
+                willChange: 'transform, opacity'
+              }}
+              initial={{ scale: 0.25, opacity: 0.92 }}
+              animate={{ scale: isLite ? 3.2 : (4.6 + i * 1.1), opacity: 0 }}
+              transition={{ duration: isLite ? 0.62 : (1.0 + i * 0.14), delay: i * 0.08, ease: EASE_OUT_EXPO }}
+            />
+          ))}
         </React.Fragment>
       )}
     </div>
@@ -860,12 +960,26 @@ function TarotSpreadApp() {
       setPhase('CRACKING');
       setOracleReaction((count) => count + 1);
       cancelRef.current?.();
+      const isMobileNow = window.innerWidth < 768;
       cancelRef.current = runRevealSequence({
-        onCharge: () => { sound?.playCrackTensionRiser?.(); particles.current?.startCharge(T.CHARGE); rumble(T.CHARGE); },
-        onDetonate: () => {
-          const r = cardRef.current?.getBoundingClientRect(); if (r) setOrigin({ x: r.left + r.width / 2, y: r.top + r.height / 2 });
-          stopRumble(); particles.current?.stopCharge(); sound?.playLegendaryRevealImpact?.(); particles.current?.burst(); addTrauma(0.95); setBurst((c) => c + 1); setPhase('REVEAL');
+        onCharge: () => {
+          sound?.playCrackTensionRiser?.();
+          particles.current?.startCharge(T.CHARGE);
+          if (!isMobileNow) rumble(T.CHARGE);
         },
+        onDetonate: () => {
+          const r = cardRef.current?.getBoundingClientRect();
+          if (r) setOrigin({ x: r.left + r.width / 2, y: r.top + r.height / 2 });
+          stopRumble();
+          particles.current?.stopCharge();
+          sound?.playLegendaryRevealImpact?.();
+          particles.current?.burst();
+          if (!isMobileNow) addTrauma(0.95);
+          setBurst((c) => c + 1);
+        },
+        onReveal: () => {
+          setPhase('REVEAL');
+        }
       });
       return;
     }
@@ -888,12 +1002,26 @@ function TarotSpreadApp() {
     setPhase('CRACKING');
     setOracleReaction((count) => count + 1);
     cancelRef.current?.();
+    const isMobileNow = window.innerWidth < 768;
     cancelRef.current = runRevealSequence({
-      onCharge: () => { sound?.playCrackTensionRiser?.(); particles.current?.startCharge(T.CHARGE); rumble(T.CHARGE); },
-      onDetonate: () => {
-        const r = cardRef.current?.getBoundingClientRect(); if (r) setOrigin({ x: r.left + r.width / 2, y: r.top + r.height / 2 });
-        stopRumble(); particles.current?.stopCharge(); sound?.playLegendaryRevealImpact?.(); particles.current?.burst(); addTrauma(0.95); setBurst((c) => c + 1); setPhase('REVEAL');
+      onCharge: () => {
+        sound?.playCrackTensionRiser?.();
+        particles.current?.startCharge(T.CHARGE);
+        if (!isMobileNow) rumble(T.CHARGE);
       },
+      onDetonate: () => {
+        const r = cardRef.current?.getBoundingClientRect();
+        if (r) setOrigin({ x: r.left + r.width / 2, y: r.top + r.height / 2 });
+        stopRumble();
+        particles.current?.stopCharge();
+        sound?.playLegendaryRevealImpact?.();
+        particles.current?.burst();
+        if (!isMobileNow) addTrauma(0.95);
+        setBurst((c) => c + 1);
+      },
+      onReveal: () => {
+        setPhase('REVEAL');
+      }
     });
   }, [phase, spreadMode, trinaAct, trinaCards, trinaPickingIdx, runTrinaShuffleAct, rumble, stopRumble, addTrauma, refreshGrimoireUi]);
 
@@ -1064,8 +1192,8 @@ function TarotSpreadApp() {
       {!hasBakedBackSprite && CardBackDefs && <CardBackDefs />}
       {SharedArtDefs && <SharedArtDefs />}
 
-      <RevealStage phase={phase} burst={burst} origin={origin} spreadMode={spreadMode} />
-      <ParticleCanvas ref={particles} originRef={cardRef} quality={quality} />
+      <RevealStage phase={phase} burst={burst} origin={origin} spreadMode={spreadMode} isMobile={isMobile} quality={quality} />
+      <ParticleCanvas ref={particles} originRef={cardRef} quality={quality} isMobile={isMobile} />
 
       <div
         ref={worldRef}
@@ -1341,7 +1469,7 @@ function TarotSpreadApp() {
                     style={{ willChange: 'transform' }}
                     className="absolute w-[84px] h-[126px] sm:w-36 sm:h-56 lg:w-[180px] lg:h-[276px] xl:w-[208px] xl:h-[320px] cursor-pointer"
                   >
-                    <CardBackOrnament isCracking={isChosen && phase === 'CRACKING'} quality={quality} fastMotion={false} />
+                    <CardBackOrnament isCracking={isChosen && phase === 'CRACKING'} quality={quality} fastMotion={false} isMobile={isMobile} />
                   </motion.div>
                 );
               })}
@@ -1418,9 +1546,9 @@ function TarotSpreadApp() {
             <div className="max-w-6xl mx-auto flex flex-col lg:flex-row items-center lg:items-start justify-start lg:justify-center gap-6 sm:gap-8 lg:gap-10 xl:gap-12">
             {/* COLUMNA IZQUIERDA: DIORAMA 2.5D + PALABRAS CLAVE + CONMUTADOR DE POLARIDAD */}
             <motion.div
-              initial={{ rotateY: 180, scale: 1.06, y: 0 }}
-              animate={{ rotateY: 0, scale: 1, y: 0 }}
-              transition={{ type: 'spring', stiffness: 75, damping: 15 }}
+              initial={isMobile ? { opacity: 0, scale: 0.92 } : { rotateY: 180, scale: 1.06, y: 0 }}
+              animate={isMobile ? { opacity: 1, scale: 1 } : { rotateY: 0, scale: 1, y: 0 }}
+              transition={isMobile ? { duration: 0.32, ease: 'easeOut' } : { type: 'spring', stiffness: 75, damping: 15 }}
               className="relative flex flex-col items-center gap-3.5 flex-shrink-0 z-40 mt-1 lg:mt-0 lg:sticky lg:top-8"
             >
               <RevealedCardDiorama25D
