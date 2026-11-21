@@ -378,14 +378,26 @@ const ParticleCanvas = forwardRef(function ParticleCanvas({ originRef, quality =
       ctx.globalAlpha = 1;
     }
 
-    if (arr.length || shards.length || s.charge) s.raf = requestAnimationFrame(loop);
-    else { s.raf = 0; ctx.clearRect(0, 0, s.w, s.h); }
+    if (arr.length || shards.length || s.charge) {
+      s.raf = requestAnimationFrame(loop);
+    } else {
+      s.raf = 0;
+      ctx.clearRect(0, 0, s.w, s.h);
+      if (canvasRef.current) canvasRef.current.style.visibility = 'hidden';
+    }
   }, [origin, spawn]);
 
-  const ensureRunning = useCallback(() => { const s = S.current; if (!s.raf) { s.last = performance.now(); s.raf = requestAnimationFrame(loop); } }, [loop]);
+  const ensureRunning = useCallback(() => {
+    const s = S.current;
+    if (canvasRef.current) canvasRef.current.style.visibility = 'visible';
+    if (!s.raf) {
+      s.last = performance.now();
+      s.raf = requestAnimationFrame(loop);
+    }
+  }, [loop]);
   useEffect(() => {
     const canvas = canvasRef.current; const s = S.current;
-    s.ctx = canvas.getContext('2d', { alpha: true, desynchronized: true }) || canvas.getContext('2d');
+    s.ctx = canvas.getContext('2d', { alpha: true }) || canvas.getContext('2d');
     s.sprite = makeGlowSprite();
     s.shardSprites = makeShardSprites();
     const resize = () => {
@@ -442,7 +454,7 @@ const ParticleCanvas = forwardRef(function ParticleCanvas({ originRef, quality =
       ensureRunning();
     }
   }), [ensureRunning, origin, reduce, quality, spawn, spawnShard]);
-  return <canvas ref={canvasRef} aria-hidden className="pointer-events-none fixed inset-0 z-[60] h-full w-full" />;
+  return <canvas ref={canvasRef} aria-hidden style={{ visibility: 'hidden' }} className="pointer-events-none fixed inset-0 z-[60] h-full w-full" />;
 });
 
 const toPath = (pts) => pts.map(([x, y], i) => (i ? 'L' : 'M') + x.toFixed(1) + "," + y.toFixed(1)).join(' ');
