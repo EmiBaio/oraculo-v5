@@ -2,14 +2,16 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+  <meta name="theme-color" content="#040207" />
+  <meta name="description" content="Oráculo del Velo Astral: tirada interactiva de Tarot en 2.5D con los 22 Arcanos Mayores, El Hilo de las Tres Lunas (Pasado, Presente y Futuro) y tu Grimorio Personal." />
   <title>Oráculo del Velo Astral</title>
-  
+
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@600;700;800;900&family=Cormorant+Garamond:ital,wght@0,500;0,700;1,600&display=swap" rel="stylesheet">
-  
+
   <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
   <script src="https://unpkg.com/framer-motion@10.18.0/dist/framer-motion.js"></script>
@@ -17,7 +19,7 @@
 
   <!-- 1. Bases de datos originales + Puente de Sincronización Léxica -->
   <script src="datos_cartas.js"></script>
-  <script src="datos_cartas_menores.js"></script>
+  <script src="datos_cartas_menores.js?v=6"></script>
   <script>
     if (typeof MAJOR_ARCANA !== "undefined" && !window.MAJOR_ARCANA) window.MAJOR_ARCANA = MAJOR_ARCANA;
     if (typeof REVERSED_DATA !== "undefined" && !window.REVERSED_DATA) window.REVERSED_DATA = REVERSED_DATA;
@@ -40,11 +42,11 @@
   <script src="datos_cartas/datos_trina.js"></script>
 
   <!-- 1C. Motor Unificador y Enrutador -->
-  <script src="motor_tarot.js"></script>
+  <script src="motor_tarot.js?v=6"></script>
 
   <!-- 2. Audio y Orquestador de Diorama AAA -->
   <script src="motor_audio.js"></script>
-  <script src="tarot_diorama_renderer.js"></script>
+  <script src="tarot_diorama_renderer.js?v=6"></script>
 
   <!-- 3. Los 22 Arcanos Mayores Modulares (/cartas/) -->
   <script src="cartas/el_loco.js"></script>
@@ -118,13 +120,14 @@
 
   <!-- 4. Rig 3D de Sibilia, Grimorio Personal y Motores de Tirada (Trina + Principal) -->
   <script src="rig_sibilia.js"></script>
-  <script src="motor_tirada_trina.js"></script>
-  <script src="grimorio_personal.js"></script>
-  <script src="motor_tirada.js"></script>
+  <script src="motor_tirada_trina.js?v=6"></script>
+  <script src="grimorio_personal.js?v=6"></script>
+  <script src="motor_tirada.js?v=6"></script>
 
   <style>
     * { box-sizing: border-box; user-select: none; -webkit-user-select: none; }
-    body { margin: 0; padding: 0; background-color: #040207; color: #fffbeb; overflow: hidden; font-family: 'Cormorant Garamond', Georgia, serif; touch-action: pan-y; }
+    input, textarea, [contenteditable="true"] { user-select: text; -webkit-user-select: text; }
+    html, body { margin: 0; padding: 0; width: 100%; height: 100%; background-color: #040207; color: #fffbeb; overflow: hidden; font-family: 'Cormorant Garamond', Georgia, serif; touch-action: pan-y; }
     ::-webkit-scrollbar { width: 6px; }
     ::-webkit-scrollbar-track { background: rgba(10, 5, 20, 0.6); }
     ::-webkit-scrollbar-thumb { background: rgba(212, 175, 55, 0.35); border-radius: 9999px; }
@@ -135,13 +138,16 @@
 <body>
   <div id="root"></div>
 
-  <script type="text/babel">
-    const App = window.TarotSpreadApp;
-    if (App && !window.__tarotSpreadMounted) {
-      window.__tarotSpreadMounted = true;
-      const root = ReactDOM.createRoot(document.getElementById('root'));
-      root.render(<App />);
-    }
+  <script>
+    (function mountOraculoApp() {
+      const App = window.TarotSpreadApp;
+      const rootEl = document.getElementById('root');
+      if (App && rootEl && !window.__tarotSpreadMounted) {
+        window.__tarotSpreadMounted = true;
+        const root = ReactDOM.createRoot(rootEl);
+        root.render(React.createElement(App));
+      }
+    })();
   </script>
 </body>
 </html>

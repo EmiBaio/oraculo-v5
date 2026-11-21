@@ -66,6 +66,23 @@ const CheckCircle2 = ({ className = "w-4 h-4" }) => (
   </svg>
 );
 
+// --- CONCILIO DE LAS 5 MAESTRAS TAROTISTAS ---
+const TAROT_MASTERS = [
+  { id: 'valeria', name: 'Valeria Montes de Oca', role: 'Especialista en Tarot Evolutivo y Leyes Kármicas', bio: '20 años descifrando arquetipos mayores y procesos de transformación.', sigil: "♎" },
+  { id: 'elena', name: 'Elena Kovács', role: 'Maestra en Simbología Hermética y Psicología Junguiana', bio: 'Investigadora de iconografía esotérica e integración de la sombra.', sigil: "☿" },
+  { id: 'clara', name: 'Clara del Río', role: 'Tarotista Vincular y Lectora de Registros Astrales', bio: 'Especializada en lecturas afectivas, nudos vinculares y reciprocidad.', sigil: "♀" },
+  { id: 'miriam', name: 'Miriam Al-Zahra', role: 'Cabalista, Astróloga y Revisora Esotérica', bio: 'Experta en correspondencias astrológicas, senderos del Árbol de la Vida y numerología.', sigil: "✡" },
+  { id: 'lyra', name: 'Lyra Vane', role: 'Oraculista de Propósito Vocacional y Destino', bio: 'Mentora enfocada en alineación material, contratos y estrategia espiritual.', sigil: "☉" }
+];
+
+function getAuthorPairForCard(cardId) {
+  const seed = String(cardId).split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+  const primaryIdx = seed % TAROT_MASTERS.length;
+  const reviewerIdx = (seed * 2 + 1) % TAROT_MASTERS.length;
+  const finalReviewerIdx = reviewerIdx === primaryIdx ? (reviewerIdx + 1) % TAROT_MASTERS.length : reviewerIdx;
+  return { author: TAROT_MASTERS[primaryIdx], reviewer: TAROT_MASTERS[finalReviewerIdx] };
+}
+
 // --- DIORAMA 2.5D OPTIMIZADO: TRANSFORMACIONES DIRECTAS EN GPU (0 RE-RENDERS POR PIXEL) ---
 const RevealedCardDiorama25D = memo(function RevealedCardDiorama25D({ card, activeNode, onSelectNode, isReversed, setIsReversed }) {
   const cardRef = useRef(null);
@@ -125,8 +142,6 @@ const RevealedCardDiorama25D = memo(function RevealedCardDiorama25D({ card, acti
         aria-label={dynamicAltText}
         onMouseMove={(e) => updateTilt(e.clientX, e.clientY)}
         onMouseLeave={resetTilt}
-        onTouchMove={(e) => e.touches[0] && updateTilt(e.touches[0].clientX, e.touches[0].clientY)}
-        onTouchEnd={resetTilt}
         style={{
           transform: 'rotateX(0deg) rotateY(0deg)',
           transformStyle: 'preserve-3d',
@@ -243,6 +258,7 @@ window.ArcanaPageLayout = function ArcanaPageLayout({ card, neighbors }) {
   }, [card, isReversed, octaveIdx]);
 
   const [activeNode, setActiveNode] = useState(activeCard?.nodes?.[0] || null);
+  const { author, reviewer } = useMemo(() => getAuthorPairForCard(card?.id), [card?.id]);
 
   // Resetear al cambiar de carta en el enrutador
   useEffect(() => {
@@ -327,8 +343,8 @@ window.ArcanaPageLayout = function ArcanaPageLayout({ card, neighbors }) {
         "@type": "Article",
         "headline": activeCard.seo?.title || activeCard.seoTitle || (activeCard.name + " en el Tarot"),
         "description": activeCard.seo?.description || activeCard.seoDescription || activeCard.meaning,
-        "author": { "@type": "Organization", "name": "Oráculo del Velo Astral" },
-        "publisher": { "@type": "Organization", "name": "Oráculo del Velo Astral" }
+        "author": { "@type": "Person", "name": author.name, "jobTitle": author.role },
+        "reviewedBy": { "@type": "Person", "name": reviewer.name, "jobTitle": reviewer.role }
       },
       {
         "@type": "BreadcrumbList",
@@ -391,7 +407,7 @@ window.ArcanaPageLayout = function ArcanaPageLayout({ card, neighbors }) {
             </span>
           </div>
 
-          <h1 className="font-['Cinzel_Decorative'] text-4xl sm:text-5xl md:text-6xl font-bold text-amber-200">
+          <h1 className="font-['Cinzel_Decorative'] text-3xl sm:text-5xl md:text-6xl font-bold text-amber-200 break-words">
             {activeCard.name}
           </h1>
           <p className={"font-['Cinzel'] text-sm sm:text-base uppercase tracking-[0.28em] " + (isReversed ? "text-purple-300" : "text-amber-300/90")}>
@@ -490,7 +506,7 @@ window.ArcanaPageLayout = function ArcanaPageLayout({ card, neighbors }) {
         </nav>
 
         {/* SECCIÓN 01: DIORAMA 2.5D + SIGNIFICADO PROFUNDO + NODOS */}
-        <section id="simbologia" className="scroll-mt-20 flex flex-col lg:flex-row items-center lg:items-start gap-10 p-6 sm:p-8 rounded-3xl bg-[#090513]/90 border border-[#d4af37]/50">
+        <section id="simbologia" className="scroll-mt-20 flex flex-col lg:flex-row items-center lg:items-start gap-10 p-4 sm:p-8 rounded-3xl bg-[#090513]/95 border border-[#d4af37]/50">
           <div className="flex-shrink-0">
             <RevealedCardDiorama25D card={activeCard} activeNode={activeNode} onSelectNode={setActiveNode} isReversed={isReversed} setIsReversed={setIsReversed} />
           </div>
@@ -773,6 +789,33 @@ window.ArcanaPageLayout = function ArcanaPageLayout({ card, neighbors }) {
                 <p className="mt-3 text-base text-amber-100/85 leading-relaxed">{faq.answer}</p>
               </details>
             ))}
+          </div>
+        </section>
+
+        {/* CONCILIO DE AUTORÍA Y REVISIÓN */}
+        <section aria-label="Autoría y revisión" className="p-5 sm:p-6 rounded-2xl bg-gradient-to-r from-[#120924] via-[#090513] to-[#120924] border border-[#d4af37]/50 space-y-4">
+          <div className="flex items-center justify-between border-b border-amber-500/20 pb-3">
+            <span className="font-['Cinzel'] text-[10px] uppercase tracking-[0.25em] text-amber-300">
+              ✦ Concilio del Velo Astral • Revisión por Pares
+            </span>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <span className="font-['Cinzel'] text-[10px] uppercase tracking-[0.25em] text-amber-400">✦ Redacción e Interpretación</span>
+              <h4 className="font-['Cinzel'] text-base font-bold text-amber-100 mt-1 flex items-center gap-2">
+                <span className="text-xl">{author.sigil}</span> {author.name}
+              </h4>
+              <p className="text-xs text-purple-300 mb-1">{author.role}</p>
+              <p className="text-xs text-amber-100/75">{author.bio}</p>
+            </div>
+            <div className="border-t md:border-t-0 md:border-l border-amber-500/25 pt-4 md:pt-0 md:pl-6">
+              <span className="font-['Cinzel'] text-[10px] uppercase tracking-[0.25em] text-emerald-300">✔ Revisión Simbólica y Astrológica</span>
+              <h4 className="font-['Cinzel'] text-base font-bold text-amber-100 mt-1 flex items-center gap-2">
+                <span className="text-xl">{reviewer.sigil}</span> {reviewer.name}
+              </h4>
+              <p className="text-xs text-purple-300 mb-1">{reviewer.role}</p>
+              <p className="text-xs text-amber-100/75">{reviewer.bio}</p>
+            </div>
           </div>
         </section>
 

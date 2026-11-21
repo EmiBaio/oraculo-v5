@@ -364,7 +364,7 @@ const TrinaAltarTray = memo(function TrinaAltarTray({ pickedCards, currentAct, p
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -8 }}
       transition={{ duration: 0.28 }}
-      className="relative z-30 flex items-center justify-center gap-1.5 sm:gap-4 px-2 sm:px-4 py-1.5 sm:py-2 max-w-[96vw] rounded-2xl bg-[#090514]/95 border border-[#d4af37]/50 shadow-[0_10px_28px_rgba(0,0,0,0.85)]"
+      className="relative z-30 grid grid-cols-3 items-stretch gap-1.5 sm:gap-3.5 px-2 sm:px-4 py-1.5 sm:py-2 w-[94vw] max-w-[540px] rounded-2xl bg-[#090514] border border-[#d4af37]/55 shadow-[0_10px_28px_rgba(0,0,0,0.88)]"
       style={{ contain: "layout style" }}
     >
       <div
@@ -384,17 +384,17 @@ const TrinaAltarTray = memo(function TrinaAltarTray({ pickedCards, currentAct, p
             key={slot.key}
             animate={
               isConverging
-                ? { scale: 1.05, x: (1 - idx) * 12 }
-                : { scale: isCurrent ? 1.03 : 1, x: 0 }
+                ? { scale: 1.04, x: (1 - idx) * 10 }
+                : { scale: isCurrent ? 1.02 : 1, x: 0 }
             }
             transition={{ duration: 0.4 }}
             className={
-              "relative z-10 flex items-center gap-1.5 sm:gap-2.5 px-2 sm:px-3.5 py-1.5 rounded-xl border transition-colors duration-300 " +
+              "relative z-10 min-w-0 flex items-center justify-center sm:justify-start gap-1.5 sm:gap-2.5 px-1.5 sm:px-3 py-1.5 rounded-xl border transition-colors duration-300 " +
               (isSealed
                 ? "bg-gradient-to-r from-[#261606] via-[#1b0f2d] to-[#261606] border-amber-300 shadow-[0_0_14px_rgba(251,191,36,0.38)]"
                 : isCurrent
                 ? "bg-[#160b2a] border-amber-400/80 shadow-[0_0_12px_rgba(251,191,36,0.24)]"
-                : "bg-[#080410]/95 border-white/15 opacity-70")
+                : "bg-[#080410] border-white/15 opacity-75")
             }
           >
             <div
@@ -414,12 +414,12 @@ const TrinaAltarTray = memo(function TrinaAltarTray({ pickedCards, currentAct, p
               )}
             </div>
 
-            <div className="flex flex-col text-center sm:text-left leading-tight">
+            <div className="flex flex-col items-center sm:items-start text-center sm:text-left leading-tight min-w-0">
               <span
                 style={{ fontFamily: "'Cinzel', serif" }}
                 className={
-                  "text-[9px] sm:text-[11px] uppercase tracking-[0.04em] sm:tracking-[0.09em] font-bold whitespace-nowrap " +
-                  (isSealed ? "text-amber-300" : isCurrent ? "text-amber-200" : "text-purple-200/65")
+                  "text-[9.5px] sm:text-[11px] uppercase tracking-normal sm:tracking-[0.06em] font-bold whitespace-nowrap " +
+                  (isSealed ? "text-amber-300" : isCurrent ? "text-amber-200" : "text-purple-200/70")
                 }
               >
                 {slot.numeral}. {slot.name}
@@ -482,8 +482,6 @@ const TrinaDiorama25D = memo(function TrinaDiorama25D({
         ref={cardRef}
         onMouseMove={function (e) { updateTilt(e.clientX, e.clientY); }}
         onMouseLeave={resetTilt}
-        onTouchMove={function (e) { if (e.touches && e.touches[0]) updateTilt(e.touches[0].clientX, e.touches[0].clientY); }}
-        onTouchEnd={resetTilt}
         style={{
           rotateX: smoothRotX,
           rotateY: smoothRotY,
@@ -783,7 +781,7 @@ const TrinaCardStation = memo(function TrinaCardStation({
       transition={{ duration: 0.48, ease: [0.22, 1, 0.36, 1] }}
       style={{ contain: "layout style paint" }}
       className={
-        "relative scroll-mt-28 sm:scroll-mt-24 w-full max-w-5xl mx-auto rounded-3xl bg-[#090513]/95 border p-4 sm:p-6 lg:p-8 shadow-[0_18px_50px_rgba(0,0,0,0.88)] " +
+        "relative scroll-mt-4 sm:scroll-mt-6 w-full max-w-5xl mx-auto rounded-3xl bg-[#090513]/95 border p-4 sm:p-6 lg:p-8 shadow-[0_18px_50px_rgba(0,0,0,0.88)] " +
         (isRev ? "border-purple-400/65" : "border-[#d4af37]/70")
       }
     >
@@ -1046,6 +1044,9 @@ const TrinaVerticalReveal = memo(function TrinaVerticalReveal({
   const [copiedSummary, setCopiedSummary] = useState(false);
 
   useEffect(function () {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollTop = 0;
+    }
     return function () {
       if (copyTimerRef.current) clearTimeout(copyTimerRef.current);
     };
@@ -1119,71 +1120,78 @@ const TrinaVerticalReveal = memo(function TrinaVerticalReveal({
 
   return (
     <motion.div
-      ref={scrollContainerRef}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.35 }}
-      className="fixed inset-0 z-50 overflow-y-auto overflow-x-hidden px-3 sm:px-6 lg:px-10 pt-3 sm:pt-5 pb-20"
+      className="fixed inset-0 z-50 flex flex-col overflow-hidden"
       style={{
-        background: "radial-gradient(ellipse at 50% 15%, rgba(28, 15, 52, 0.96) 0%, rgba(9, 5, 16, 0.98) 58%, rgba(4, 2, 7, 1) 100%)",
-        WebkitOverflowScrolling: "touch"
+        background: "radial-gradient(ellipse at 50% 15%, #1c0f34 0%, #090510 58%, #040207 100%)"
       }}
     >
-      {/* Barra flotante superior OPACA y con z-50 (nunca se trasluce ni se pisa) */}
-      <div className="sticky top-2 z-50 max-w-5xl mx-auto mb-6 px-2.5 sm:px-5 py-2 sm:py-2.5 rounded-2xl bg-[#07040f] border border-[#d4af37]/65 shadow-[0_14px_34px_rgba(0,0,0,0.95)] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-        <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto pb-0.5 sm:pb-0">
-          <span style={{ fontFamily: "'Cinzel Decorative', serif" }} className="text-xs sm:text-sm text-amber-300 font-bold mr-1 hidden lg:inline whitespace-nowrap">
-            ✦ El Hilo de las Tres Lunas
-          </span>
-          {triadArr.map(function (item) {
-            return (
-              <button
-                key={item.id}
-                type="button"
-                onClick={function () { scrollToElement(item.id); }}
-                style={{ fontFamily: "'Cinzel', serif" }}
-                className={
-                  "flex-shrink-0 whitespace-nowrap px-2.5 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs uppercase tracking-wider border transition-colors cursor-pointer " +
-                  (item.card.isReversed
-                    ? "bg-[#221036] border-purple-400/60 text-purple-200 hover:bg-purple-900/80"
-                    : "bg-[#241608] border-amber-400/55 text-amber-200 hover:bg-amber-500/25")
-                }
-              >
-                {item.pos.numeral}. {item.pos.label}
-              </button>
-            );
-          })}
-          <button
-            type="button"
-            onClick={function () { scrollToElement("trina-verdict"); }}
-            style={{ fontFamily: "'Cinzel', serif" }}
-            className="flex-shrink-0 whitespace-nowrap px-2.5 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs uppercase tracking-wider bg-[#1d1130] border border-amber-300/65 text-amber-100 hover:bg-amber-500/25 transition-colors cursor-pointer"
-          >
-            ✦ Veredicto
-          </button>
-        </div>
-
-        <div className="flex items-center justify-end gap-1.5 sm:gap-2 flex-shrink-0">
-          {onOpenGrimoire && (
+      {/* Barra superior FIJA FUERA DEL SCROLL (imposible que se solape con cartas 3D) */}
+      <div className="flex-shrink-0 z-50 w-full bg-[#07040f] border-b border-[#d4af37]/50 shadow-[0_10px_28px_rgba(0,0,0,0.92)] px-2.5 sm:px-6 py-2 sm:py-2.5">
+        <div className="max-w-5xl mx-auto flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+          <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto pb-0.5 sm:pb-0">
+            <span style={{ fontFamily: "'Cinzel Decorative', serif" }} className="text-xs sm:text-sm text-amber-300 font-bold mr-1 hidden lg:inline whitespace-nowrap">
+              ✦ El Hilo de las Tres Lunas
+            </span>
+            {triadArr.map(function (item) {
+              return (
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={function () { scrollToElement(item.id); }}
+                  style={{ fontFamily: "'Cinzel', serif" }}
+                  className={
+                    "flex-shrink-0 whitespace-nowrap px-2.5 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs uppercase tracking-wider border transition-colors cursor-pointer " +
+                    (item.card.isReversed
+                      ? "bg-[#221036] border-purple-400/60 text-purple-200 hover:bg-purple-900/80"
+                      : "bg-[#241608] border-amber-400/55 text-amber-200 hover:bg-amber-500/25")
+                  }
+                >
+                  {item.pos.numeral}. {item.pos.label}
+                </button>
+              );
+            })}
             <button
               type="button"
-              onClick={function () { onOpenGrimoire("diary"); }}
+              onClick={function () { scrollToElement("trina-verdict"); }}
               style={{ fontFamily: "'Cinzel', serif" }}
-              className="inline-flex items-center gap-1.5 px-3 py-1 sm:py-1.5 rounded-full bg-[#140b26] hover:bg-purple-500/25 border border-purple-400/55 text-purple-200 text-[10px] sm:text-xs uppercase tracking-wider whitespace-nowrap transition-colors cursor-pointer"
+              className="flex-shrink-0 whitespace-nowrap px-2.5 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs uppercase tracking-wider bg-[#1d1130] border border-amber-300/65 text-amber-100 hover:bg-amber-500/25 transition-colors cursor-pointer"
             >
-              ✦ Grimorio
+              ✦ Veredicto
             </button>
-          )}
-          <button
-            type="button"
-            onClick={onReset}
-            style={{ fontFamily: "'Cinzel', serif" }}
-            className="inline-flex items-center gap-1.5 px-3 sm:px-3.5 py-1 sm:py-1.5 rounded-full bg-[#241608] hover:bg-amber-500/30 border border-[#d4af37] text-amber-200 text-[10px] sm:text-xs uppercase tracking-wider whitespace-nowrap transition-colors cursor-pointer"
-          >
-            <RotateCcwIcon className="w-3.5 h-3.5" /> Nueva Tirada
-          </button>
+          </div>
+
+          <div className="flex items-center justify-end gap-1.5 sm:gap-2 flex-shrink-0">
+            {onOpenGrimoire && (
+              <button
+                type="button"
+                onClick={function () { onOpenGrimoire("diary"); }}
+                style={{ fontFamily: "'Cinzel', serif" }}
+                className="inline-flex items-center gap-1.5 px-3 py-1 sm:py-1.5 rounded-full bg-[#140b26] hover:bg-purple-500/25 border border-purple-400/55 text-purple-200 text-[10px] sm:text-xs uppercase tracking-wider whitespace-nowrap transition-colors cursor-pointer"
+              >
+                ✦ Grimorio
+              </button>
+            )}
+            <button
+              type="button"
+              onClick={onReset}
+              style={{ fontFamily: "'Cinzel', serif" }}
+              className="inline-flex items-center gap-1.5 px-3 sm:px-3.5 py-1 sm:py-1.5 rounded-full bg-[#241608] hover:bg-amber-500/30 border border-[#d4af37] text-amber-200 text-[10px] sm:text-xs uppercase tracking-wider whitespace-nowrap transition-colors cursor-pointer"
+            >
+              <RotateCcwIcon className="w-3.5 h-3.5" /> Nueva Tirada
+            </button>
+          </div>
         </div>
       </div>
+
+      {/* Cuerpo Scrolleable Independiente */}
+      <div
+        ref={scrollContainerRef}
+        className="flex-1 overflow-y-auto overflow-x-hidden px-3 sm:px-6 lg:px-10 pt-5 sm:pt-7 pb-24"
+        style={{ WebkitOverflowScrolling: "touch", touchAction: "pan-y" }}
+      >
 
       {/* Cabecera Ceremonial de Apertura */}
       <header className="max-w-3xl mx-auto text-center mb-6 space-y-2">
@@ -1264,7 +1272,7 @@ const TrinaVerticalReveal = memo(function TrinaVerticalReveal({
         viewport={{ once: true, amount: 0.18 }}
         transition={{ duration: 0.5 }}
         style={{ contain: "layout style paint" }}
-        className="relative scroll-mt-28 sm:scroll-mt-24 max-w-4xl mx-auto rounded-3xl bg-gradient-to-b from-[#170c2c] via-[#0c0618] to-[#06030c] border-2 border-[#d4af37] p-5 sm:p-8 lg:p-10 text-center shadow-[0_0_55px_rgba(212,175,55,0.2)] space-y-6"
+        className="relative scroll-mt-4 sm:scroll-mt-6 max-w-4xl mx-auto rounded-3xl bg-gradient-to-b from-[#170c2c] via-[#0c0618] to-[#06030c] border-2 border-[#d4af37] p-5 sm:p-8 lg:p-10 text-center shadow-[0_0_55px_rgba(212,175,55,0.2)] space-y-6"
       >
         <div className="space-y-2">
           <span style={{ fontFamily: "'Cinzel', serif" }} className="text-[11px] sm:text-xs uppercase tracking-[0.28em] text-amber-400 font-bold block">
@@ -1366,6 +1374,7 @@ const TrinaVerticalReveal = memo(function TrinaVerticalReveal({
           </button>
         </div>
       </motion.section>
+      </div>
     </motion.div>
   );
 });

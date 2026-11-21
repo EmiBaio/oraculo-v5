@@ -19,7 +19,7 @@
 
   <!-- 1. Bases de datos originales + Puente de Sincronización Léxica -->
   <script src="datos_cartas.js"></script>
-  <script src="datos_cartas_menores.js"></script>
+  <script src="datos_cartas_menores.js?v=6"></script>
   <script>
     if (typeof MAJOR_ARCANA !== "undefined" && !window.MAJOR_ARCANA) window.MAJOR_ARCANA = MAJOR_ARCANA;
     if (typeof REVERSED_DATA !== "undefined" && !window.REVERSED_DATA) window.REVERSED_DATA = REVERSED_DATA;
@@ -42,11 +42,11 @@
   <script src="datos_cartas/datos_trina.js"></script>
 
   <!-- 1C. Motor Unificador y Enrutador -->
-  <script src="motor_tarot.js"></script>
+  <script src="motor_tarot.js?v=6"></script>
 
   <!-- 2. Audio y Orquestador de Diorama AAA -->
   <script src="motor_audio.js"></script>
-  <script src="tarot_diorama_renderer.js"></script>
+  <script src="tarot_diorama_renderer.js?v=6"></script>
 
   <!-- 3. Los 22 Arcanos Mayores Modulares (/cartas/) -->
   <script src="cartas/el_loco.js"></script>
@@ -120,14 +120,14 @@
 
   <!-- 4. Rig 3D de Sibilia, Grimorio Personal y Motores de Tirada (Trina + Principal) -->
   <script src="rig_sibilia.js"></script>
-  <script src="motor_tirada_trina.js"></script>
-  <script src="grimorio_personal.js"></script>
-  <script src="motor_tirada.js"></script>
+  <script src="motor_tirada_trina.js?v=6"></script>
+  <script src="grimorio_personal.js?v=6"></script>
+  <script src="motor_tirada.js?v=6"></script>
 
   <style>
     * { box-sizing: border-box; user-select: none; -webkit-user-select: none; }
     input, textarea, [contenteditable="true"] { user-select: text; -webkit-user-select: text; }
-    body { margin: 0; padding: 0; background-color: #040207; color: #fffbeb; overflow: hidden; font-family: 'Cormorant Garamond', Georgia, serif; touch-action: pan-y; }
+    html, body { margin: 0; padding: 0; width: 100%; height: 100%; background-color: #040207; color: #fffbeb; overflow: hidden; font-family: 'Cormorant Garamond', Georgia, serif; touch-action: pan-y; }
     ::-webkit-scrollbar { width: 6px; }
     ::-webkit-scrollbar-track { background: rgba(10, 5, 20, 0.6); }
     ::-webkit-scrollbar-thumb { background: rgba(212, 175, 55, 0.35); border-radius: 9999px; }
