@@ -1,0 +1,6 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.font-cinzel { font-family: 'Cinzel', serif; }
+.font-cinzel-dec { font-family: 'Cinzel Decorative', serif; }
