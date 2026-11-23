@@ -98,81 +98,93 @@
     });
   });
 
-  // 1. Integrar los 6 volúmenes Solares y 6 Lunares con las constantes globales
-  const baseMajors = typeof MAJOR_ARCANA !== 'undefined' ? MAJOR_ARCANA : (window.MAJOR_ARCANA || []);
-  if (Array.isArray(window.DATOS_SOL) && window.DATOS_SOL.length > 0) {
-    window.DATOS_SOL.forEach((solarCard) => {
-      const idx = baseMajors.findIndex((c) => Number(c.id) === Number(solarCard.id));
-      if (idx !== -1) {
-        baseMajors[idx] = Object.assign({}, baseMajors[idx], solarCard);
-      } else {
-        baseMajors.push(solarCard);
-      }
+  // 1-3. Sincronización dinámica (soporta carga inicial completa y carga diferida de Grimorio en producción)
+  const mayoresNormalizados = [];
+  const menoresNormalizados = [];
+  const TODAS_LAS_78_CARTAS = [];
+
+  function syncExtendedData() {
+    const baseMajors = typeof MAJOR_ARCANA !== 'undefined' ? MAJOR_ARCANA : (window.MAJOR_ARCANA || []);
+    if (Array.isArray(window.DATOS_SOL) && window.DATOS_SOL.length > 0) {
+      window.DATOS_SOL.forEach((solarCard) => {
+        const idx = baseMajors.findIndex((c) => Number(c.id) === Number(solarCard.id));
+        if (idx !== -1) {
+          baseMajors[idx] = Object.assign({}, baseMajors[idx], solarCard);
+        } else {
+          baseMajors.push(solarCard);
+        }
+      });
+    }
+    window.MAJOR_ARCANA = baseMajors;
+
+    const baseReversed = typeof REVERSED_DATA !== 'undefined' ? REVERSED_DATA : (window.REVERSED_DATA || {});
+    if (Array.isArray(window.DATOS_LUNA) && window.DATOS_LUNA.length > 0) {
+      window.DATOS_LUNA.forEach((lunarCard) => {
+        baseReversed[lunarCard.id] = Object.assign({}, baseReversed[lunarCard.id] || {}, lunarCard);
+      });
+    }
+    window.REVERSED_DATA = baseReversed;
+
+    const nextMajors = baseMajors.map((card) => {
+      const rev = baseReversed[card.id] || null;
+      const rootElem = extractRootElement(card.correspondences && card.correspondences.element);
+      return {
+        ...card,
+        id: String(card.id),
+        slug: crearSlug(card.name),
+        type: 'major',
+        arcanaType: 'major',
+        suit: null,
+        suitName: 'Arcanos Mayores',
+        rootElement: rootElem,
+        reversed: rev || {
+          yesNo: 'Incierto (energía bloqueada)',
+          meaning: card.lightAndShadow,
+          lightAndShadow: card.lightAndShadow,
+          domains: card.domains,
+          counsel: card.counsel
+        },
+        seo: {
+          title: card.name + " (" + card.numeral + ") en el Tarot: Significado en el Amor, Trabajo y Sombra",
+          description: String(card.meaning || '').slice(0, 155) + '...'
+        }
+      };
     });
-  }
-  window.MAJOR_ARCANA = baseMajors;
 
-  const baseReversed = typeof REVERSED_DATA !== 'undefined' ? REVERSED_DATA : (window.REVERSED_DATA || {});
-  if (Array.isArray(window.DATOS_LUNA) && window.DATOS_LUNA.length > 0) {
-    window.DATOS_LUNA.forEach((lunarCard) => {
-      baseReversed[lunarCard.id] = Object.assign({}, baseReversed[lunarCard.id] || {}, lunarCard);
+    const rawMinors = typeof MINOR_ARCANA !== 'undefined' ? MINOR_ARCANA : (window.MINOR_ARCANA || []);
+    const nextMinors = rawMinors.map((card) => {
+      const rootElem = extractRootElement(card.correspondences && card.correspondences.element);
+      return {
+        ...card,
+        id: String(card.id),
+        slug: crearSlug(card.name),
+        type: 'minor',
+        arcanaType: 'minor',
+        rootElement: rootElem,
+        reversed: card.reversed || {
+          yesNo: 'No / Bloqueo temporal',
+          meaning: "En polaridad invertida (Sombra), " + card.name + " señala: " + card.lightAndShadow,
+          lightAndShadow: card.lightAndShadow,
+          domains: card.domains,
+          counsel: card.counsel
+        },
+        seo: {
+          title: card.name + " Tarot (" + card.suitName + "): Significado en el Amor, Dinero y Consejos",
+          description: String(card.meaning || '').slice(0, 155) + '...'
+        }
+      };
     });
+
+    mayoresNormalizados.splice(0, mayoresNormalizados.length, ...nextMajors);
+    menoresNormalizados.splice(0, menoresNormalizados.length, ...nextMinors);
+    TODAS_LAS_78_CARTAS.splice(0, TODAS_LAS_78_CARTAS.length, ...nextMajors, ...nextMinors);
+    if (window.TAROT_DB && typeof SUITS_META !== 'undefined') {
+      window.TAROT_DB.suitsMeta = SUITS_META;
+    }
+    return TODAS_LAS_78_CARTAS.length;
   }
-  window.REVERSED_DATA = baseReversed;
 
-  // 2. Normalizar los 22 Arcanos Mayores
-  const mayoresNormalizados = baseMajors.map((card) => {
-    const rev = baseReversed[card.id] || null;
-    const rootElem = extractRootElement(card.correspondences && card.correspondences.element);
-    return {
-      ...card,
-      id: String(card.id),
-      slug: crearSlug(card.name),
-      type: 'major',
-      arcanaType: 'major',
-      suit: null,
-      suitName: 'Arcanos Mayores',
-      rootElement: rootElem,
-      reversed: rev || {
-        yesNo: 'Incierto (energía bloqueada)',
-        meaning: card.lightAndShadow,
-        lightAndShadow: card.lightAndShadow,
-        domains: card.domains,
-        counsel: card.counsel
-      },
-      seo: {
-        title: card.name + " (" + card.numeral + ") en el Tarot: Significado en el Amor, Trabajo y Sombra",
-        description: String(card.meaning || '').slice(0, 155) + '...'
-      }
-    };
-  });
-
-  // 3. Normalizar los 56 Arcanos Menores
-  const rawMinors = typeof MINOR_ARCANA !== 'undefined' ? MINOR_ARCANA : (window.MINOR_ARCANA || []);
-  const menoresNormalizados = rawMinors.map((card) => {
-    const rootElem = extractRootElement(card.correspondences && card.correspondences.element);
-    return {
-      ...card,
-      id: String(card.id),
-      slug: crearSlug(card.name),
-      type: 'minor',
-      arcanaType: 'minor',
-      rootElement: rootElem,
-      reversed: card.reversed || {
-        yesNo: 'No / Bloqueo temporal',
-        meaning: "En polaridad invertida (Sombra), " + card.name + " señala: " + card.lightAndShadow,
-        lightAndShadow: card.lightAndShadow,
-        domains: card.domains,
-        counsel: card.counsel
-      },
-      seo: {
-        title: card.name + " Tarot (" + card.suitName + "): Significado en el Amor, Dinero y Consejos",
-        description: String(card.meaning || '').slice(0, 155) + '...'
-      }
-    };
-  });
-
-  const TODAS_LAS_78_CARTAS = [...mayoresNormalizados, ...menoresNormalizados];
+  syncExtendedData();
 
   function getCardByQuery(query) {
     if (query === null || query === undefined || query === '') return null;
@@ -420,7 +432,8 @@
     resolveCardAtOctave,
     getGrimoireStats,
     sealPsychomagicAct,
-    isPsychomagicActSealed
+    isPsychomagicActSealed,
+    syncExtendedData
   };
 
   window.TarotRouter = {

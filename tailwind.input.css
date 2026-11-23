@@ -2,5 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
-.font-cinzel { font-family: 'Cinzel', serif; }
-.font-cinzel-dec { font-family: 'Cinzel Decorative', serif; }
+@font-face {
+  font-family: 'Cormorant Fallback';
+  src: local('Georgia'), local('Times New Roman');
+  ascent-override: 88%;
+  descent-override: 26%;
+  line-gap-override: 0%;
+  size-adjust: 102%;
+}
+
+.font-cinzel { font-family: 'Cinzel', Georgia, serif; }
+.font-cinzel-dec { font-family: 'Cinzel Decorative', Georgia, serif; }

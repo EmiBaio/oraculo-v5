@@ -57,6 +57,15 @@ function copyTextSafe(text) {
   return Promise.resolve(false);
 }
 
+// Garantiza la carga del bundle extendido (12 volúmenes + 22 dioramas + Trina + Sí/No)
+// En desarrollo local (file:///) resuelve de inmediato; en producción dispara o espera grimorio.bundle.min.js.
+function ensureGrimorioLoaded() {
+  if (typeof window !== 'undefined' && typeof window.__veloEnsureGrimorio === 'function') {
+    return window.__veloEnsureGrimorio();
+  }
+  return Promise.resolve(true);
+}
+
 // Helper universal para resolver una carta en Luz o en Sombra con todo el Grimorio
 function resolvePolymorphicCard(card, isReversed, recordDraw) {
   if (!card) return null;
@@ -793,9 +802,11 @@ function TarotSpreadApp() {
   const openGrimoire = useCallback((tab = 'codice') => {
     sound?.init?.();
     sound?.playHarpNote?.(3);
-    refreshGrimoireUi();
-    setGrimoireTab(tab);
-    setGrimoireOpen(true);
+    ensureGrimorioLoaded().then(() => {
+      refreshGrimoireUi();
+      setGrimoireTab(tab);
+      setGrimoireOpen(true);
+    });
   }, [refreshGrimoireUi]);
 
   const [hoveredSpreadIdx, setHoveredSpreadIdx] = useState(null);
@@ -815,14 +826,11 @@ function TarotSpreadApp() {
     const isMobileDevice = window.innerWidth < 768;
     const detected = (memory <= 4 || cores <= 4) ? 'LOW' : (isMobileDevice || memory <= 6) ? 'MEDIUM' : 'ULTRA';
     setQuality(detected);
-    if (window.prewarmCardBackSprite) {
-      window.prewarmCardBackSprite(detected);
-    }
     try {
       const params = new URLSearchParams(window.location.search);
       if (params.get('modo') === 'sino' && window.SiNoSpreadEngine) {
         if (params.get('tipo') === '3' || params.get('tipo') === 'trina') setSinoSubMode('triad');
-        setSinoSetupOpen(true);
+        ensureGrimorioLoaded().then(() => { setSinoSetupOpen(true); });
       }
     } catch (e) {}
   }, []);
@@ -867,6 +875,8 @@ function TarotSpreadApp() {
 
   // --- Tirada Clásica (1 Carta) ---
   const handleStartShuffle = useCallback(() => {
+    ensureGrimorioLoaded();
+    window.prewarmCardBackSprite?.(quality);
     clearManagedTimers();
     cancelRef.current?.();
     stopRumble();
@@ -899,7 +909,7 @@ function TarotSpreadApp() {
       sound?.playHarpNote(3);
       setPhase('SPREAD');
     }, 2550));
-  }, [CARTAS_DISPONIBLES, clearManagedTimers, stopRumble]);
+  }, [CARTAS_DISPONIBLES, clearManagedTimers, stopRumble, quality]);
 
   // --- Tirada Trina ("El Hilo de las Tres Lunas") ---
   const runTrinaShuffleAct = useCallback((actIndex, alreadyPicked) => {
@@ -934,6 +944,8 @@ function TarotSpreadApp() {
   }, [CARTAS_DISPONIBLES, clearManagedTimers]);
 
   const handleStartTrina = useCallback(() => {
+    ensureGrimorioLoaded();
+    window.prewarmCardBackSprite?.(quality);
     clearManagedTimers();
     cancelRef.current?.();
     stopRumble();
@@ -949,14 +961,17 @@ function TarotSpreadApp() {
     setSinoSetupOpen(false);
     setBurst(0);
     runTrinaShuffleAct(0, []);
-  }, [clearManagedTimers, runTrinaShuffleAct, stopRumble]);
+  }, [clearManagedTimers, runTrinaShuffleAct, stopRumble, quality]);
 
   // --- Tirada La Balanza Sí o No (1 Carta o 3 Cartas) ---
   const openSiNoSetup = useCallback(() => {
     sound?.init?.();
     sound?.playHarpNote?.(3);
-    setSinoSetupOpen(true);
-  }, []);
+    window.prewarmCardBackSprite?.(quality);
+    ensureGrimorioLoaded().then(() => {
+      setSinoSetupOpen(true);
+    });
+  }, [quality]);
 
   const runSiNoShuffleAct = useCallback((subModeArg, actIndex, alreadyPicked) => {
     clearManagedTimers();
@@ -991,6 +1006,8 @@ function TarotSpreadApp() {
   }, [CARTAS_DISPONIBLES, clearManagedTimers]);
 
   const handleStartSiNo = useCallback(({ subMode, domain, question }) => {
+    ensureGrimorioLoaded();
+    window.prewarmCardBackSprite?.(quality);
     clearManagedTimers();
     cancelRef.current?.();
     stopRumble();
@@ -1013,12 +1030,20 @@ function TarotSpreadApp() {
     setRevealedCard(null);
     setBurst(0);
     runSiNoShuffleAct(chosenSub, 0, []);
-  }, [clearManagedTimers, runSiNoShuffleAct, stopRumble]);
+  }, [clearManagedTimers, runSiNoShuffleAct, stopRumble, quality]);
 
   const handleSelect = useCallback((card, index, e) => {
     if (phase !== 'SPREAD' || selectionLockRef.current) return;
     if (spreadMode === 'trina' && trinaPickingIdx !== null) return;
     if (spreadMode === 'sino' && sinoPickingIdx !== null) return;
+    if (typeof window.__veloEnsureGrimorio === 'function' && !window.__veloGrimorioReady) {
+      selectionLockRef.current = true;
+      window.__veloEnsureGrimorio().then(() => {
+        selectionLockRef.current = false;
+        handleSelect(card, index, e);
+      });
+      return;
+    }
     selectionLockRef.current = true;
 
     if (spreadMode === 'sino') {

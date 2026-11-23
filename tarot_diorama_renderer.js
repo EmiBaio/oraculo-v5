@@ -170,33 +170,30 @@ function useCardBackSpriteUrl(quality) {
     }
     const handler = function (nextUrl) { setUrl(nextUrl); };
     spriteListeners.add(handler);
-    prewarmCardBackSprite(quality);
     return function () { spriteListeners.delete(handler); };
   }, [quality]);
 
   return url;
 }
 
-// Componente de Dorso Pre-Horneado: 1 sola textura GPU (cero filtros SVG en tiempo real)
+// Componente de Dorso Pre-Horneado: arranca con SVG data-URI instantáneo (0 retraso de LCP)
+// y cambia a textura PNG en GPU apenas el usuario inicia la interacción o el barajado.
 const CardBackSprite = memo(function CardBackSprite({ quality = "HIGH", className = "" }) {
   const src = useCardBackSpriteUrl(quality);
   return (
     <img
       src={src}
+      width="512"
+      height="768"
       alt=""
       aria-hidden="true"
       draggable={false}
-      decoding="async"
+      decoding="sync"
       className={"block w-full h-full object-contain pointer-events-none select-none " + className}
       style={{ backfaceVisibility: "hidden", transform: "translateZ(0)" }}
     />
   );
 });
-
-// Pre-calentar la textura del dorso inmediatamente al cargar el módulo
-if (typeof window !== "undefined") {
-  setTimeout(function () { prewarmCardBackSprite("HIGH"); }, 0);
-}
 
 // --- 1. DEFINICIONES VECTORIALES DE LAS CARTAS REVELADAS (CERO FILTROS BORROSOS) ---
 const SharedArtDefs = memo(function SharedArtDefs() {
