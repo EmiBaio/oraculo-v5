@@ -1,6 +1,7 @@
 // ============================================================================
 // ARCHIVO: grimorio_personal.js
 // Grimorio Personal del Consultante: Índice Códice (22 Arcanos) + Talismanes + Diario
+// Soporta Arcano Único, El Hilo de las Tres Lunas (Trina) y La Balanza Sí o No
 // Integrado con localStorage de motor_tarot.js y protocolo local file:/// (Babel aislado)
 // ============================================================================
 
@@ -124,12 +125,20 @@ function recordReading(payload) {
   const data = safeReadJson(DIARY_KEY, { entries: [] });
   const entries = Array.isArray(data.entries) ? data.entries : [];
 
+  const normalizedType = payload.type === "trina" ? "trina" : payload.type === "sino" ? "sino" : "single";
   const now = Date.now();
   const entry = {
     id: "lectura_" + now + "_" + Math.floor(Math.random() * 10000),
-    type: payload.type === "trina" ? "trina" : "single",
+    type: normalizedType,
     timestamp: now,
     cards: payload.cards.map(function (c, idx) {
+      let defaultPos = "Arcano del Día";
+      if (normalizedType === "trina") defaultPos = ["Pasado", "Presente", "Futuro"][idx] || "Arcano";
+      if (normalizedType === "sino") {
+        defaultPos = payload.cards.length >= 3
+          ? (["El Impulso", "El Fiel", "El Desenlace"][idx] || "Balanza")
+          : "Pulso Sí o No";
+      }
       return {
         id: String(c.id),
         name: c.name || ("Arcano " + c.id),
@@ -137,13 +146,19 @@ function recordReading(payload) {
         subtitle: c.subtitle || "",
         isReversed: Boolean(c.isReversed),
         element: resolveCardElement(c),
-        positionLabel: c.positionLabel || (payload.type === "trina" ? ["Pasado", "Presente", "Futuro"][idx] : "Arcano del Día")
+        positionLabel: c.positionLabel || defaultPos
       };
     }),
     summary: payload.summary || "",
     arcTitle: payload.arcTitle || "",
     arcBadge: payload.arcBadge || "",
     closingAdvice: payload.closingAdvice || "",
+    question: payload.question || "",
+    domain: payload.domain || "",
+    domainLabel: payload.domainLabel || "",
+    verdictCode: payload.verdictCode || "",
+    verdictLabel: payload.verdictLabel || "",
+    sinoMode: payload.sinoMode || (normalizedType === "sino" ? (payload.cards.length >= 3 ? "triad" : "single") : ""),
     note: ""
   };
 
@@ -353,8 +368,16 @@ const ELEMENT_BADGE_STYLES = {
   Tierra: "bg-emerald-500/15 border-emerald-400/40 text-emerald-200"
 };
 
+const SINO_VERDICT_BADGES = {
+  YES_STRONG: "bg-emerald-500/20 border-emerald-400/60 text-emerald-200",
+  YES_CONDITIONAL: "bg-amber-500/20 border-amber-400/60 text-amber-200",
+  VEILED: "bg-purple-500/20 border-purple-400/60 text-purple-200",
+  NO_YET: "bg-indigo-500/20 border-indigo-400/60 text-indigo-200",
+  NO_STRONG: "bg-rose-500/20 border-rose-400/60 text-rose-200"
+};
+
 // ============================================================================
-// 3. MODAL PRINCIPAL DEL GRIMORIO PERSONAL (CERO backdrop-blur PESADO, 0 CLS)
+// 3. MODAL PRINCIPAL DEL GRIMORIO PERSONAL (CERO FILTROS PESADOS, 0 CLS)
 // ============================================================================
 const GrimorioModal = memo(function GrimorioModal({
   isOpen,
@@ -368,11 +391,11 @@ const GrimorioModal = memo(function GrimorioModal({
 
   // Filtros del Códice (22 Arcanos)
   const [searchQuery, setSearchQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState("all"); // 'all' | 'unlocked' | 'locked'
-  const [elementFilter, setElementFilter] = useState("all"); // 'all' | 'Fuego' | 'Agua' | 'Aire' | 'Tierra'
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [elementFilter, setElementFilter] = useState("all");
 
-  // Filtros y edición del Diario
-  const [diaryFilter, setDiaryFilter] = useState("all"); // 'all' | 'trina' | 'single'
+  // Filtros y edición del Diario ('all' | 'trina' | 'sino' | 'single')
+  const [diaryFilter, setDiaryFilter] = useState("all");
   const [editingNoteId, setEditingNoteId] = useState(null);
   const [noteDraft, setNoteDraft] = useState("");
   const [copiedKey, setCopiedKey] = useState(null);
@@ -391,7 +414,6 @@ const GrimorioModal = memo(function GrimorioModal({
     }
   }, [isOpen, initialTab]);
 
-  // Cerrar con tecla Escape
   useEffect(function () {
     if (!isOpen) return undefined;
     const onKey = function (e) {
@@ -478,14 +500,21 @@ const GrimorioModal = memo(function GrimorioModal({
   }, [editingNoteId, triggerRefresh]);
 
   const handleCopyReading = useCallback(function (entry) {
-    const lines = [
-      entry.type === "trina"
-        ? "✦ EL HILO DE LAS TRES LUNAS • " + formatArgentineDate(entry.timestamp) + " ✦"
-        : "✦ LECTURA DEL ORÁCULO • " + formatArgentineDate(entry.timestamp) + " ✦",
-      ""
-    ];
+    let header = "✦ LECTURA DEL ORÁCULO • " + formatArgentineDate(entry.timestamp) + " ✦";
+    if (entry.type === "trina") header = "✦ EL HILO DE LAS TRES LUNAS • " + formatArgentineDate(entry.timestamp) + " ✦";
+    if (entry.type === "sino") header = "♎ LA BALANZA SÍ O NO • " + formatArgentineDate(entry.timestamp) + " ✦";
+
+    const lines = [header, ""];
+    if (entry.question) {
+      lines.push("Pregunta: “" + entry.question + "”");
+    }
+    if (entry.verdictLabel) {
+      lines.push("Veredicto: " + entry.verdictLabel + (entry.domainLabel ? (" (" + entry.domainLabel + ")") : ""));
+    }
     (entry.cards || []).forEach(function (c, i) {
-      const prefix = entry.type === "trina" ? (["I. PASADO", "II. PRESENTE", "III. FUTURO"][i] + " — ") : "";
+      let prefix = "";
+      if (entry.type === "trina") prefix = ["I. PASADO", "II. PRESENTE", "III. FUTURO"][i] + " • ";
+      else if (entry.type === "sino" && (entry.cards || []).length >= 3) prefix = ["I. IMPULSO", "II. FIEL", "III. DESENLACE"][i] + " • ";
       lines.push(prefix + c.name + (c.isReversed ? " (En Sombra)" : " (En Luz)"));
     });
     if (entry.arcTitle) {
@@ -618,12 +647,9 @@ const GrimorioModal = memo(function GrimorioModal({
 
             {/* CUERPO SCROLLEABLE */}
             <div className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-5 space-y-5" style={{ WebkitOverflowScrolling: "touch" }}>
-              {/* ==========================================================
-                  PESTAÑA I: ÍNDICE DEL CÓDICE (LOS 22 ARCANOS MAYORES)
-                  ========================================================== */}
+              {/* PESTAÑA I: ÍNDICE DEL CÓDICE */}
               {activeTab === "codice" && (
                 <div className="space-y-4">
-                  {/* Buscador y Filtros */}
                   <div className="flex flex-col md:flex-row gap-2.5 items-stretch md:items-center justify-between">
                     <div className="relative flex-1">
                       <SearchIcon className="w-4 h-4 text-amber-400/75 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
@@ -662,7 +688,6 @@ const GrimorioModal = memo(function GrimorioModal({
                     </div>
                   </div>
 
-                  {/* Filtro Elemental */}
                   <div className="flex flex-wrap items-center gap-1.5">
                     <span style={{ fontFamily: "'Cinzel', serif" }} className="text-[10px] uppercase tracking-widest text-purple-300/80 mr-1">
                       Elemento:
@@ -687,7 +712,6 @@ const GrimorioModal = memo(function GrimorioModal({
                     })}
                   </div>
 
-                  {/* Grilla de los 22 Arcanos */}
                   {filteredArcana.length === 0 ? (
                     <div className="p-8 rounded-2xl bg-white/[0.02] border border-white/10 text-center text-amber-200/75 italic">
                       Ningún arcano coincide con ese filtro. Probá limpiando la búsqueda.
@@ -765,7 +789,6 @@ const GrimorioModal = memo(function GrimorioModal({
                               </div>
                             </div>
 
-                            {/* Enlaces directos SEO al Códice (carta.html) */}
                             <div className="flex items-center gap-1.5 pt-2 border-t border-white/10">
                               <a
                                 href={"carta.html?arcano=" + item.id}
@@ -798,9 +821,7 @@ const GrimorioModal = memo(function GrimorioModal({
                 </div>
               )}
 
-              {/* ==========================================================
-                  PESTAÑA II: TALISMANES Y ACTOS DE PSICOMAGIA SELLADOS
-                  ========================================================== */}
+              {/* PESTAÑA II: TALISMANES SELLADOS */}
               {activeTab === "seals" && (
                 <div className="space-y-4">
                   {snapshot.seals.length === 0 ? (
@@ -810,7 +831,7 @@ const GrimorioModal = memo(function GrimorioModal({
                         Tu Altar de Talismanes está en silencio
                       </h3>
                       <p className="text-sm sm:text-base text-purple-200/80 max-w-lg mx-auto italic">
-                        Cuando reveles una carta y entres en la pestaña <strong>Psicomagia</strong>, tocá <em>“Sellar Compromiso y Copiar Talismán”</em> para guardar acá tus mantras y decretos activos.
+                        Cuando reveles una carta y selles su decreto en <strong>Psicomagia</strong> o en <strong>La Balanza Sí o No</strong>, tus mantras y compromisos activos quedarán guardados acá.
                       </p>
                     </div>
                   ) : (
@@ -916,16 +937,15 @@ const GrimorioModal = memo(function GrimorioModal({
                 </div>
               )}
 
-              {/* ==========================================================
-                  PESTAÑA III: DIARIO DEL CONSULTANTE (HISTORIAL DE TIRADAS)
-                  ========================================================== */}
+              {/* PESTAÑA III: DIARIO DEL CONSULTANTE */}
               {activeTab === "diary" && (
                 <div className="space-y-4">
                   <div className="flex flex-wrap items-center justify-between gap-2">
-                    <div className="flex items-center gap-1.5">
+                    <div className="flex flex-wrap items-center gap-1.5">
                       {[
                         { id: "all", label: "Todas (" + snapshot.readings.length + ")" },
-                        { id: "trina", label: "Tres Lunas (Trina)" },
+                        { id: "sino", label: "Sí o No" },
+                        { id: "trina", label: "Tres Lunas" },
                         { id: "single", label: "Arcano Único" }
                       ].map(function (f) {
                         const sel = diaryFilter === f.id;
@@ -957,22 +977,27 @@ const GrimorioModal = memo(function GrimorioModal({
                         Aún no hay crónicas registradas
                       </h3>
                       <p className="text-sm sm:text-base text-purple-200/80 max-w-lg mx-auto italic">
-                        Cada tirada clásica o de <strong>El Hilo de las Tres Lunas</strong> quedará asentada aquí para que puedas volver a leerla, añadir tus notas personales o revivirla en el altar.
+                        Cada tirada clásica, consulta de <strong>La Balanza Sí o No</strong> o crónica de <strong>El Hilo de las Tres Lunas</strong> quedará asentada aquí para que puedas volver a leerla, añadir tus notas personales o revivirla en el altar.
                       </p>
                     </div>
                   ) : (
                     <div className="space-y-3.5">
                       {filteredReadings.map(function (entry) {
                         const isTrina = entry.type === "trina";
+                        const isSiNo = entry.type === "sino";
+                        const isThreeCards = (entry.cards || []).length >= 3;
                         const isEditing = editingNoteId === entry.id;
                         const isCopied = copiedKey === "reading_" + entry.id;
+                        const verdictCls = SINO_VERDICT_BADGES[entry.verdictCode] || "bg-emerald-500/20 border-emerald-400/50 text-emerald-200";
 
                         return (
                           <article
                             key={entry.id}
                             className={
                               "rounded-2xl border p-4 sm:p-5 space-y-3.5 " +
-                              (isTrina
+                              (isSiNo
+                                ? "bg-gradient-to-r from-[#081b18] via-[#0c0817] to-[#081b18] border-emerald-400/45"
+                                : isTrina
                                 ? "bg-gradient-to-r from-[#160b29] via-[#0c0617] to-[#160b29] border-purple-400/55"
                                 : "bg-[#0d0718] border-amber-500/40")
                             }
@@ -983,14 +1008,26 @@ const GrimorioModal = memo(function GrimorioModal({
                                   style={{ fontFamily: "'Cinzel', serif" }}
                                   className={
                                     "px-2.5 py-0.5 rounded-full text-[10px] uppercase tracking-wider font-bold border " +
-                                    (isTrina
+                                    (isSiNo
+                                      ? "bg-emerald-500/15 border-emerald-400/55 text-emerald-200"
+                                      : isTrina
                                       ? "bg-purple-500/20 border-purple-300/55 text-purple-200"
                                       : "bg-amber-500/15 border-amber-400/50 text-amber-200")
                                   }
                                 >
-                                  {isTrina ? "☽ El Hilo de las Tres Lunas" : "☉ Arcano Único"}
+                                  {isSiNo ? "♎ Balanza Sí o No" : isTrina ? "☽ El Hilo de las Tres Lunas" : "☉ Arcano Único"}
                                 </span>
-                                {entry.arcTitle && (
+                                {isSiNo && entry.verdictLabel && (
+                                  <span style={{ fontFamily: "'Cinzel', serif" }} className={"px-2.5 py-0.5 rounded-full text-[10px] uppercase tracking-wider font-bold border " + verdictCls}>
+                                    {entry.verdictLabel}
+                                  </span>
+                                )}
+                                {isSiNo && entry.domainLabel && (
+                                  <span className="px-2 py-0.5 rounded-full text-[10px] bg-white/[0.05] border border-white/15 text-amber-100/80">
+                                    {entry.domainLabel}
+                                  </span>
+                                )}
+                                {!isSiNo && entry.arcTitle && (
                                   <span style={{ fontFamily: "'Cinzel Decorative', serif" }} className="text-sm sm:text-base font-bold text-amber-200">
                                     {entry.arcTitle}
                                   </span>
@@ -1001,8 +1038,14 @@ const GrimorioModal = memo(function GrimorioModal({
                               </span>
                             </div>
 
+                            {entry.question && (
+                              <p className="text-sm sm:text-base text-purple-100/95 font-semibold italic">
+                                Pregunta: “{entry.question}”
+                              </p>
+                            )}
+
                             {/* Cartas de la lectura */}
-                            <div className={"grid gap-2 " + (isTrina ? "grid-cols-1 sm:grid-cols-3" : "grid-cols-1")}>
+                            <div className={"grid gap-2 " + (isThreeCards ? "grid-cols-1 sm:grid-cols-3" : "grid-cols-1")}>
                               {(entry.cards || []).map(function (c, idx) {
                                 return (
                                   <div
@@ -1034,14 +1077,12 @@ const GrimorioModal = memo(function GrimorioModal({
                               })}
                             </div>
 
-                            {/* Síntesis o Voz */}
                             {entry.summary && (
                               <p className="text-sm sm:text-base italic text-amber-100/90 leading-relaxed bg-black/30 p-3 rounded-xl border border-white/10">
                                 “{entry.summary}”
                               </p>
                             )}
 
-                            {/* Nota personal del consultante */}
                             {isEditing ? (
                               <div className="space-y-2">
                                 <textarea
@@ -1065,7 +1106,7 @@ const GrimorioModal = memo(function GrimorioModal({
                                     type="button"
                                     onClick={function () { setEditingNoteId(null); setNoteDraft(""); }}
                                     style={{ fontFamily: "'Cinzel', serif" }}
-                                    className="px-3 py-1.5 rounded-lg bg-white/[0.05] text-amber-200/80 text-[10px] uppercase tracking-wider cursor-pointer hover:bg-white/10"
+                                    className="px-3.5 py-1.5 rounded-lg bg-white/[0.05] text-amber-200/80 text-[10px] uppercase tracking-wider cursor-pointer hover:bg-white/10"
                                   >
                                     Cancelar
                                   </button>
@@ -1079,7 +1120,6 @@ const GrimorioModal = memo(function GrimorioModal({
                               )
                             )}
 
-                            {/* Acciones de la entrada */}
                             <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-white/10">
                               <div className="flex flex-wrap items-center gap-1.5">
                                 {onReopenReading && (
@@ -1157,7 +1197,7 @@ window.GrimorioModal = GrimorioModal;
     const wrapped = "(function() {\n" + GRIMORIO_PERSONAL_SOURCE + "\n})();";
     const compiled = Babel.transform(wrapped, { presets: [["react", { runtime: "classic" }]] }).code;
     (0, eval)(compiled);
-    console.log("%c✦ Grimorio Personal y Diario del Consultante compilados y activos.", "color: #fde047; font-weight: bold;");
+    console.log("%c✦ Grimorio Personal y Diario del Consultante (con Sí o No) compilados y activos.", "color: #fde047; font-weight: bold;");
   } else {
     console.error("Babel no está cargado antes de grimorio_personal.js");
   }

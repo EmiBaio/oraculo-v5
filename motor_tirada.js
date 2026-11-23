@@ -28,6 +28,7 @@ const Flame = ({ className }) => (<svg className={className} viewBox="0 0 24 24"
 const Compass = ({ className }) => (<svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>);
 const CheckCircle2 = ({ className }) => (<svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>);
 const BookOpen = ({ className }) => (<svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>);
+const ScaleIcon = ({ className }) => (<svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg>);
 
 const T = { CHARGE: 1220, DIP: 110, SETTLE: 1600 };
 const EASE_OUT_EXPO = [0.16, 1, 0.3, 1];
@@ -636,12 +637,15 @@ const RevealStage = memo(function RevealStage({ phase, burst, origin, spreadMode
 // ============================================================================
 // CAJA DE DIÁLOGO CON CERO LAYOUT SHIFTS (TEXTO PRE-RESERVADO + ALTURA FIJA)
 // ============================================================================
-const OracleDialogueBox = memo(function OracleDialogueBox({ phase, revealedCard, spreadMode, trinaAct, trinaCards }) {
+const OracleDialogueBox = memo(function OracleDialogueBox({ phase, revealedCard, spreadMode, trinaAct, trinaCards, sinoSubMode, sinoAct, sinoDomain }) {
   const [typedCount, setTypedCount] = useState(0);
   const reduceMotion = useReducedMotion();
   const isHidden = phase === 'CRACKING' || phase === 'REVEAL';
 
   const oracleDialogue = useMemo(() => {
+    if (spreadMode === 'sino' && phase !== 'IDLE' && window.SiNoSpreadEngine?.getSiNoDialogue) {
+      return window.SiNoSpreadEngine.getSiNoDialogue(phase, sinoSubMode, sinoAct, sinoDomain);
+    }
     if (spreadMode === 'trina' && phase !== 'IDLE' && window.TrinaSpreadEngine?.getTrinaDialogue) {
       return window.TrinaSpreadEngine.getTrinaDialogue(phase, trinaAct, trinaCards);
     }
@@ -653,15 +657,22 @@ const OracleDialogueBox = memo(function OracleDialogueBox({ phase, revealedCard,
       case 'REVEAL': return revealedCard ? ("Ha despertado " + revealedCard.name + (revealedCard.isReversed ? " en Sombra" : " en Luz") + ". Explorá los nodos estelares dentro de la reliquia.") : '';
       default: return '';
     }
-  }, [phase, revealedCard, spreadMode, trinaAct, trinaCards]);
+  }, [phase, revealedCard, spreadMode, trinaAct, trinaCards, sinoSubMode, sinoAct, sinoDomain]);
 
   const actBadge = useMemo(() => {
+    if (spreadMode === 'sino' && phase !== 'IDLE') {
+      if (sinoSubMode === 'triad' && window.SiNoSpreadEngine?.SINO_SLOTS) {
+        const slot = window.SiNoSpreadEngine.SINO_SLOTS[sinoAct];
+        if (slot) return "Balanza " + slot.numeral + " • " + slot.name;
+      }
+      return "Balanza Sí o No";
+    }
     if (spreadMode === 'trina' && phase !== 'IDLE' && window.TrinaSpreadEngine?.ACT_LABELS) {
       const info = window.TrinaSpreadEngine.ACT_LABELS[trinaAct];
       if (info) return "Acto " + info.numeral + " • " + info.name;
     }
     return "Fase: " + phase;
-  }, [spreadMode, phase, trinaAct]);
+  }, [spreadMode, phase, trinaAct, sinoSubMode, sinoAct]);
 
   useEffect(() => {
     if (isHidden) {
@@ -738,6 +749,15 @@ function TarotSpreadApp() {
   const [trinaCards, setTrinaCards] = useState([]);
   const [trinaPickingIdx, setTrinaPickingIdx] = useState(null);
 
+  const [sinoSetupOpen, setSinoSetupOpen] = useState(false);
+  const [sinoSubMode, setSinoSubMode] = useState('single');
+  const [sinoDomain, setSinoDomain] = useState('general');
+  const [sinoQuestion, setSinoQuestion] = useState('');
+  const [sinoAct, setSinoAct] = useState(0);
+  const [sinoCards, setSinoCards] = useState([]);
+  const [sinoPickingIdx, setSinoPickingIdx] = useState(null);
+  const [sinoResult, setSinoResult] = useState(null);
+
   const [deckMode] = useState('majors');
   const CARTAS_DISPONIBLES = useMemo(() => {
     if (deckMode === 'all' && window.TAROT_DB?.getAllCards) {
@@ -798,6 +818,13 @@ function TarotSpreadApp() {
     if (window.prewarmCardBackSprite) {
       window.prewarmCardBackSprite(detected);
     }
+    try {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('modo') === 'sino' && window.SiNoSpreadEngine) {
+        if (params.get('tipo') === '3' || params.get('tipo') === 'trina') setSinoSubMode('triad');
+        setSinoSetupOpen(true);
+      }
+    } catch (e) {}
   }, []);
 
   const isUltra = quality === 'ULTRA';
@@ -850,6 +877,11 @@ function TarotSpreadApp() {
     setTrinaAct(0);
     setTrinaCards([]);
     setTrinaPickingIdx(null);
+    setSinoAct(0);
+    setSinoCards([]);
+    setSinoPickingIdx(null);
+    setSinoResult(null);
+    setSinoSetupOpen(false);
     setSelectedIdx(null);
 
     sound?.init(); sound?.playHeavyCardThud(1); setPhase('SHUFFLING');
@@ -913,14 +945,212 @@ function TarotSpreadApp() {
     setTrinaPickingIdx(null);
     setSelectedIdx(null);
     setRevealedCard(null);
+    setSinoResult(null);
+    setSinoSetupOpen(false);
     setBurst(0);
     runTrinaShuffleAct(0, []);
   }, [clearManagedTimers, runTrinaShuffleAct, stopRumble]);
 
+  // --- Tirada La Balanza Sí o No (1 Carta o 3 Cartas) ---
+  const openSiNoSetup = useCallback(() => {
+    sound?.init?.();
+    sound?.playHarpNote?.(3);
+    setSinoSetupOpen(true);
+  }, []);
+
+  const runSiNoShuffleAct = useCallback((subModeArg, actIndex, alreadyPicked) => {
+    clearManagedTimers();
+    selectionLockRef.current = false;
+    setSinoAct(actIndex);
+    setHoveredSpreadIdx(null);
+    setSinoPickingIdx(null);
+    setPhase('SHUFFLING');
+
+    if (window.SiNoSpreadEngine?.playSiNoShuffleAudio) {
+      const audioTimers = window.SiNoSpreadEngine.playSiNoShuffleAudio(subModeArg, actIndex) || [];
+      timersRef.current.push(...audioTimers);
+    } else {
+      sound?.init?.(); sound?.playHeavyCardThud?.(0.95);
+    }
+
+    const usedIds = new Set((alreadyPicked || []).map((c) => String(c.id)));
+    const shuffleDurationMs = subModeArg === 'triad' ? 1180 : 1220;
+    timersRef.current.push(setTimeout(() => {
+      const remainingPool = CARTAS_DISPONIBLES.filter((c) => !usedIds.has(String(c.id)));
+      const fanSource = remainingPool.length >= 7 ? remainingPool : CARTAS_DISPONIBLES;
+      setDeck(
+        [...fanSource]
+          .sort(() => Math.random() - 0.5)
+          .slice(0, 7)
+          .map((card) => ({ ...card, isReversed: Math.random() < 0.5 }))
+      );
+      selectionLockRef.current = false;
+      sound?.playHarpNote?.(3 + actIndex);
+      setPhase('SPREAD');
+    }, shuffleDurationMs));
+  }, [CARTAS_DISPONIBLES, clearManagedTimers]);
+
+  const handleStartSiNo = useCallback(({ subMode, domain, question }) => {
+    clearManagedTimers();
+    cancelRef.current?.();
+    stopRumble();
+    particles.current?.stopCharge();
+    selectionLockRef.current = false;
+
+    const chosenSub = subMode === 'triad' ? 'triad' : 'single';
+    const chosenDom = domain || 'general';
+    const chosenQ = String(question || '').trim();
+
+    setSinoSetupOpen(false);
+    setSpreadMode('sino');
+    setSinoSubMode(chosenSub);
+    setSinoDomain(chosenDom);
+    setSinoQuestion(chosenQ);
+    setSinoCards([]);
+    setSinoPickingIdx(null);
+    setSinoResult(null);
+    setSelectedIdx(null);
+    setRevealedCard(null);
+    setBurst(0);
+    runSiNoShuffleAct(chosenSub, 0, []);
+  }, [clearManagedTimers, runSiNoShuffleAct, stopRumble]);
+
   const handleSelect = useCallback((card, index, e) => {
     if (phase !== 'SPREAD' || selectionLockRef.current) return;
     if (spreadMode === 'trina' && trinaPickingIdx !== null) return;
+    if (spreadMode === 'sino' && sinoPickingIdx !== null) return;
     selectionLockRef.current = true;
+
+    if (spreadMode === 'sino') {
+      const livingCard = resolvePolymorphicCard(card, card.isReversed, true);
+      if (window.TAROT_DB?.getGrimoireStats) {
+        setGrimoireStats(window.TAROT_DB.getGrimoireStats());
+      }
+
+      if (sinoSubMode === 'triad') {
+        const nextPicked = [...sinoCards, livingCard];
+        if (sinoAct < 2) {
+          setSinoPickingIdx(index);
+          setHoveredSpreadIdx(null);
+          setOracleReaction((count) => count + 1);
+          sound?.playSkyrimNodeChime?.(sinoAct);
+          sound?.playHeavyCardThud?.(1.05);
+
+          if (e && e.currentTarget) {
+            const r = e.currentTarget.getBoundingClientRect();
+            particles.current?.burst({ x: r.left + r.width / 2, y: r.top + r.height / 2, w: 90, h: 120 });
+          }
+
+          timersRef.current.push(setTimeout(() => {
+            setSinoCards(nextPicked);
+            setSinoPickingIdx(null);
+            runSiNoShuffleAct('triad', sinoAct + 1, nextPicked);
+          }, 520));
+          return;
+        }
+
+        const evalRes = window.SiNoOracleEngine?.evaluateTriad
+          ? window.SiNoOracleEngine.evaluateTriad(nextPicked, { domain: sinoDomain, question: sinoQuestion, record: true })
+          : null;
+
+        if (evalRes && window.GrimorioPersonal?.recordReading) {
+          window.GrimorioPersonal.recordReading({
+            type: 'sino',
+            sinoMode: 'triad',
+            cards: nextPicked,
+            question: sinoQuestion,
+            domain: sinoDomain,
+            domainLabel: evalRes.domainMeta?.label || 'General',
+            verdictCode: evalRes.seal?.code || '',
+            verdictLabel: evalRes.seal?.label || '',
+            summary: evalRes.synthesisText || evalRes.headline || ''
+          });
+        }
+        refreshGrimoireUi();
+
+        setSelectedIdx(index);
+        setSinoCards(nextPicked);
+        setSinoResult(evalRes);
+        setRevealedCard(livingCard);
+        setHoveredSpreadIdx(null);
+        setPhase('CRACKING');
+        setOracleReaction((count) => count + 1);
+        cancelRef.current?.();
+        const isMobileNow = window.innerWidth < 768;
+        cancelRef.current = runRevealSequence({
+          onCharge: () => {
+            sound?.playCrackTensionRiser?.();
+            particles.current?.startCharge(T.CHARGE);
+            if (!isMobileNow) rumble(T.CHARGE);
+          },
+          onDetonate: () => {
+            const r = cardRef.current?.getBoundingClientRect();
+            if (r) setOrigin({ x: r.left + r.width / 2, y: r.top + r.height / 2 });
+            stopRumble();
+            particles.current?.stopCharge();
+            sound?.playLegendaryRevealImpact?.();
+            particles.current?.burst();
+            if (!isMobileNow) addTrauma(0.9);
+            setBurst((c) => c + 1);
+          },
+          onReveal: () => {
+            setPhase('REVEAL');
+          }
+        });
+        return;
+      }
+
+      // Modo Pulso Único Sí o No (1 Carta)
+      const singleEval = window.SiNoOracleEngine?.evaluateSingle
+        ? window.SiNoOracleEngine.evaluateSingle(livingCard, { domain: sinoDomain, question: sinoQuestion, record: true })
+        : null;
+
+      if (singleEval && window.GrimorioPersonal?.recordReading) {
+        window.GrimorioPersonal.recordReading({
+          type: 'sino',
+          sinoMode: 'single',
+          cards: [livingCard],
+          question: sinoQuestion,
+          domain: sinoDomain,
+          domainLabel: singleEval.domainMeta?.label || 'General',
+          verdictCode: singleEval.seal?.code || '',
+          verdictLabel: singleEval.seal?.label || '',
+          summary: singleEval.answerText || singleEval.headline || ''
+        });
+      }
+      refreshGrimoireUi();
+
+      setSelectedIdx(index);
+      setSinoCards([livingCard]);
+      setSinoResult(singleEval);
+      setRevealedCard(livingCard);
+      setHoveredSpreadIdx(null);
+      setPhase('CRACKING');
+      setOracleReaction((count) => count + 1);
+      cancelRef.current?.();
+      const isMobileNow = window.innerWidth < 768;
+      cancelRef.current = runRevealSequence({
+        onCharge: () => {
+          sound?.playCrackTensionRiser?.();
+          particles.current?.startCharge(T.CHARGE);
+          if (!isMobileNow) rumble(T.CHARGE);
+        },
+        onDetonate: () => {
+          const r = cardRef.current?.getBoundingClientRect();
+          if (r) setOrigin({ x: r.left + r.width / 2, y: r.top + r.height / 2 });
+          stopRumble();
+          particles.current?.stopCharge();
+          sound?.playLegendaryRevealImpact?.();
+          particles.current?.burst();
+          if (!isMobileNow) addTrauma(0.9);
+          setBurst((c) => c + 1);
+        },
+        onReveal: () => {
+          setPhase('REVEAL');
+        }
+      });
+      return;
+    }
 
     if (spreadMode === 'trina') {
 
@@ -1035,7 +1265,7 @@ function TarotSpreadApp() {
         setPhase('REVEAL');
       }
     });
-  }, [phase, spreadMode, trinaAct, trinaCards, trinaPickingIdx, runTrinaShuffleAct, rumble, stopRumble, addTrauma, refreshGrimoireUi]);
+  }, [phase, spreadMode, trinaAct, trinaCards, trinaPickingIdx, sinoSubMode, sinoAct, sinoCards, sinoPickingIdx, sinoDomain, sinoQuestion, runTrinaShuffleAct, runSiNoShuffleAct, rumble, stopRumble, addTrauma, refreshGrimoireUi]);
 
   const handleToggleRevealedPolarity = useCallback(() => {
     if (!revealedCard) return;
@@ -1059,6 +1289,25 @@ function TarotSpreadApp() {
       return prev.map((c, idx) => (idx === slotIdx ? switched : c));
     });
   }, []);
+
+  const handleToggleSiNoCardPolarity = useCallback((slotIdx) => {
+    setSinoCards((prev) => {
+      if (!prev || !prev[slotIdx]) return prev;
+      const target = prev[slotIdx];
+      const nextReversed = !target.isReversed;
+      sound?.playHeavyCardThud?.(nextReversed ? 0.85 : 1.15);
+      sound?.playHarpNote?.(nextReversed ? 1 : 5);
+      const switched = resolvePolymorphicCard(target, nextReversed, false);
+      const updatedCards = prev.map((c, idx) => (idx === slotIdx ? switched : c));
+      if (window.SiNoOracleEngine) {
+        const nextRes = updatedCards.length >= 3
+          ? window.SiNoOracleEngine.evaluateTriad(updatedCards, { domain: sinoDomain, question: sinoQuestion, record: false })
+          : window.SiNoOracleEngine.evaluateSingle(updatedCards[0], { domain: sinoDomain, question: sinoQuestion, record: false });
+        setSinoResult(nextRes);
+      }
+      return updatedCards;
+    });
+  }, [sinoDomain, sinoQuestion]);
 
   const handleTrinaSealBurst = useCallback((burstOrigin) => {
     if (burstOrigin) particles.current?.burst(burstOrigin);
@@ -1103,6 +1352,32 @@ function TarotSpreadApp() {
       CARTAS_DISPONIBLES.find((c) => String(c.id) === String(idStr)) ||
       (window.TarotRouter?.getCard ? window.TarotRouter.getCard(idStr) : null);
 
+    if (entry.type === 'sino') {
+      const restoredSiNo = entry.cards.map((saved) => {
+        const base = findBaseCard(saved.id) || CARTAS_DISPONIBLES[0];
+        return resolvePolymorphicCard(base, saved.isReversed, false);
+      });
+      const dom = entry.domain || 'general';
+      const q = entry.question || '';
+      const sub = restoredSiNo.length >= 3 ? 'triad' : 'single';
+      const evalRestored = window.SiNoOracleEngine
+        ? (sub === 'triad'
+            ? window.SiNoOracleEngine.evaluateTriad(restoredSiNo, { domain: dom, question: q, record: false })
+            : window.SiNoOracleEngine.evaluateSingle(restoredSiNo[0], { domain: dom, question: q, record: false }))
+        : null;
+      setSpreadMode('sino');
+      setSinoSubMode(sub);
+      setSinoDomain(dom);
+      setSinoQuestion(q);
+      setSinoAct(sub === 'triad' ? 2 : 0);
+      setSinoCards(restoredSiNo);
+      setSinoResult(evalRestored);
+      setRevealedCard(restoredSiNo[restoredSiNo.length - 1]);
+      setGrimoireOpen(false);
+      setPhase('REVEAL');
+      return;
+    }
+
     if (entry.type === 'trina' && entry.cards.length >= 3) {
       const restored = entry.cards.slice(0, 3).map((saved) => {
         const base = findBaseCard(saved.id) || CARTAS_DISPONIBLES[0];
@@ -1141,6 +1416,11 @@ function TarotSpreadApp() {
     setTrinaAct(0);
     setTrinaCards([]);
     setTrinaPickingIdx(null);
+    setSinoAct(0);
+    setSinoCards([]);
+    setSinoPickingIdx(null);
+    setSinoResult(null);
+    setSinoSetupOpen(false);
     setSelectedIdx(null);
     setRevealedCard(null);
     setActiveNode(null);
@@ -1193,6 +1473,10 @@ function TarotSpreadApp() {
   const TrinaShuffleDeckComp = TrinaEngine?.TrinaShuffleDeck;
   const TrinaAltarTrayComp = TrinaEngine?.TrinaAltarTray;
   const TrinaVerticalRevealComp = TrinaEngine?.TrinaVerticalReveal;
+  const SiNoEngine = window.SiNoSpreadEngine;
+  const SiNoSetupModalComp = SiNoEngine?.SiNoSetupModal;
+  const SiNoAltarTrayComp = SiNoEngine?.SiNoAltarTray;
+  const SiNoRevealViewComp = SiNoEngine?.SiNoRevealView;
   const currentTrinaInfo = TrinaEngine?.ACT_LABELS?.[trinaAct];
   const GrimorioModalComp = window.GrimorioModal;
   const unlockedMajorCount = grimoireStats?.totalMajorUnlocked || 0;
@@ -1248,7 +1532,7 @@ function TarotSpreadApp() {
           {/* Altura fija por viewport: solo transform scale en GPU (0 CLS) */}
           <div style={{ height: fixedOracleBoxHeight }} className="relative flex items-start justify-center w-full overflow-visible">
             <motion.div animate={{ scale: oracleScale }} transition={{ duration: 0.4, ease: 'easeOut' }} style={{ transformOrigin: '50% 0%', willChange: 'transform' }}>
-              <OracleMetaMaskRig gameState={grimoireOpen ? 'REVEAL' : phase} mouseX={mouseX} mouseY={mouseY} reactionSignal={oracleReaction} revealSignal={burst} quality={quality} />
+              <OracleMetaMaskRig gameState={(grimoireOpen || sinoSetupOpen) ? 'REVEAL' : phase} mouseX={mouseX} mouseY={mouseY} reactionSignal={oracleReaction} revealSignal={burst} quality={quality} />
             </motion.div>
           </div>
           <OracleDialogueBox
@@ -1257,15 +1541,21 @@ function TarotSpreadApp() {
             spreadMode={spreadMode}
             trinaAct={trinaAct}
             trinaCards={trinaCards}
+            sinoSubMode={sinoSubMode}
+            sinoAct={sinoAct}
+            sinoDomain={sinoDomain}
           />
         </section>
 
-        <main className={"relative z-30 flex-1 flex flex-col items-center justify-start lg:justify-center w-full " + (spreadMode === 'trina' && phase !== 'IDLE' ? "pt-14 sm:pt-16 lg:pt-16" : "pt-3 sm:pt-6 lg:pt-12")} style={{ perspective: '1200px', contain: 'layout' }}>
+        <main className={"relative z-30 flex-1 flex flex-col items-center justify-start lg:justify-center w-full " + (((spreadMode === 'trina' || (spreadMode === 'sino' && sinoSubMode === 'triad')) && phase !== 'IDLE') ? "pt-14 sm:pt-16 lg:pt-16" : "pt-3 sm:pt-6 lg:pt-12")} style={{ perspective: '1200px', contain: 'layout' }}>
           {/* ALTAR DE CUSTODIA EN SLOT ABSOLUTO SUPERIOR (NUNCA EMPUJA EL MAZO NI CAUSA CLS) */}
           <div className="absolute top-1 left-1/2 -translate-x-1/2 z-30 w-full flex justify-center pointer-events-none px-2">
             <AnimatePresence>
               {spreadMode === 'trina' && (phase === 'SHUFFLING' || phase === 'SPREAD' || phase === 'CRACKING') && TrinaAltarTrayComp && (
                 <TrinaAltarTrayComp pickedCards={trinaCards} currentAct={trinaAct} phase={phase} />
+              )}
+              {spreadMode === 'sino' && sinoSubMode === 'triad' && (phase === 'SHUFFLING' || phase === 'SPREAD' || phase === 'CRACKING') && SiNoAltarTrayComp && (
+                <SiNoAltarTrayComp pickedCards={sinoCards} currentAct={sinoAct} phase={phase} />
               )}
             </AnimatePresence>
           </div>
@@ -1292,7 +1582,7 @@ function TarotSpreadApp() {
                 ))}
               </div>
 
-              <div className="flex flex-col items-center gap-3 z-50 px-4">
+              <div className="flex flex-col items-center gap-2.5 sm:gap-3 z-50 px-4 w-full max-w-2xl">
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.96 }}
@@ -1305,23 +1595,49 @@ function TarotSpreadApp() {
                   </span>
                 </motion.button>
 
-                {TrinaEngine && (
-                  <motion.button
-                    whileHover={{ scale: 1.04 }}
-                    whileTap={{ scale: 0.96 }}
-                    onClick={handleStartTrina}
-                    className="group flex flex-col items-center px-6 sm:px-8 lg:px-10 py-2.5 sm:py-3 rounded-full bg-gradient-to-r from-[#1a0b2e] via-[#34165c] to-[#1a0b2e] border border-[#d4af37]/80 hover:border-purple-300 shadow-[0_0_20px_rgba(168,85,247,0.34)] cursor-pointer transition-colors"
-                  >
-                    <span style={{ fontFamily: "'Cinzel Decorative', serif" }} className="flex items-center gap-2 text-amber-200 group-hover:text-amber-100 font-bold tracking-[0.16em] uppercase text-[11px] sm:text-xs lg:text-sm">
-                      <Moon className="w-3.5 h-3.5 lg:w-4 lg:h-4 text-purple-300" />
-                      El Hilo de las Tres Lunas
-                      <Sparkles className="w-3.5 h-3.5 lg:w-4 lg:h-4 text-amber-300" />
-                    </span>
-                    <span style={{ fontFamily: "'Cinzel', serif" }} className="text-[9px] sm:text-[10px] uppercase tracking-[0.26em] text-purple-200/80 mt-0.5">
-                      Pasado • Presente • Futuro
-                    </span>
-                  </motion.button>
-                )}
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-2.5 w-full">
+                  {TrinaEngine && (
+                    <motion.button
+                      whileHover={{ scale: 1.04 }}
+                      whileTap={{ scale: 0.96 }}
+                      onClick={handleStartTrina}
+                      className="group w-full sm:w-auto flex flex-col items-center px-5 sm:px-7 py-2 sm:py-2.5 rounded-full bg-gradient-to-r from-[#1a0b2e] via-[#34165c] to-[#1a0b2e] border border-[#d4af37]/80 hover:border-purple-300 shadow-[0_0_18px_rgba(168,85,247,0.3)] cursor-pointer transition-colors"
+                    >
+                      <span style={{ fontFamily: "'Cinzel Decorative', serif" }} className="flex items-center gap-2 text-amber-200 group-hover:text-amber-100 font-bold tracking-[0.14em] uppercase text-[11px] sm:text-xs">
+                        <Moon className="w-3.5 h-3.5 text-purple-300" />
+                        El Hilo de las Tres Lunas
+                      </span>
+                      <span style={{ fontFamily: "'Cinzel', serif" }} className="text-[9px] uppercase tracking-[0.22em] text-purple-200/80 mt-0.5">
+                        Pasado • Presente • Futuro
+                      </span>
+                    </motion.button>
+                  )}
+
+                  {SiNoEngine && (
+                    <motion.button
+                      whileHover={{ scale: 1.04 }}
+                      whileTap={{ scale: 0.96 }}
+                      onClick={openSiNoSetup}
+                      className="group w-full sm:w-auto flex flex-col items-center px-5 sm:px-7 py-2 sm:py-2.5 rounded-full bg-gradient-to-r from-[#07211b] via-[#13352f] to-[#07211b] border border-emerald-400/75 hover:border-amber-300 shadow-[0_0_18px_rgba(52,211,153,0.26)] cursor-pointer transition-colors"
+                    >
+                      <span style={{ fontFamily: "'Cinzel Decorative', serif" }} className="flex items-center gap-2 text-emerald-200 group-hover:text-amber-100 font-bold tracking-[0.14em] uppercase text-[11px] sm:text-xs">
+                        <ScaleIcon className="w-3.5 h-3.5 text-emerald-300" />
+                        La Balanza Sí o No
+                      </span>
+                      <span style={{ fontFamily: "'Cinzel', serif" }} className="text-[9px] uppercase tracking-[0.22em] text-emerald-200/80 mt-0.5">
+                        Pulso Rápido • 1 o 3 Cartas
+                      </span>
+                    </motion.button>
+                  )}
+                </div>
+
+                <div style={{ fontFamily: "'Cinzel', serif" }} className="flex flex-wrap items-center justify-center gap-3 pt-1 text-[10px] uppercase tracking-[0.18em] text-amber-200/60">
+                  <a href="tarot-si-o-no.html" className="hover:text-emerald-300 transition-colors">Guía Sí o No</a>
+                  <span className="text-amber-500/35">•</span>
+                  <a href="sobre-nosotros.html" className="hover:text-amber-300 transition-colors">Sobre Nosotros</a>
+                  <span className="text-amber-500/35">•</span>
+                  <a href="privacidad.html" className="hover:text-amber-300 transition-colors">Privacidad</a>
+                </div>
               </div>
             </div>
           )}
@@ -1396,7 +1712,7 @@ function TarotSpreadApp() {
 
                     return (
                       <motion.div
-                        key={card.id + "-shuf-" + trinaAct + "-" + i}
+                        key={card.id + "-shuf-" + spreadMode + "-" + trinaAct + "-" + sinoAct + "-" + i}
                         initial={
                           isUltra
                             ? { x: 0, y: -200, rotateZ: side * 45, rotateY: 180, scale: 0.58 }
@@ -1406,13 +1722,13 @@ function TarotSpreadApp() {
                         transition={
                           isUltra
                             ? {
-                                duration: 2.15,
+                                duration: spreadMode === 'sino' ? 1.05 : 2.15,
                                 times: [0, 0.26, 0.58, 0.84, 1],
                                 ease: 'easeInOut',
                                 delay: i * 0.022
                               }
                             : {
-                                duration: 2.25,
+                                duration: spreadMode === 'sino' ? 1.05 : 2.25,
                                 times: [0, 0.25, 0.5, 0.8, 1],
                                 ease: 'easeInOut',
                                 delay: i * 0.025
@@ -1443,14 +1759,14 @@ function TarotSpreadApp() {
                 const angle = offset * (isSmallMobile ? 5.2 : isMobile ? 6.5 : 9.5);
                 const arcDrop = isDesktop ? 15 : 11;
                 const hoverLift = isDesktop ? 38 : 28;
-                const isHovered = hoveredSpreadIdx === i && phase === 'SPREAD' && trinaPickingIdx === null;
+                const isHovered = hoveredSpreadIdx === i && phase === 'SPREAD' && trinaPickingIdx === null && sinoPickingIdx === null;
                 const isChosen = selectedIdx === i;
-                const isTrinaAscending = spreadMode === 'trina' && trinaPickingIdx === i;
+                const isTrinaAscending = (spreadMode === 'trina' && trinaPickingIdx === i) || (spreadMode === 'sino' && sinoPickingIdx === i);
                 const isDiscarded = phase === 'CRACKING' && !isChosen;
 
                 return (
                   <motion.div
-                    key={card.id + "-act-" + trinaAct + "-" + i}
+                    key={card.id + "-act-" + spreadMode + "-" + trinaAct + "-" + sinoAct + "-" + i}
                     ref={isChosen ? cardRef : null}
                     animate={
                       isTrinaAscending
@@ -1475,7 +1791,7 @@ function TarotSpreadApp() {
                         ? { duration: 0.45 }
                         : { type: 'spring', stiffness: 280, damping: 22 }
                     }
-                    onMouseEnter={() => { if (phase === 'SPREAD' && trinaPickingIdx === null && !isMobile) { setHoveredSpreadIdx(i); sound?.playHarpNote(i); } }}
+                    onMouseEnter={() => { if (phase === 'SPREAD' && trinaPickingIdx === null && sinoPickingIdx === null && !isMobile) { setHoveredSpreadIdx(i); sound?.playHarpNote(i); } }}
                     onMouseLeave={() => { if (phase === 'SPREAD') setHoveredSpreadIdx(null); }}
                     onClick={(e) => handleSelect(card, i, e)}
                     style={{ willChange: 'transform' }}
@@ -1489,6 +1805,27 @@ function TarotSpreadApp() {
           )}
         </main>
       </div>
+
+      {/* =====================================================================
+          REVELACIÓN DE LA BALANZA SÍ O NO (MODO SINO: 1 O 3 CARTAS)
+         ===================================================================== */}
+      <AnimatePresence>
+        {phase === 'REVEAL' && spreadMode === 'sino' && sinoResult && SiNoRevealViewComp && (
+          <SiNoRevealViewComp
+            result={sinoResult}
+            quality={quality}
+            onToggleCardPolarity={handleToggleSiNoCardPolarity}
+            onNewSiNo={() => {
+              setPhase('IDLE');
+              setSinoSetupOpen(true);
+            }}
+            onSwitchToTrina={handleStartTrina}
+            onReset={handleReset}
+            onOpenGrimoire={openGrimoire}
+            onSealBurst={handleTrinaSealBurst}
+          />
+        )}
+      </AnimatePresence>
 
       {/* =====================================================================
           REVELACIÓN VERTICAL: EL HILO DE LAS TRES LUNAS (MODO TRINA)
@@ -1973,6 +2310,18 @@ function TarotSpreadApp() {
           onClose={() => setGrimoireOpen(false)}
           onReopenReading={handleReopenReading}
           onDataChanged={refreshGrimoireUi}
+        />
+      )}
+
+      {SiNoSetupModalComp && (
+        <SiNoSetupModalComp
+          isOpen={sinoSetupOpen}
+          initialSubMode={sinoSubMode}
+          initialDomain={sinoDomain}
+          initialQuestion=""
+          onClose={() => setSinoSetupOpen(false)}
+          onStart={handleStartSiNo}
+          onStartTrina={handleStartTrina}
         />
       )}
     </div>

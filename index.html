@@ -4,8 +4,52 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
   <meta name="theme-color" content="#040207" />
-  <meta name="description" content="Oráculo del Velo Astral: tirada interactiva de Tarot en 2.5D con los 22 Arcanos Mayores, El Hilo de las Tres Lunas (Pasado, Presente y Futuro) y tu Grimorio Personal." />
-  <title>Oráculo del Velo Astral</title>
+  <title>Oráculo del Velo Astral | Tarot Interactivo 2.5D Gratis</title>
+  <meta name="description" content="Tirada de Tarot gratis online en 2.5D: Arcano Único, El Hilo de las Tres Lunas (Pasado, Presente y Futuro), La Balanza Sí o No y tu Grimorio Personal." />
+  <meta name="robots" content="index, follow" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="canonical" href="https://emibaio.github.io/oraculo-v5/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="es_AR" />
+  <meta property="og:site_name" content="Oráculo del Velo Astral" />
+  <meta property="og:title" content="Oráculo del Velo Astral | Tarot Interactivo 2.5D Gratis y Códice de Arcanos" />
+  <meta property="og:description" content="Tirada de Tarot gratis online en 2.5D: Arcano Único, El Hilo de las Tres Lunas (Pasado, Presente y Futuro), La Balanza Sí o No y tu Grimorio Personal." />
+  <meta property="og:url" content="https://emibaio.github.io/oraculo-v5/" />
+  <meta property="og:image" content="https://emibaio.github.io/oraculo-v5/img/og-cover.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Oráculo del Velo Astral | Tarot Interactivo 2.5D Gratis y Códice de Arcanos" />
+  <meta name="twitter:description" content="Tirada de Tarot gratis online en 2.5D: Arcano Único, El Hilo de las Tres Lunas (Pasado, Presente y Futuro), La Balanza Sí o No y tu Grimorio Personal." />
+  <meta name="twitter:image" content="https://emibaio.github.io/oraculo-v5/img/og-cover.jpg" />
+
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "name": "Oráculo del Velo Astral",
+      "url": "https://emibaio.github.io/oraculo-v5/",
+      "inLanguage": "es",
+      "description": "Altar interactivo de tarot en 2.5D con los 22 Arcanos Mayores, El Hilo de las Tres Lunas, La Balanza Sí o No y Códice editorial."
+    },
+    {
+      "@type": "WebApplication",
+      "name": "Oráculo del Velo Astral",
+      "url": "https://emibaio.github.io/oraculo-v5/",
+      "applicationCategory": "LifestyleApplication",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "inLanguage": "es"
+    }
+  ]
+}
+  </script>
 
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -40,6 +84,7 @@
   <script src="datos_cartas/datos_luna_5.js"></script>
   <script src="datos_cartas/datos_luna_6.js"></script>
   <script src="datos_cartas/datos_trina.js"></script>
+  <script src="datos_cartas/datos_sino.js?v=1"></script>
 
   <!-- 1C. Motor Unificador y Enrutador -->
   <script src="motor_tarot.js?v=6"></script>
@@ -110,7 +155,7 @@
         }
       });
       if (missing.length === 0) {
-        const trinaStatus = window.TrinaOracleEngine ? " + Códice Trino (Pasado/Presente/Futuro)" : "";
+        const trinaStatus = (window.TrinaOracleEngine ? " + Códice Trino" : "") + (window.SiNoOracleEngine ? " + Balanza Sí o No" : "");
         console.log("%c✦ Los 22 Arcanos Mayores AAA + 12 Volúmenes del Grimorio" + trinaStatus + " están activos.", "color: #fde047; font-weight: bold;");
       } else {
         console.warn("⚠️ Faltan cargar o tienen otro nombre en /cartas/ los siguientes archivos:", missing);
@@ -121,8 +166,9 @@
   <!-- 4. Rig 3D de Sibilia, Grimorio Personal y Motores de Tirada (Trina + Principal) -->
   <script src="rig_sibilia.js"></script>
   <script src="motor_tirada_trina.js?v=6"></script>
-  <script src="grimorio_personal.js?v=6"></script>
-  <script src="motor_tirada.js?v=8"></script>
+  <script src="motor_tirada_sino.js?v=1"></script>
+  <script src="grimorio_personal.js?v=7"></script>
+  <script src="motor_tirada.js?v=10"></script>
 
   <style>
     * { box-sizing: border-box; user-select: none; -webkit-user-select: none; }
@@ -137,6 +183,18 @@
 </head>
 <body>
   <div id="root"></div>
+  <noscript>
+    <main style="max-width:760px;margin:40px auto;padding:24px;color:#fffbeb;font-family:Georgia,serif;">
+      <h1>Oráculo del Velo Astral • Tarot Interactivo 2.5D Gratis</h1>
+      <p>Activá JavaScript para desplegar el altar interactivo con Sibilia, El Hilo de las Tres Lunas y La Balanza Sí o No. También podés recorrer directamente nuestras guías editoriales:</p>
+      <ul>
+        <li><a href="tarot-si-o-no.html" style="color:#fde047;">Tarot Sí o No Gratis (1 o 3 Cartas)</a></li>
+        <li><a href="carta.html?arcano=0" style="color:#fde047;">Códice de los 78 Arcanos del Tarot</a></li>
+        <li><a href="sobre-nosotros.html" style="color:#fde047;">Sobre Nosotros y el Concilio Editorial</a></li>
+        <li><a href="privacidad.html" style="color:#fde047;">Política de Privacidad y Aviso Legal</a></li>
+      </ul>
+    </main>
+  </noscript>
 
   <script>
     (function mountOraculoApp() {

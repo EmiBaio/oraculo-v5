@@ -6,12 +6,28 @@
   <title id="page-title">Oráculo del Velo Astral • Códice del Arcano</title>
   <meta name="description" content="Enciclopedia hermética e interactiva de los 78 Arcanos del Tarot. Explorá cada carta en dioramas 2.5D, sus nodos secretos, psicología junguiana, psicomagia y significado en Luz y Sombra." />
   <meta name="theme-color" content="#040207" />
+  <meta name="robots" content="index, follow" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="canonical" href="https://emibaio.github.io/oraculo-v5/carta.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:locale" content="es_AR" />
+  <meta property="og:site_name" content="Oráculo del Velo Astral" />
+  <meta property="og:title" content="Códice de los 78 Arcanos del Tarot | Oráculo del Velo Astral" />
+  <meta property="og:description" content="Enciclopedia hermética e interactiva de los 78 Arcanos del Tarot en Luz y Sombra: dioramas 2.5D, nodos secretos, psicología junguiana y psicomagia." />
+  <meta property="og:url" content="https://emibaio.github.io/oraculo-v5/carta.html" />
+  <meta property="og:image" content="https://emibaio.github.io/oraculo-v5/img/og-cover.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Códice de los 78 Arcanos del Tarot | Oráculo del Velo Astral" />
+  <meta name="twitter:description" content="Enciclopedia hermética e interactiva de los 78 Arcanos del Tarot en Luz y Sombra: dioramas 2.5D, nodos secretos, psicología junguiana y psicomagia." />
+  <meta name="twitter:image" content="https://emibaio.github.io/oraculo-v5/img/og-cover.jpg" />
 
   <!-- Tailwind CSS y Fuentes del Velo Astral -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;500;600;700;800;900&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;500;600;700;800;900&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet" />
 
   <!-- React, ReactDOM, Framer Motion y Babel -->
   <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
@@ -45,20 +61,10 @@
       -moz-osx-font-smoothing: grayscale;
     }
 
-    ::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
-    }
-    ::-webkit-scrollbar-track {
-      background: rgba(10, 5, 20, 0.6);
-    }
-    ::-webkit-scrollbar-thumb {
-      background: rgba(212, 175, 55, 0.35);
-      border-radius: 9999px;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-      background: rgba(212, 175, 55, 0.7);
-    }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: rgba(10, 5, 20, 0.6); }
+    ::-webkit-scrollbar-thumb { background: rgba(212, 175, 55, 0.35); border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(212, 175, 55, 0.7); }
   </style>
 </head>
 <body class="bg-[#040207] text-amber-50 m-0 p-0 overflow-x-hidden font-['Cormorant_Garamond'] selection:bg-amber-400 selection:text-black">
@@ -68,7 +74,7 @@
 
   <!-- 1. Bases de datos originales + Puente de Sincronización Léxica -->
   <script src="datos_cartas.js"></script>
-  <script src="datos_cartas_menores.js"></script>
+  <script src="datos_cartas_menores.js?v=6"></script>
   <script>
     if (typeof MAJOR_ARCANA !== "undefined" && !window.MAJOR_ARCANA) window.MAJOR_ARCANA = MAJOR_ARCANA;
     if (typeof REVERSED_DATA !== "undefined" && !window.REVERSED_DATA) window.REVERSED_DATA = REVERSED_DATA;
@@ -97,13 +103,13 @@
   <script src="datos_cartas/datos_luna_6.js" onerror="__loadGrimoireFallback('datos_luna_6.js')"></script>
 
   <!-- 2. Motor Unificador y Enrutador (78 Cartas) -->
-  <script src="motor_tarot.js"></script>
+  <script src="motor_tarot.js?v=6"></script>
 
   <!-- 3. Motor de Audio Sintético -->
   <script src="motor_audio.js"></script>
 
   <!-- 4. Orquestador de Diorama AAA y los 22 Arcanos Mayores Modulares (/cartas/) -->
-  <script src="tarot_diorama_renderer.js"></script>
+  <script src="tarot_diorama_renderer.js?v=6"></script>
   <script src="cartas/el_loco.js"></script>
   <script src="cartas/el_mago.js"></script>
   <script src="cartas/la_sacerdotisa.js"></script>
@@ -172,8 +178,9 @@
     })();
   </script>
 
-  <!-- 5. Layout Maestro GIGA SEO y Diorama 2.5D -->
-  <script src="layout_arcano.js"></script>
+  <!-- 5. Concilio del Velo Astral y Layout Maestro del Códice -->
+  <script src="concilio_tarotistas.js?v=7"></script>
+  <script src="layout_arcano.js?v=10"></script>
 
   <!-- 6. Arranque Blindado de la Aplicación (Compatible 100% con file:///) -->
   <script>
@@ -199,7 +206,6 @@
         return majors.concat(minors);
       }
 
-      // Garantizar que window.TarotRouter exista siempre con todos sus métodos
       if (!window.TarotRouter) {
         window.TarotRouter = {};
       }

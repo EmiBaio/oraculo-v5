@@ -66,22 +66,57 @@ const CheckCircle2 = ({ className = "w-4 h-4" }) => (
   </svg>
 );
 
-// --- CONCILIO DE LAS 5 MAESTRAS TAROTISTAS ---
-const TAROT_MASTERS = [
-  { id: 'valeria', name: 'Valeria Montes de Oca', role: 'Especialista en Tarot Evolutivo y Leyes Kármicas', bio: '20 años descifrando arquetipos mayores y procesos de transformación.', sigil: "♎" },
-  { id: 'elena', name: 'Elena Kovács', role: 'Maestra en Simbología Hermética y Psicología Junguiana', bio: 'Investigadora de iconografía esotérica e integración de la sombra.', sigil: "☿" },
-  { id: 'clara', name: 'Clara del Río', role: 'Tarotista Vincular y Lectora de Registros Astrales', bio: 'Especializada en lecturas afectivas, nudos vinculares y reciprocidad.', sigil: "♀" },
-  { id: 'miriam', name: 'Miriam Al-Zahra', role: 'Cabalista, Astróloga y Revisora Esotérica', bio: 'Experta en correspondencias astrológicas, senderos del Árbol de la Vida y numerología.', sigil: "✡" },
-  { id: 'lyra', name: 'Lyra Vane', role: 'Oraculista de Propósito Vocacional y Destino', bio: 'Mentora enfocada en alineación material, contratos y estrategia espiritual.', sigil: "☉" }
+// --- CONCILIO DEL VELO ASTRAL (Lee de concilio_tarotistas.js con respaldo local) ---
+const FALLBACK_CONCILIO = [
+  { id: 'sofia', name: 'Sofía Lindholm', image: 'img/concilio/sofia.webp', sigil: '☉', role: 'Tarot Contemporáneo, Pedagogía Simbólica y Lectura Evolutiva', shortCredential: '7 años de práctica con el mazo Rider-Waite-Smith', cardBio: 'Especializada en traducir la simbología clásica a lecturas directas y aplicables a decisiones cotidianas.' },
+  { id: 'miriam', name: 'Miriam Al-Zahra', image: 'img/concilio/miriam.webp', sigil: '✡', role: 'Cábala Hermética, Astrología Tradicional y Revisión Esotérica', shortCredential: '16 años de investigación en cábala y astrología clásica', cardBio: 'Investigadora de correspondencias astrológicas, letras hebreas y senderos del Árbol de la Vida.' },
+  { id: 'clara', name: 'Clara del Río', image: 'img/concilio/clara.webp', sigil: '♀', role: 'Tarot Vincular, Lectura Afectiva y Registros Astrales', shortCredential: '11 años en lecturas relacionales y ciclos emocionales', cardBio: 'Especializada en lecturas afectivas, dinámicas de reciprocidad y nudos vinculares.' },
+  { id: 'lyra', name: 'Lyra Vane', image: 'img/concilio/lyra.webp', sigil: '☀', role: 'Tarot Vocacional, Estrategia Material y Propósito', shortCredential: '12 años en lectura arquetípica y estrategia laboral', cardBio: 'Enfocada en oficio, acuerdos laborales, patrimonio y criterios concretos de decisión.' },
+  { id: 'elena', name: 'Elena Kovács', image: 'img/concilio/elena.webp', sigil: '☿', role: 'Simbología Hermética, Iconografía Histórica y Psicología Arquetípica', shortCredential: '15 años en iconografía histórica y lectura de sombra', cardBio: 'Estudiosa de la iconografía del tarot histórico y la lectura psicológica de cada carta invertida.' }
 ];
 
 function getAuthorPairForCard(cardId) {
-  const seed = String(cardId).split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-  const primaryIdx = seed % TAROT_MASTERS.length;
-  const reviewerIdx = (seed * 2 + 1) % TAROT_MASTERS.length;
-  const finalReviewerIdx = reviewerIdx === primaryIdx ? (reviewerIdx + 1) % TAROT_MASTERS.length : reviewerIdx;
-  return { author: TAROT_MASTERS[primaryIdx], reviewer: TAROT_MASTERS[finalReviewerIdx] };
+  if (window.ConcilioEditorial && typeof window.ConcilioEditorial.getPairForCard === 'function') {
+    return window.ConcilioEditorial.getPairForCard(cardId);
+  }
+  const pool = (window.CONCILIO_TAROTISTAS && window.CONCILIO_TAROTISTAS.length > 0) ? window.CONCILIO_TAROTISTAS : FALLBACK_CONCILIO;
+  const key = String(cardId == null ? '0' : cardId);
+  let seed = 0;
+  for (let i = 0; i < key.length; i++) seed = (seed * 31 + key.charCodeAt(i)) % 997;
+  const primaryIdx = seed % pool.length;
+  let reviewerIdx = (seed + 2) % pool.length;
+  if (reviewerIdx === primaryIdx) reviewerIdx = (primaryIdx + 1) % pool.length;
+  return { author: pool[primaryIdx], reviewer: pool[reviewerIdx] };
 }
+
+const CouncilPortrait = memo(function CouncilPortrait({ member, accent = 'gold' }) {
+  const [imgFailed, setImgFailed] = useState(false);
+  useEffect(() => { setImgFailed(false); }, [member?.id, member?.image]);
+  const ringCls = accent === 'emerald'
+    ? 'border-emerald-400/70 shadow-[0_0_18px_rgba(16,185,129,0.22)]'
+    : 'border-[#d4af37]/80 shadow-[0_0_18px_rgba(212,175,55,0.28)]';
+
+  if (!member?.image || imgFailed) {
+    return (
+      <div className={"w-16 h-16 sm:w-20 sm:h-20 rounded-full flex-shrink-0 bg-[#140b26] border-2 flex items-center justify-center text-2xl text-amber-200 " + ringCls}>
+        <span>{member?.sigil || '✦'}</span>
+      </div>
+    );
+  }
+
+  return (
+    <img
+      src={member.image}
+      alt={member.imageAlt || ("Retrato de " + member.name)}
+      width="80"
+      height="80"
+      loading="lazy"
+      decoding="async"
+      onError={() => setImgFailed(true)}
+      className={"w-16 h-16 sm:w-20 sm:h-20 rounded-full flex-shrink-0 object-cover object-top bg-[#140b26] border-2 " + ringCls}
+    />
+  );
+});
 
 // --- DIORAMA 2.5D OPTIMIZADO: TRANSFORMACIONES DIRECTAS EN GPU (0 RE-RENDERS POR PIXEL) ---
 const RevealedCardDiorama25D = memo(function RevealedCardDiorama25D({ card, activeNode, onSelectNode, isReversed, setIsReversed }) {
@@ -343,13 +378,27 @@ window.ArcanaPageLayout = function ArcanaPageLayout({ card, neighbors }) {
         "@type": "Article",
         "headline": activeCard.seo?.title || activeCard.seoTitle || (activeCard.name + " en el Tarot"),
         "description": activeCard.seo?.description || activeCard.seoDescription || activeCard.meaning,
-        "author": { "@type": "Person", "name": author.name, "jobTitle": author.role },
-        "reviewedBy": { "@type": "Person", "name": reviewer.name, "jobTitle": reviewer.role }
+        "author": {
+          "@type": "Person",
+          "name": author.name,
+          "jobTitle": author.role,
+          "image": author.image,
+          "url": "sobre-nosotros.html#" + author.id,
+          "knowsAbout": author.focusTags || []
+        },
+        "reviewedBy": {
+          "@type": "Person",
+          "name": reviewer.name,
+          "jobTitle": reviewer.role,
+          "image": reviewer.image,
+          "url": "sobre-nosotros.html#" + reviewer.id,
+          "knowsAbout": reviewer.focusTags || []
+        }
       },
       {
         "@type": "BreadcrumbList",
         "itemListElement": [
-          { "@type": "ListItem", "position": 1, "name": "Oráculo", "item": "oraculo.html" },
+          { "@type": "ListItem", "position": 1, "name": "Oráculo", "item": "index.html" },
           { "@type": "ListItem", "position": 2, "name": activeCard.type === 'minor' ? ("Palo de " + activeCard.suitName) : "Arcanos Mayores" },
           { "@type": "ListItem", "position": 3, "name": activeCard.name }
         ]
@@ -374,7 +423,7 @@ window.ArcanaPageLayout = function ArcanaPageLayout({ card, neighbors }) {
       <header className="sticky top-0 z-50 bg-[#040207] border-b border-[#d4af37]/35 shadow-[0_8px_24px_rgba(0,0,0,0.85)] px-3 sm:px-8 py-2.5 sm:py-3">
         <div className="max-w-5xl mx-auto flex flex-wrap items-center justify-between gap-2">
           <nav aria-label="Breadcrumb" className="font-['Cinzel'] text-[10px] sm:text-xs uppercase tracking-[0.14em] sm:tracking-[0.2em] text-amber-200/75 flex items-center min-w-0">
-            <a href="oraculo.html" className="hover:text-amber-300 whitespace-nowrap">Oráculo</a>
+            <a href="index.html" className="hover:text-amber-300 whitespace-nowrap">Oráculo</a>
             <span className="mx-1.5 sm:mx-2 text-amber-500 hidden sm:inline">›</span>
             <span className="hidden sm:inline whitespace-nowrap">{activeCard.type === 'minor' ? ("Palo de " + activeCard.suitName) : 'Arcanos Mayores'}</span>
             <span className="mx-1.5 sm:mx-2 text-amber-500">›</span>
@@ -769,7 +818,7 @@ window.ArcanaPageLayout = function ArcanaPageLayout({ card, neighbors }) {
         <div className="relative p-6 sm:p-8 rounded-3xl bg-gradient-to-b from-[#1a0f2e] to-[#090513] border-2 border-[#d4af37] text-center shadow-[0_0_50px_rgba(212,175,55,0.25)]">
           <p className="font-['Cinzel'] text-xs uppercase tracking-[0.25em] text-amber-300 mb-2">✦ ¿Buscás respuesta a tu situación actual? ✦</p>
           <h2 className="font-['Cinzel_Decorative'] text-xl sm:text-2xl text-amber-100 mb-5">Las cartas ya están barajadas en el altar astral</h2>
-          <a href="oraculo.html" className="font-['Cinzel_Decorative'] inline-flex items-center gap-3 px-8 py-4 rounded-full bg-gradient-to-r from-[#2c1b08] via-[#d4af37] to-[#2c1b08] text-[#07050a] font-black tracking-[0.2em] uppercase text-sm sm:text-base border-2 border-amber-100 shadow-[0_0_35px_rgba(251,191,36,0.75)] hover:scale-105 transition-transform">
+          <a href="index.html" className="font-['Cinzel_Decorative'] inline-flex items-center gap-3 px-8 py-4 rounded-full bg-gradient-to-r from-[#2c1b08] via-[#d4af37] to-[#2c1b08] text-[#07050a] font-black tracking-[0.2em] uppercase text-sm sm:text-base border-2 border-amber-100 shadow-[0_0_35px_rgba(251,191,36,0.75)] hover:scale-105 transition-transform">
             ✦ Consultar el Oráculo Gratis Ahora
           </a>
         </div>
@@ -793,29 +842,73 @@ window.ArcanaPageLayout = function ArcanaPageLayout({ card, neighbors }) {
         </section>
 
         {/* CONCILIO DE AUTORÍA Y REVISIÓN */}
-        <section aria-label="Autoría y revisión" className="p-5 sm:p-6 rounded-2xl bg-gradient-to-r from-[#120924] via-[#090513] to-[#120924] border border-[#d4af37]/50 space-y-4">
-          <div className="flex items-center justify-between border-b border-amber-500/20 pb-3">
-            <span className="font-['Cinzel'] text-[10px] uppercase tracking-[0.25em] text-amber-300">
-              ✦ Concilio del Velo Astral • Revisión por Pares
+        <section aria-label="Autoría y revisión editorial" className="p-5 sm:p-7 rounded-3xl bg-gradient-to-r from-[#120924] via-[#090513] to-[#120924] border border-[#d4af37]/55 shadow-[0_14px_40px_rgba(0,0,0,0.65)] space-y-5">
+          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-amber-500/25 pb-3">
+            <span className="font-['Cinzel'] text-[10px] sm:text-xs uppercase tracking-[0.24em] text-amber-300 font-bold">
+              ✦ Concilio del Velo Astral • Revisión Cruzada
             </span>
+            <a
+              href="sobre-nosotros.html"
+              className="font-['Cinzel'] text-[10px] sm:text-xs uppercase tracking-[0.18em] text-purple-200 hover:text-amber-300 transition-colors"
+            >
+              Conocer al Concilio ›
+            </a>
           </div>
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <span className="font-['Cinzel'] text-[10px] uppercase tracking-[0.25em] text-amber-400">✦ Redacción e Interpretación</span>
-              <h4 className="font-['Cinzel'] text-base font-bold text-amber-100 mt-1 flex items-center gap-2">
-                <span className="text-xl">{author.sigil}</span> {author.name}
-              </h4>
-              <p className="text-xs text-purple-300 mb-1">{author.role}</p>
-              <p className="text-xs text-amber-100/75">{author.bio}</p>
-            </div>
-            <div className="border-t md:border-t-0 md:border-l border-amber-500/25 pt-4 md:pt-0 md:pl-6">
-              <span className="font-['Cinzel'] text-[10px] uppercase tracking-[0.25em] text-emerald-300">✔ Revisión Simbólica y Astrológica</span>
-              <h4 className="font-['Cinzel'] text-base font-bold text-amber-100 mt-1 flex items-center gap-2">
-                <span className="text-xl">{reviewer.sigil}</span> {reviewer.name}
-              </h4>
-              <p className="text-xs text-purple-300 mb-1">{reviewer.role}</p>
-              <p className="text-xs text-amber-100/75">{reviewer.bio}</p>
-            </div>
+            <article className="flex items-start gap-4">
+              <a href={"sobre-nosotros.html#" + author.id} className="flex-shrink-0 hover:scale-105 transition-transform">
+                <CouncilPortrait member={author} accent="gold" />
+              </a>
+              <div className="min-w-0 space-y-1.5">
+                <span className="font-['Cinzel'] text-[10px] uppercase tracking-[0.22em] text-amber-400 font-bold block">
+                  ✦ Redacción e Interpretación
+                </span>
+                <h4 className="font-['Cinzel'] text-base sm:text-lg font-bold text-amber-100 leading-snug">
+                  <a href={"sobre-nosotros.html#" + author.id} className="hover:text-amber-300 transition-colors">
+                    <span className="text-amber-300 mr-1.5">{author.sigil}</span>{author.name}
+                  </a>
+                </h4>
+                <p className="text-xs sm:text-sm text-purple-300 font-semibold leading-snug">{author.role}</p>
+                {author.shortCredential && (
+                  <p className="text-[11px] sm:text-xs text-amber-200/75 italic">{author.shortCredential}</p>
+                )}
+                <p className="text-xs sm:text-sm text-amber-100/85 leading-relaxed">{author.cardBio || author.bio}</p>
+                <a
+                  href={"sobre-nosotros.html#" + author.id}
+                  className="font-['Cinzel'] inline-block pt-1 text-[10px] uppercase tracking-[0.18em] text-amber-300/90 hover:text-amber-200"
+                >
+                  Ver perfil completo ›
+                </a>
+              </div>
+            </article>
+
+            <article className="flex items-start gap-4 border-t md:border-t-0 md:border-l border-amber-500/25 pt-5 md:pt-0 md:pl-6">
+              <a href={"sobre-nosotros.html#" + reviewer.id} className="flex-shrink-0 hover:scale-105 transition-transform">
+                <CouncilPortrait member={reviewer} accent="emerald" />
+              </a>
+              <div className="min-w-0 space-y-1.5">
+                <span className="font-['Cinzel'] text-[10px] uppercase tracking-[0.22em] text-emerald-300 font-bold block">
+                  ✔ Revisión Simbólica y Doctrinaria
+                </span>
+                <h4 className="font-['Cinzel'] text-base sm:text-lg font-bold text-amber-100 leading-snug">
+                  <a href={"sobre-nosotros.html#" + reviewer.id} className="hover:text-amber-300 transition-colors">
+                    <span className="text-emerald-300 mr-1.5">{reviewer.sigil}</span>{reviewer.name}
+                  </a>
+                </h4>
+                <p className="text-xs sm:text-sm text-purple-300 font-semibold leading-snug">{reviewer.role}</p>
+                {reviewer.shortCredential && (
+                  <p className="text-[11px] sm:text-xs text-amber-200/75 italic">{reviewer.shortCredential}</p>
+                )}
+                <p className="text-xs sm:text-sm text-amber-100/85 leading-relaxed">{reviewer.cardBio || reviewer.bio}</p>
+                <a
+                  href={"sobre-nosotros.html#" + reviewer.id}
+                  className="font-['Cinzel'] inline-block pt-1 text-[10px] uppercase tracking-[0.18em] text-emerald-300/90 hover:text-emerald-200"
+                >
+                  Ver perfil completo ›
+                </a>
+              </div>
+            </article>
           </div>
         </section>
 
@@ -874,6 +967,19 @@ window.ArcanaPageLayout = function ArcanaPageLayout({ card, neighbors }) {
             )}
           </footer>
         )}
+
+        <div className="pt-6 border-t border-amber-500/20 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-amber-200/65 font-['Cinzel'] uppercase tracking-[0.18em]">
+          <span>✦ Oráculo del Velo Astral</span>
+          <div className="flex flex-wrap items-center justify-center gap-4">
+            <a href="index.html" className="hover:text-amber-300 transition-colors">Altar</a>
+            <span className="text-amber-500/35">•</span>
+            <a href="tarot-si-o-no.html" className="hover:text-emerald-300 transition-colors">Tarot Sí o No</a>
+            <span className="text-amber-500/35">•</span>
+            <a href="sobre-nosotros.html" className="hover:text-amber-300 transition-colors">Sobre Nosotros</a>
+            <span className="text-amber-500/35">•</span>
+            <a href="privacidad.html" className="hover:text-amber-300 transition-colors">Privacidad y Aviso Legal</a>
+          </div>
+        </div>
       </main>
     </div>
   );

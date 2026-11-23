@@ -2,152 +2,20 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
-  <meta name="theme-color" content="#040207" />
-  <meta name="description" content="Oráculo del Velo Astral: tirada interactiva de Tarot en 2.5D con los 22 Arcanos Mayores, El Hilo de las Tres Lunas (Pasado, Presente y Futuro) y tu Grimorio Personal." />
-  <title>Oráculo del Velo Astral</title>
-
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@600;700;800;900&family=Cormorant+Garamond:ital,wght@0,500;0,700;1,600&display=swap" rel="stylesheet">
-
-  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-  <script src="https://unpkg.com/framer-motion@10.18.0/dist/framer-motion.js"></script>
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-
-  <!-- 1. Bases de datos originales + Puente de Sincronización Léxica -->
-  <script src="datos_cartas.js"></script>
-  <script src="datos_cartas_menores.js?v=6"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, follow" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="canonical" href="https://emibaio.github.io/oraculo-v5/" />
+  <title>Redirigiendo al Altar | Oráculo del Velo Astral</title>
   <script>
-    if (typeof MAJOR_ARCANA !== "undefined" && !window.MAJOR_ARCANA) window.MAJOR_ARCANA = MAJOR_ARCANA;
-    if (typeof REVERSED_DATA !== "undefined" && !window.REVERSED_DATA) window.REVERSED_DATA = REVERSED_DATA;
-    if (typeof MINOR_ARCANA !== "undefined" && !window.MINOR_ARCANA) window.MINOR_ARCANA = MINOR_ARCANA;
-  </script>
-
-  <!-- 1B. Grimorio Solar y Lunar Polimórfico (12 Volúmenes + Tirada Trina en /datos_cartas/) -->
-  <script src="datos_cartas/datos_sol_1.js"></script>
-  <script src="datos_cartas/datos_sol_2.js"></script>
-  <script src="datos_cartas/datos_sol_3.js"></script>
-  <script src="datos_cartas/datos_sol_4.js"></script>
-  <script src="datos_cartas/datos_sol_5.js"></script>
-  <script src="datos_cartas/datos_sol_6.js"></script>
-  <script src="datos_cartas/datos_luna_1.js"></script>
-  <script src="datos_cartas/datos_luna_2.js"></script>
-  <script src="datos_cartas/datos_luna_3.js"></script>
-  <script src="datos_cartas/datos_luna_4.js"></script>
-  <script src="datos_cartas/datos_luna_5.js"></script>
-  <script src="datos_cartas/datos_luna_6.js"></script>
-  <script src="datos_cartas/datos_trina.js"></script>
-
-  <!-- 1C. Motor Unificador y Enrutador -->
-  <script src="motor_tarot.js?v=6"></script>
-
-  <!-- 2. Audio y Orquestador de Diorama AAA -->
-  <script src="motor_audio.js"></script>
-  <script src="tarot_diorama_renderer.js?v=6"></script>
-
-  <!-- 3. Los 22 Arcanos Mayores Modulares (/cartas/) -->
-  <script src="cartas/el_loco.js"></script>
-  <script src="cartas/el_mago.js"></script>
-  <script src="cartas/la_sacerdotisa.js"></script>
-  <script src="cartas/la_emperatriz.js"></script>
-  <script src="cartas/el_emperador.js"></script>
-  <script src="cartas/el_hierofante.js"></script>
-  <script src="cartas/los_enamorados.js"></script>
-  <script src="cartas/el_carro.js"></script>
-  <script src="cartas/la_fuerza.js"></script>
-  <script src="cartas/el_ermitano.js"></script>
-  <script src="cartas/la_rueda.js"></script>
-  <script src="cartas/la_justicia.js"></script>
-  <script src="cartas/el_colgado.js"></script>
-  <script src="cartas/la_muerte.js"></script>
-  <script src="cartas/la_templanza.js"></script>
-  <script src="cartas/el_diablo.js"></script>
-  <script src="cartas/la_torre.js"></script>
-  <script src="cartas/la_estrella.js"></script>
-  <script src="cartas/la_luna.js"></script>
-  <script src="cartas/el_sol.js"></script>
-  <script src="cartas/el_juicio.js"></script>
-  <script src="cartas/el_mundo.js"></script>
-
-  <!-- Puente de Alias y Verificador de Carga de los 22 Arcanos -->
-  <script>
-    (function verifyAndMapArcanaRegistry() {
-      const reg = window.ARCANA_REGISTRY = window.ARCANA_REGISTRY || {};
-      const aliasGroups = [
-        ["fool", "el_loco", "loco", "0", "00", "major_0", "maj_0"],
-        ["magician", "el_mago", "la_maga", "mago", "I", "1", "major_1", "maj_1"],
-        ["priestess", "high_priestess", "la_sacerdotisa", "la_papisa", "II", "2", "major_2", "maj_2"],
-        ["empress", "la_emperatriz", "III", "3", "major_3", "maj_3"],
-        ["emperor", "el_emperador", "IV", "4", "major_4", "maj_4"],
-        ["hierophant", "el_hierofante", "el_papa", "pope", "V", "5", "major_5", "maj_5"],
-        ["lovers", "los_enamorados", "los_amantes", "VI", "6", "major_6", "maj_6"],
-        ["chariot", "el_carro", "VII", "7", "major_7", "maj_7"],
-        ["strength", "fortitude", "la_fuerza", "VIII", "8", "major_8", "maj_8"],
-        ["hermit", "el_ermitano", "el_ermitaño", "IX", "9", "major_9", "maj_9"],
-        ["wheel", "wheel_of_fortune", "fortune", "la_rueda", "la_rueda_de_la_fortuna", "X", "10", "major_10", "maj_10"],
-        ["justice", "la_justicia", "XI", "11", "major_11", "maj_11"],
-        ["hanged", "hanged_man", "el_colgado", "XII", "12", "major_12", "maj_12"],
-        ["death", "la_muerte", "XIII", "13", "major_13", "maj_13"],
-        ["temperance", "la_templanza", "XIV", "14", "major_14", "maj_14"],
-        ["devil", "el_diablo", "XV", "15", "major_15", "maj_15"],
-        ["tower", "la_torre", "XVI", "16", "major_16", "maj_16"],
-        ["star", "la_estrella", "XVII", "17", "major_17", "maj_17"],
-        ["moon", "la_luna", "XVIII", "18", "major_18", "maj_18"],
-        ["sun", "el_sol", "XIX", "19", "major_19", "maj_19"],
-        ["judgement", "judgment", "el_juicio", "XX", "20", "major_20", "maj_20"],
-        ["world", "el_mundo", "XXI", "21", "major_21", "maj_21"]
-      ];
-      const missing = [];
-      aliasGroups.forEach((group) => {
-        const found = group.map((k) => reg[k]).find(Boolean);
-        if (found) {
-          group.forEach((k) => { reg[k] = found; });
-        } else {
-          missing.push(group[1] + ".js");
-        }
-      });
-      if (missing.length === 0) {
-        const trinaStatus = window.TrinaOracleEngine ? " + Códice Trino (Pasado/Presente/Futuro)" : "";
-        console.log("%c✦ Los 22 Arcanos Mayores AAA + 12 Volúmenes del Grimorio" + trinaStatus + " están activos.", "color: #fde047; font-weight: bold;");
-      } else {
-        console.warn("⚠️ Faltan cargar o tienen otro nombre en /cartas/ los siguientes archivos:", missing);
-      }
+    (function redirectToCanonicalHome() {
+      var dest = "index.html" + (window.location.search || "") + (window.location.hash || "");
+      window.location.replace(dest);
     })();
   </script>
-
-  <!-- 4. Rig 3D de Sibilia, Grimorio Personal y Motores de Tirada (Trina + Principal) -->
-  <script src="rig_sibilia.js"></script>
-  <script src="motor_tirada_trina.js?v=6"></script>
-  <script src="grimorio_personal.js?v=6"></script>
-  <script src="motor_tirada.js?v=8"></script>
-
-  <style>
-    * { box-sizing: border-box; user-select: none; -webkit-user-select: none; }
-    input, textarea, [contenteditable="true"] { user-select: text; -webkit-user-select: text; }
-    html, body { margin: 0; padding: 0; width: 100%; height: 100%; background-color: #040207; color: #fffbeb; overflow: hidden; font-family: 'Cormorant Garamond', Georgia, serif; touch-action: pan-y; }
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: rgba(10, 5, 20, 0.6); }
-    ::-webkit-scrollbar-thumb { background: rgba(212, 175, 55, 0.35); border-radius: 9999px; }
-    ::-webkit-scrollbar-thumb:hover { background: rgba(212, 175, 55, 0.7); }
-    @keyframes spin { 100% { transform: rotate(360deg); } }
-  </style>
+  <meta http-equiv="refresh" content="0; url=index.html" />
 </head>
-<body>
-  <div id="root"></div>
-
-  <script>
-    (function mountOraculoApp() {
-      const App = window.TarotSpreadApp;
-      const rootEl = document.getElementById('root');
-      if (App && rootEl && !window.__tarotSpreadMounted) {
-        window.__tarotSpreadMounted = true;
-        const root = ReactDOM.createRoot(rootEl);
-        root.render(React.createElement(App));
-      }
-    })();
-  </script>
+<body style="margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#040207;color:#fef08a;font-family:Georgia,serif;text-align:center;padding:24px;">
+  <p>Ingresando al Altar... Si no redirige automáticamente, <a href="index.html" style="color:#fde047;">hacé clic acá</a>.</p>
 </body>
 </html>

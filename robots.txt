@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /oraculo.html
+Disallow: /oraculo-v5/oraculo.html
+
+Sitemap: https://emibaio.github.io/oraculo-v5/sitemap.xml
