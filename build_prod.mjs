@@ -45,6 +45,13 @@ function readUtf8(relPath) {
   return fs.readFileSync(full, "utf8");
 }
 
+function resolveDataFile(relPath) {
+  if (fs.existsSync(path.join(ROOT, relPath))) return relPath;
+  const baseName = path.basename(relPath);
+  if (fs.existsSync(path.join(ROOT, baseName))) return baseName;
+  return null;
+}
+
 function escHtml(val) {
   return String(val == null ? "" : val)
     .replace(/&/g, "&amp;")
@@ -102,7 +109,8 @@ async function compileJsxFile(relPath) {
       jsxFragment: "React.Fragment",
       target: "es2019",
       minify: true,
-      legalComments: "none"
+      legalComments: "none",
+      sourcefile: relPath
     });
     return res.code;
   }
@@ -220,9 +228,10 @@ function loadFullTarotCatalog() {
   ];
 
   for (const rel of loadList) {
-    if (!fs.existsSync(path.join(ROOT, rel))) continue;
-    const code = readUtf8(rel);
-    vm.runInContext(code, ctx, { filename: rel });
+    const actualRel = resolveDataFile(rel);
+    if (!actualRel) continue;
+    const code = readUtf8(actualRel);
+    vm.runInContext(code, ctx, { filename: actualRel });
     if (rel === "datos_cartas.js") {
       vm.runInContext(
         'if(typeof MAJOR_ARCANA!=="undefined")window.MAJOR_ARCANA=MAJOR_ARCANA;' +
@@ -235,7 +244,7 @@ function loadFullTarotCatalog() {
 
   const allCards = win.TAROT_DB.getAllCards();
   if (!Array.isArray(allCards) || allCards.length !== 78) {
-    throw new Error("Se esperaban 78 cartas en TAROT_DB, se obtuvieron: " + (allCards ? allCards.length : 0));
+    throw new Error("Se esperaban 78 cartas en TAROT_DB, se obtuvieron: " + (allCards ? allCards.length : 0) + ". Verificá que los 4 archivos datos_menores_*.js estén en datos_cartas/ o en la raíz.");
   }
 
   return {
@@ -688,8 +697,9 @@ async function main() {
     "datos_cartas/datos_menores_espadas.js",
     "datos_cartas/datos_menores_oros.js"
   ]) {
-    if (fs.existsSync(path.join(ROOT, mf))) {
-      grimorioParts.push(await minifyPlainJs(readUtf8(mf), mf));
+    const actualMf = resolveDataFile(mf);
+    if (actualMf) {
+      grimorioParts.push(await minifyPlainJs(readUtf8(actualMf), actualMf));
     }
   }
   grimorioParts.push(await minifyPlainJs(readUtf8("datos_cartas_menores.js"), "datos_cartas_menores.js"));

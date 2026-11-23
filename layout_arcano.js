@@ -11,7 +11,7 @@ const BASE_PREFIX = (typeof window !== 'undefined' && typeof window.__VELO_BASE_
 const SITE_ORIGIN = 'https://emibaio.github.io/oraculo-v5/';
 const resolveSitePath = (rel) => {
   if (!rel) return BASE_PREFIX;
-  if (/^https?:\/\//i.test(rel) || rel.startsWith('data:') || rel.startsWith('../')) return rel;
+  if (rel.startsWith('http://') || rel.startsWith('https://') || rel.startsWith('data:') || rel.startsWith('../')) return rel;
   return BASE_PREFIX + rel;
 };
 const getNeighborHref = (c) => {
