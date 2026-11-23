@@ -739,7 +739,7 @@ const OracleDialogueBox = memo(function OracleDialogueBox({ phase, revealedCard,
         </span>
       </div>
       {/* Grid superpuesto: reserva el alto exacto del texto completo sin cortar líneas en móvil y con 0 CLS */}
-      <div className="grid text-[15px] sm:text-lg md:text-[19px] lg:text-xl text-amber-50 italic leading-relaxed min-h-[4.4rem] sm:min-h-[4.6rem] lg:min-h-[4.8rem]">
+      <div className="grid text-[15px] sm:text-lg md:text-[19px] lg:text-xl text-amber-50 italic leading-relaxed min-h-[6.25rem] sm:min-h-[5.25rem] lg:min-h-[5.5rem]">
         <p className="col-start-1 row-start-1 opacity-0 pointer-events-none select-none" aria-hidden="true">
           “{oracleDialogue}”
         </p>
@@ -1643,7 +1643,11 @@ function TarotSpreadApp() {
                     }}
                     className="absolute inset-0"
                   >
-                    <CardBackOrnament isCracking={false} quality={quality} fastMotion={i < 4} />
+                    {i === 4 ? (
+                      <CardBackOrnament isCracking={false} quality={quality} fastMotion={false} />
+                    ) : (
+                      <div aria-hidden="true" className="w-full h-full rounded-xl bg-[#090811] border-2 border-[#d4af37]/75 shadow-[0_8px_18px_rgba(0,0,0,0.85)]" />
+                    )}
                   </div>
                 ))}
               </div>
@@ -1653,7 +1657,7 @@ function TarotSpreadApp() {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.96 }}
                   onClick={handleStartShuffle}
-                  style={{ fontFamily: "'Cinzel', Georgia, serif" }}
+                  style={{ fontFamily: "'Cinzel', 'Cinzel Fallback', Georgia, serif" }}
                   className="px-8 sm:px-11 lg:px-14 py-3.5 sm:py-4 rounded-full bg-gradient-to-r from-[#b88920] via-[#f3d06b] to-[#b88920] text-[#09050e] font-bold tracking-[0.08em] uppercase text-sm sm:text-base lg:text-lg border-2 border-amber-100 shadow-[0_0_28px_rgba(212,175,55,0.48)] cursor-pointer"
                 >
                   <span className="flex items-center gap-2 lg:gap-3">
@@ -1703,7 +1707,7 @@ function TarotSpreadApp() {
                       onClick={handleStartTrina}
                       className="group w-full sm:w-auto flex flex-col items-center px-6 sm:px-8 py-2.5 sm:py-3 rounded-full bg-gradient-to-r from-[#1a0b2e] via-[#34165c] to-[#1a0b2e] border border-[#d4af37]/80 hover:border-purple-300 shadow-[0_0_20px_rgba(168,85,247,0.32)] cursor-pointer transition-colors"
                     >
-                      <span style={{ fontFamily: "'Cinzel', Georgia, serif" }} className="flex items-center gap-2 text-amber-100 group-hover:text-white font-bold tracking-[0.06em] uppercase text-[13px] sm:text-sm">
+                      <span style={{ fontFamily: "'Cinzel', 'Cinzel Fallback', Georgia, serif" }} className="flex items-center gap-2 text-amber-100 group-hover:text-white font-bold tracking-[0.06em] uppercase text-[13px] sm:text-sm">
                         <Moon className="w-3.5 h-3.5 text-purple-300" />
                         El Hilo de las Tres Lunas
                       </span>
@@ -1720,7 +1724,7 @@ function TarotSpreadApp() {
                       onClick={openSiNoSetup}
                       className="group w-full sm:w-auto flex flex-col items-center px-6 sm:px-8 py-2.5 sm:py-3 rounded-full bg-gradient-to-r from-[#07211b] via-[#13352f] to-[#07211b] border border-emerald-400/75 hover:border-amber-300 shadow-[0_0_20px_rgba(52,211,153,0.28)] cursor-pointer transition-colors"
                     >
-                      <span style={{ fontFamily: "'Cinzel', Georgia, serif" }} className="flex items-center gap-2 text-emerald-100 group-hover:text-white font-bold tracking-[0.06em] uppercase text-[13px] sm:text-sm">
+                      <span style={{ fontFamily: "'Cinzel', 'Cinzel Fallback', Georgia, serif" }} className="flex items-center gap-2 text-emerald-100 group-hover:text-white font-bold tracking-[0.06em] uppercase text-[13px] sm:text-sm">
                         <ScaleIcon className="w-3.5 h-3.5 text-emerald-300" />
                         La Balanza Sí o No
                       </span>
@@ -2087,7 +2091,7 @@ function TarotSpreadApp() {
                   </div>
                 </div>
 
-                <h2 style={{ fontFamily: "'Cinzel', Georgia, serif" }} className="text-xl sm:text-2xl md:text-3xl xl:text-4xl text-amber-200 font-bold leading-tight">
+                <h2 style={{ fontFamily: "'Cinzel', 'Cinzel Fallback', Georgia, serif" }} className="text-xl sm:text-2xl md:text-3xl xl:text-4xl text-amber-200 font-bold leading-tight">
                   {revealedCard.name}: <span className={isReversed ? "text-purple-300" : "text-amber-300"}>{revealedCard.subtitle}</span>
                 </h2>
 

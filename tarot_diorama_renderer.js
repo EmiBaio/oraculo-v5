@@ -40,8 +40,6 @@ const CARD_BACK_BAKED_SVG =
   '<linearGradient id="gold" x1="0" y1="0" x2=".85" y2="1"><stop stop-color="#fff8d7"/><stop offset=".18" stop-color="#ffdb65"/><stop offset=".36" stop-color="#d99a25"/><stop offset=".54" stop-color="#98551a"/><stop offset=".72" stop-color="#ffd85e"/><stop offset=".88" stop-color="#fff0a8"/><stop offset="1" stop-color="#a8611b"/></linearGradient>' +
   '<radialGradient id="moon" cx="34%" cy="27%" r="78%"><stop stop-color="#fff4bf"/><stop offset=".22" stop-color="#f9d760"/><stop offset=".52" stop-color="#bd8027"/><stop offset=".82" stop-color="#72401f"/><stop offset="1" stop-color="#3b2030"/></radialGradient>' +
   '<linearGradient id="sheen" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fffbe6" stop-opacity=".68"/><stop offset=".32" stop-color="#fff0b8" stop-opacity=".12"/><stop offset=".7" stop-color="#fff0b8" stop-opacity="0"/><stop offset="1" stop-color="#ffe071" stop-opacity=".18"/></linearGradient>' +
-  '<filter id="shadow" x="-25%" y="-25%" width="150%" height="150%"><feGaussianBlur in="SourceAlpha" stdDeviation="7" result="blur"/><feOffset in="blur" dx="0" dy="9" result="drop"/><feFlood flood-color="#05030b" flood-opacity=".88" result="shade"/><feComposite in="shade" in2="drop" operator="in" result="shadow"/><feGaussianBlur in="SourceAlpha" stdDeviation="2" result="tightBlur"/><feOffset in="tightBlur" dx="0" dy="3" result="tight"/><feFlood flood-color="#d18d2b" flood-opacity=".35" result="warm"/><feComposite in="warm" in2="tight" operator="in" result="rimShadow"/><feMerge><feMergeNode in="shadow"/><feMergeNode in="rimShadow"/><feMergeNode in="SourceGraphic"/></feMerge></filter>' +
-  '<filter id="bevel" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur in="SourceAlpha" stdDeviation="2" result="softAlpha"/><feSpecularLighting in="softAlpha" surfaceScale="5" specularConstant=".9" specularExponent="18" lighting-color="#fff0a8" result="spec"><feDistantLight azimuth="225" elevation="55"/></feSpecularLighting><feComposite in="spec" in2="SourceAlpha" operator="in" result="bevelLight"/><feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="bevelLight"/></feMerge></filter>' +
   '<pattern id="grain" width="30" height="30" patternUnits="userSpaceOnUse"><path d="M0 15H30M15 0V30" stroke="#bb8a48" stroke-opacity=".045" stroke-width=".65"/><circle cx="15" cy="15" r="1" fill="#f5d78c" fill-opacity=".11"/></pattern>' +
   '<g id="corner" fill="none" stroke="url(#gold)" stroke-linecap="round" stroke-linejoin="round"><path d="M0 52V12Q0 0 12 0h40M7 39V14q0-7 7-7h25" stroke-width="2.1"/><path d="M13 27C24 27 26 17 26 10c9 4 12 12 10 19-2 8-10 12-18 10 9-1 13-7 13-12M6 48c9 0 13-4 14-12" stroke-width="1.5"/><path d="M16 5l3-5 3 5-3 5zM5 16l-5 3 5 3 5-3z" fill="#dbb35f" stroke-width=".8"/><circle cx="13" cy="13" r="1.4" fill="#f4d98f" stroke="none"/></g>' +
   '<g id="star" fill="url(#gold)"><path d="M0-9 1.7-1.7 9 0 1.7 1.7 0 9-1.7 1.7-9 0-1.7-1.7Z"/><circle r="1.2" fill="#fff1ba"/></g>' +
@@ -53,7 +51,8 @@ const CARD_BACK_BAKED_SVG =
   '<rect x="30" y="30" width="452" height="708" rx="19" fill="none" stroke="#f5d989" stroke-opacity=".52" stroke-width="1"/>' +
   '<rect x="34" y="34" width="444" height="700" rx="18" fill="url(#amethyst)" stroke="#ffd96a" stroke-opacity=".85" stroke-width="2"/>' +
   '<rect x="39" y="39" width="434" height="690" rx="15" fill="url(#sheen)" opacity=".23"/>' +
-  '<path d="M256 53 Q276 78 321 78 H415 Q451 78 451 114 V654 Q451 690 415 690 H321 Q276 690 256 715 Q236 690 191 690 H97 Q61 690 61 654 V114 Q61 78 97 78 H191 Q236 78 256 53Z" fill="url(#heart)" stroke="url(#gold)" stroke-width="4.5" filter="url(#shadow)"/>' +
+  '<path d="M256 59 Q276 84 321 84 H415 Q451 84 451 120 V660 Q451 696 415 696 H321 Q276 696 256 721 Q236 696 191 696 H97 Q61 696 61 660 V120 Q61 84 97 84 H191 Q236 84 256 59Z" fill="#05030b" opacity=".68"/>' +
+  '<path d="M256 53 Q276 78 321 78 H415 Q451 78 451 114 V654 Q451 690 415 690 H321 Q276 690 256 715 Q236 690 191 690 H97 Q61 690 61 654 V114 Q61 78 97 78 H191 Q236 78 256 53Z" fill="url(#heart)" stroke="url(#gold)" stroke-width="4.5"/>' +
   '<rect x="34" y="34" width="444" height="700" rx="18" fill="url(#grain)"/>' +
   '<g transform="translate(49 51)"><use href="#corner" xlink:href="#corner"/></g>' +
   '<g transform="translate(463 51) scale(-1 1)"><use href="#corner" xlink:href="#corner"/></g>' +
@@ -69,7 +68,7 @@ const CARD_BACK_BAKED_SVG =
   '<g transform="translate(256 624) scale(.8)"><use href="#star" xlink:href="#star"/></g>' +
   '<g transform="translate(0 8)" opacity=".9"><path d="M256 235 289 276 339 267 346 318 391 344 368 389 391 434 346 460 339 511 289 502 256 543 223 502 173 511 166 460 121 434 144 389 121 344 166 318 173 267 223 276Z" fill="#100b17" stroke="#663915" stroke-width="11" stroke-linejoin="round"/></g>' +
   '<path d="M256 235 289 276 339 267 346 318 391 344 368 389 391 434 346 460 339 511 289 502 256 543 223 502 173 511 166 460 121 434 144 389 121 344 166 318 173 267 223 276Z" fill="#160e1c" stroke="#70451f" stroke-width="9" stroke-linejoin="round"/>' +
-  '<path d="M256 245 286 283 333 275 339 323 381 347 360 389 381 431 339 455 333 503 286 495 256 533 226 495 179 503 173 455 131 431 152 389 131 347 173 323 179 275 226 283Z" fill="url(#gold)" stroke="#fff1a2" stroke-width="2.5" filter="url(#bevel)" stroke-linejoin="round"/>' +
+  '<path d="M256 245 286 283 333 275 339 323 381 347 360 389 381 431 339 455 333 503 286 495 256 533 226 495 179 503 173 455 131 431 152 389 131 347 173 323 179 275 226 283Z" fill="url(#gold)" stroke="#fff1a2" stroke-width="2.5" stroke-linejoin="round"/>' +
   '<path d="M256 267 278 294 313 288 318 324 349 342 333 374 349 406 318 424 313 460 278 454 256 481 234 454 199 460 194 424 163 406 179 374 163 342 194 324 199 288 234 294Z" fill="#281431" stroke="#54311d" stroke-width="5" stroke-linejoin="round"/>' +
   '<circle cx="256" cy="374" r="72" fill="url(#moon)" stroke="#fff0a1" stroke-width="3"/>' +
   '<circle cx="256" cy="374" r="62" fill="none" stroke="#643a20" stroke-opacity=".8" stroke-width="1.5"/>' +
@@ -78,7 +77,7 @@ const CARD_BACK_BAKED_SVG =
   '<circle cx="256" cy="374" r="4" fill="#fffbe1"/>' +
   '</svg>';
 
-const CARD_BACK_SVG_DATA_URI = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(CARD_BACK_BAKED_SVG);
+const CARD_BACK_SVG_DATA_URI = (typeof window !== "undefined" && window.__VELO_CARD_BACK_URL__) ? window.__VELO_CARD_BACK_URL__ : ("data:image/svg+xml;charset=utf-8," + encodeURIComponent(CARD_BACK_BAKED_SVG));
 let bakedCardBackUrl = null;
 let bakingCardBackPromise = null;
 const spriteListeners = new Set();
@@ -188,7 +187,8 @@ const CardBackSprite = memo(function CardBackSprite({ quality = "HIGH", classNam
       alt=""
       aria-hidden="true"
       draggable={false}
-      decoding="sync"
+      decoding="async"
+      fetchPriority="high"
       className={"block w-full h-full object-contain pointer-events-none select-none " + className}
       style={{ backfaceVisibility: "hidden", transform: "translateZ(0)" }}
     />

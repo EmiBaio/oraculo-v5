@@ -3,6 +3,15 @@
 @tailwind utilities;
 
 @font-face {
+  font-family: 'Cinzel Fallback';
+  src: local('Georgia'), local('Times New Roman');
+  ascent-override: 94%;
+  descent-override: 28%;
+  line-gap-override: 0%;
+  size-adjust: 108%;
+}
+
+@font-face {
   font-family: 'Lora Fallback';
   src: local('Georgia'), local('Times New Roman');
   ascent-override: 98%;
@@ -22,4 +31,11 @@
 
 .font-ui { font-family: 'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, -apple-system, sans-serif; }
 .font-body { font-family: 'Lora', 'Lora Fallback', Georgia, serif; }
-.font-display, .font-cinzel, .font-cinzel-dec { font-family: 'Cinzel', Georgia, serif; }
+.font-display, .font-cinzel, .font-cinzel-dec { font-family: 'Cinzel', 'Cinzel Fallback', Georgia, serif; }
+
+/* Altura espejo exacta de Sibilia para el pre-pintado estático de index.html (0 CLS) */
+.velo-shell-oracle { height: 139px; }
+@media (min-width: 420px) { .velo-shell-oracle { height: 163px; } }
+@media (min-width: 640px) { .velo-shell-oracle { height: 230px; } }
+@media (min-width: 1024px) { .velo-shell-oracle { height: 274px; } }
+@media (min-width: 1440px) and (min-height: 820px) { .velo-shell-oracle { height: 307px; } }

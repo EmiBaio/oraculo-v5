@@ -27,7 +27,7 @@ const SITE_URL = "https://emibaio.github.io/oraculo-v5/";
 const TODAY_ISO = new Date().toISOString().slice(0, 10);
 
 const GOOGLE_FONTS_URL =
-  "https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap";
+  "https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap";
 
 function shortHash(buf) {
   return crypto.createHash("sha256").update(buf).digest("hex").slice(0, 8);
@@ -164,21 +164,115 @@ function writeAssetAndReport(filename, contentStr, reportRows) {
 
 function makeGoogleFontsNonBlocking(html) {
   return html.replace(
-    /<link\s+href="(https:\/\/fonts\.googleapis\.com\/css2\?[^"]+)"\s+rel="stylesheet"\s*\/?>/i,
-    function (_, rawHref) {
+    /<link\s+href="https:\/\/fonts\.googleapis\.com\/css2\?[^"]+"\s+rel="stylesheet"\s*\/?>/i,
+    function () {
       return (
-        '<link rel="preload" as="style" href="' + rawHref + '" />\n' +
-        '  <link rel="stylesheet" href="' + rawHref + '" media="print" onload="this.media=\'all\'" />\n' +
-        '  <noscript><link rel="stylesheet" href="' + rawHref + '" /></noscript>'
+        '<link rel="preload" as="style" href="' + GOOGLE_FONTS_URL + '" />\n' +
+        '  <link rel="stylesheet" href="' + GOOGLE_FONTS_URL + '" media="print" onload="this.media=\'all\'" />\n' +
+        '  <noscript><link rel="stylesheet" href="' + GOOGLE_FONTS_URL + '" /></noscript>'
       );
     }
   );
 }
 
 function addMetricFontFallback(html) {
-  return html.replace(
-    /font-family:\s*'Cormorant Garamond',\s*Georgia,\s*serif;/g,
-    "font-family: 'Lora', 'Lora Fallback', Georgia, serif;"
+  return html
+    .replace(
+      /font-family:\s*'Cormorant Garamond',\s*Georgia,\s*serif;/g,
+      "font-family: 'Lora', 'Lora Fallback', Georgia, serif;"
+    )
+    .replace(
+      /font-family:\s*'Cinzel',\s*Georgia,\s*serif;/g,
+      "font-family: 'Cinzel', 'Cinzel Fallback', Georgia, serif;"
+    );
+}
+
+function buildFastCardBackSvg() {
+  return (
+    '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 768" width="512" height="768">' +
+    '<defs>' +
+    '<linearGradient id="edge" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff7d3"/><stop offset=".14" stop-color="#c88b2c"/><stop offset=".3" stop-color="#ffe88d"/><stop offset=".52" stop-color="#8f5019"/><stop offset=".72" stop-color="#ffd45c"/><stop offset=".88" stop-color="#b87924"/><stop offset="1" stop-color="#fff4c3"/></linearGradient>' +
+    '<linearGradient id="amethyst" x1="0" y1="0" x2=".85" y2="1"><stop stop-color="#48215e"/><stop offset=".42" stop-color="#21112f"/><stop offset="1" stop-color="#110d20"/></linearGradient>' +
+    '<radialGradient id="heart" cx="50%" cy="42%" r="68%"><stop stop-color="#552278"/><stop offset=".58" stop-color="#291338"/><stop offset="1" stop-color="#130e20"/></radialGradient>' +
+    '<linearGradient id="gold" x1="0" y1="0" x2=".85" y2="1"><stop stop-color="#fff8d7"/><stop offset=".18" stop-color="#ffdb65"/><stop offset=".36" stop-color="#d99a25"/><stop offset=".54" stop-color="#98551a"/><stop offset=".72" stop-color="#ffd85e"/><stop offset=".88" stop-color="#fff0a8"/><stop offset="1" stop-color="#a8611b"/></linearGradient>' +
+    '<radialGradient id="moon" cx="34%" cy="27%" r="78%"><stop stop-color="#fff4bf"/><stop offset=".22" stop-color="#f9d760"/><stop offset=".52" stop-color="#bd8027"/><stop offset=".82" stop-color="#72401f"/><stop offset="1" stop-color="#3b2030"/></radialGradient>' +
+    '<linearGradient id="sheen" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fffbe6" stop-opacity=".68"/><stop offset=".32" stop-color="#fff0b8" stop-opacity=".12"/><stop offset=".7" stop-color="#fff0b8" stop-opacity="0"/><stop offset="1" stop-color="#ffe071" stop-opacity=".18"/></linearGradient>' +
+    '<pattern id="grain" width="30" height="30" patternUnits="userSpaceOnUse"><path d="M0 15H30M15 0V30" stroke="#bb8a48" stroke-opacity=".045" stroke-width=".65"/><circle cx="15" cy="15" r="1" fill="#f5d78c" fill-opacity=".11"/></pattern>' +
+    '<g id="corner" fill="none" stroke="url(#gold)" stroke-linecap="round" stroke-linejoin="round"><path d="M0 52V12Q0 0 12 0h40M7 39V14q0-7 7-7h25" stroke-width="2.1"/><path d="M13 27C24 27 26 17 26 10c9 4 12 12 10 19-2 8-10 12-18 10 9-1 13-7 13-12M6 48c9 0 13-4 14-12" stroke-width="1.5"/><path d="M16 5l3-5 3 5-3 5zM5 16l-5 3 5 3 5-3z" fill="#dbb35f" stroke-width=".8"/><circle cx="13" cy="13" r="1.4" fill="#f4d98f" stroke="none"/></g>' +
+    '<g id="star" fill="url(#gold)"><path d="M0-9 1.7-1.7 9 0 1.7 1.7 0 9-1.7 1.7-9 0-1.7-1.7Z"/><circle r="1.2" fill="#fff1ba"/></g>' +
+    '</defs>' +
+    '<rect x="16" y="23" width="480" height="740" rx="32" fill="#07060c" stroke="#5b351d" stroke-width="4"/>' +
+    '<rect x="12" y="12" width="488" height="744" rx="31" fill="#090811" stroke="#1c1424" stroke-width="8"/>' +
+    '<rect x="20" y="20" width="472" height="728" rx="25" fill="url(#edge)" stroke="#fff0b0" stroke-opacity=".74" stroke-width="1.5"/>' +
+    '<rect x="27" y="27" width="458" height="714" rx="21" fill="#17111f" stroke="#38243b" stroke-width="2"/>' +
+    '<rect x="30" y="30" width="452" height="708" rx="19" fill="none" stroke="#f5d989" stroke-opacity=".52" stroke-width="1"/>' +
+    '<rect x="34" y="34" width="444" height="700" rx="18" fill="url(#amethyst)" stroke="#ffd96a" stroke-opacity=".85" stroke-width="2"/>' +
+    '<rect x="39" y="39" width="434" height="690" rx="15" fill="url(#sheen)" opacity=".23"/>' +
+    '<path d="M256 59 Q276 84 321 84 H415 Q451 84 451 120 V660 Q451 696 415 696 H321 Q276 696 256 721 Q236 696 191 696 H97 Q61 696 61 660 V120 Q61 84 97 84 H191 Q236 84 256 59Z" fill="#05030b" opacity=".68"/>' +
+    '<path d="M256 53 Q276 78 321 78 H415 Q451 78 451 114 V654 Q451 690 415 690 H321 Q276 690 256 715 Q236 690 191 690 H97 Q61 690 61 654 V114 Q61 78 97 78 H191 Q236 78 256 53Z" fill="url(#heart)" stroke="url(#gold)" stroke-width="4.5"/>' +
+    '<rect x="34" y="34" width="444" height="700" rx="18" fill="url(#grain)"/>' +
+    '<g transform="translate(49 51)"><use href="#corner" xlink:href="#corner"/></g>' +
+    '<g transform="translate(463 51) scale(-1 1)"><use href="#corner" xlink:href="#corner"/></g>' +
+    '<g transform="translate(49 717) scale(1 -1)"><use href="#corner" xlink:href="#corner"/></g>' +
+    '<g transform="translate(463 717) scale(-1 -1)"><use href="#corner" xlink:href="#corner"/></g>' +
+    '<g fill="none" stroke="url(#gold)" stroke-width="1.4" opacity=".82">' +
+    '<ellipse cx="256" cy="384" rx="137" ry="239"/>' +
+    '<ellipse cx="256" cy="384" rx="118" ry="214" stroke-opacity=".5"/>' +
+    '<path d="M256 131v94M256 543v94M104 384h89M319 384h89" stroke-dasharray="2 7"/>' +
+    '<path d="M165 208q24 18 47 10M347 208q-24 18-47 10M165 560q24-18 47-10M347 560q-24-18-47-10" stroke-opacity=".7"/>' +
+    '</g>' +
+    '<g transform="translate(256 144) scale(.8)"><use href="#star" xlink:href="#star"/></g>' +
+    '<g transform="translate(256 624) scale(.8)"><use href="#star" xlink:href="#star"/></g>' +
+    '<g transform="translate(0 8)" opacity=".9"><path d="M256 235 289 276 339 267 346 318 391 344 368 389 391 434 346 460 339 511 289 502 256 543 223 502 173 511 166 460 121 434 144 389 121 344 166 318 173 267 223 276Z" fill="#100b17" stroke="#663915" stroke-width="11" stroke-linejoin="round"/></g>' +
+    '<path d="M256 235 289 276 339 267 346 318 391 344 368 389 391 434 346 460 339 511 289 502 256 543 223 502 173 511 166 460 121 434 144 389 121 344 166 318 173 267 223 276Z" fill="#160e1c" stroke="#70451f" stroke-width="9" stroke-linejoin="round"/>' +
+    '<path d="M256 245 286 283 333 275 339 323 381 347 360 389 381 431 339 455 333 503 286 495 256 533 226 495 179 503 173 455 131 431 152 389 131 347 173 323 179 275 226 283Z" fill="url(#gold)" stroke="#fff1a2" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M256 267 278 294 313 288 318 324 349 342 333 374 349 406 318 424 313 460 278 454 256 481 234 454 199 460 194 424 163 406 179 374 163 342 194 324 199 288 234 294Z" fill="#281431" stroke="#54311d" stroke-width="5" stroke-linejoin="round"/>' +
+    '<circle cx="256" cy="374" r="72" fill="url(#moon)" stroke="#fff0a1" stroke-width="3"/>' +
+    '<circle cx="256" cy="374" r="62" fill="none" stroke="#643a20" stroke-opacity=".8" stroke-width="1.5"/>' +
+    '<path d="M270 323c-27 7-44 32-41 59 3 30 31 52 61 49 12-1 22-6 30-14-7 22-28 38-52 39-35 1-64-27-64-62 0-36 29-65 65-65 7 0 14 1 21 4-6-6-13-9-20-10Z" fill="#1d102b" stroke="#f5d987" stroke-width="3" stroke-linejoin="round"/>' +
+    '<path d="M280 353 286 368 301 374 286 380 280 395 274 380 259 374 274 368Z" fill="#f6dfa1"/>' +
+    '<circle cx="256" cy="374" r="4" fill="#fffbe1"/>' +
+    '</svg>'
+  );
+}
+
+function buildAltarPrepaintShell(cardBackPath) {
+  return (
+    '<div style="background:radial-gradient(ellipse at 50% 25%, #190e30 0%, #090510 55%, #040207 100%)" class="fixed inset-0 overflow-hidden select-none text-amber-50">' +
+    '<div class="absolute inset-0 flex flex-col justify-start z-10 pt-2 sm:pt-3 lg:pt-4 pb-8 lg:pb-10 overflow-y-auto overflow-x-hidden">' +
+    '<header class="flex items-center justify-between px-4 sm:px-6 lg:px-10 z-40 flex-shrink-0 h-11 lg:h-12">' +
+    '<div class="font-ui flex items-center gap-2 sm:gap-3 px-4 sm:px-5 py-2 rounded-full bg-[#130b24]/95 border border-[#d4af37]/60 text-xs sm:text-sm font-semibold text-amber-100">' +
+    '<span>Grimorio: <strong class="text-amber-300">0/22</strong> Arcanos</span>' +
+    '</div>' +
+    '<div aria-hidden="true" class="w-10 h-10 rounded-full bg-[#120a22]/90 border border-[#d4af37]/50"></div>' +
+    '</header>' +
+    '<section class="relative z-10 flex flex-col items-center justify-start flex-shrink-0 w-full">' +
+    '<div class="velo-shell-oracle relative flex items-center justify-center w-full">' +
+    '<div aria-hidden="true" class="rounded-full" style="width:7.5rem;height:7.5rem;background:radial-gradient(circle, rgba(212,175,55,0.22) 0%, rgba(147,51,234,0.12) 48%, transparent 72%)"></div>' +
+    '</div>' +
+    '<div class="relative w-[94%] max-w-3xl lg:max-w-4xl mt-1.5 lg:mt-2.5 px-5 sm:px-7 lg:px-8 py-3 sm:py-3.5 lg:py-4 rounded-2xl bg-[#0c0717]/95 border border-[#d4af37]/55 shadow-[0_14px_38px_rgba(0,0,0,0.88)]">' +
+    '<div class="flex items-center justify-between gap-2 mb-1">' +
+    '<span class="font-ui text-xs sm:text-sm uppercase tracking-[0.08em] sm:tracking-[0.12em] text-amber-400 font-bold">Sibilia del Velo • Oráculo</span>' +
+    '<span class="text-xs uppercase tracking-wider text-purple-200/95 font-semibold">Altar en Calma</span>' +
+    '</div>' +
+    '<div class="grid text-[15px] sm:text-lg md:text-[19px] lg:text-xl text-amber-50 italic leading-relaxed min-h-[6.25rem] sm:min-h-[5.25rem] lg:min-h-[5.5rem]">' +
+    '<p class="col-start-1 row-start-1">“Las hebras del destino aguardan tu toque. Mi mirada sigue tu pulso... cuando tu mente esté en calma, barajá el mazo.”</p>' +
+    '</div>' +
+    '</div>' +
+    '</section>' +
+    '<main class="relative z-30 flex-1 flex flex-col items-center justify-start lg:justify-center w-full">' +
+    '<div class="relative z-20 flex flex-col items-center gap-3.5 sm:gap-6 lg:gap-7 mt-1 mb-6">' +
+    '<div class="relative w-28 h-40 sm:w-40 sm:h-60 lg:w-[186px] lg:h-[280px] xl:w-[214px] xl:h-[324px]">' +
+    '<div aria-hidden="true" class="absolute -inset-10 lg:-inset-14 rounded-full pointer-events-none" style="background:radial-gradient(circle, rgba(245,158,11,0.24) 0%, rgba(168,85,247,0.12) 45%, transparent 72%)"></div>' +
+    '<img src="' + cardBackPath + '" width="512" height="768" alt="Mazo del Oráculo del Velo Astral" fetchpriority="high" decoding="async" class="relative block w-full h-full object-contain rounded-xl shadow-xl" />' +
+    '</div>' +
+    '<div class="flex flex-col items-center gap-3 sm:gap-3.5 z-50 px-4 w-full max-w-3xl">' +
+    '<div class="font-display px-8 sm:px-11 lg:px-14 py-3.5 sm:py-4 rounded-full bg-gradient-to-r from-[#b88920] via-[#f3d06b] to-[#b88920] text-[#09050e] font-bold tracking-[0.12em] uppercase text-sm sm:text-base shadow-xl">✦ Barajar el Destino</div>' +
+    '</div>' +
+    '</div>' +
+    '</main>' +
+    '</div>' +
+    '</div>'
   );
 }
 
@@ -269,7 +363,7 @@ function rewriteStaticCardLinks(html, slugById) {
 }
 
 // Genera una página HTML estática completa e hidratable en dist/cartas/<slug>.html
-function renderStaticCardHtml({ card, neighbors, author, reviewer, slug, inlineCssBlock, coreAsset, grimorioAsset, cartaAsset }) {
+function renderStaticCardHtml({ card, neighbors, author, reviewer, slug, inlineCssBlock, vendorAsset, coreAsset, grimorioAsset, cartaAsset }) {
   const isMajor = card.type === "major" || card.arcanaType === "major" || Number(card.id) <= 21;
   const canonicalUrl = SITE_URL + "cartas/" + slug + ".html";
   const corr = card.correspondences || {};
@@ -444,7 +538,6 @@ function renderStaticCardHtml({ card, neighbors, author, reviewer, slug, inlineC
     '  <meta name="twitter:description" content="' + escHtml(metaDesc) + '" />\n' +
     '  <meta name="twitter:image" content="' + SITE_URL + 'img/og-cover.jpg" />\n\n' +
     '  <script type="application/ld+json">' + safeJsonLd(jsonLd) + '</script>\n\n' +
-    '  <link rel="preconnect" href="https://unpkg.com" crossorigin />\n' +
     '  <link rel="preconnect" href="https://fonts.googleapis.com" />\n' +
     '  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />\n' +
     '  <link rel="preload" as="style" href="' + GOOGLE_FONTS_URL + '" />\n' +
@@ -452,9 +545,7 @@ function renderStaticCardHtml({ card, neighbors, author, reviewer, slug, inlineC
     '  <noscript><link rel="stylesheet" href="' + GOOGLE_FONTS_URL + '" /></noscript>\n' +
     '  ' + inlineCssBlock + '\n\n' +
     '  <script>window.__VELO_STATIC_CARDS__=true;window.__VELO_STATIC_CARD_ID__=' + JSON.stringify(String(card.id)) + ';window.__VELO_BASE_PREFIX__="../";</script>\n' +
-    '  <script defer crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>\n' +
-    '  <script defer crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>\n' +
-    '  <script defer crossorigin src="https://unpkg.com/framer-motion@10.18.0/dist/framer-motion.js"></script>\n' +
+    '  <script defer src="../' + vendorAsset.path + '"></script>\n' +
     '  <script defer src="../' + coreAsset.path + '"></script>\n' +
     '  <script defer src="../' + grimorioAsset.path + '"></script>\n' +
     '  <script defer src="../' + cartaAsset.path + '"></script>\n\n' +
@@ -625,7 +716,7 @@ function buildSitemapXml(cards) {
 
 async function main() {
   const t0 = Date.now();
-  console.log("✦ Iniciando build de producción v8.3 (78 Cartas SEO Estáticas + 0 Render-Blocking)...\n");
+  console.log("✦ Iniciando build de producción v8.4 (Vendor Local + LCP Instantáneo + 78 Cartas SEO)...\n");
 
   if (fs.existsSync(DIST)) {
     fs.rmSync(DIST, { recursive: true, force: true });
@@ -669,6 +760,30 @@ async function main() {
   const cssHash = shortHash(cssBuf);
   reportRows.push({ file: "assets/styles.min.css (inline)", raw: kb(cssBuf.length), gzip: kb(cssGz.length), hash: cssHash });
   const inlineCssBlock = '<style id="velo-tw-css">' + cssStr + "</style>";
+
+  // --------------------------------------------------------------------------
+  // 1B. Dorso Vectorial Ultrarrápido (0 filtros GaussianBlur) -> assets/card-back.svg
+  // --------------------------------------------------------------------------
+  const cardBackSvg = buildFastCardBackSvg();
+  const cardBackAsset = writeAssetAndReport("card-back.svg", cardBackSvg, reportRows);
+
+  // --------------------------------------------------------------------------
+  // 1C. Bundle Vendor Autónomo Local (React 18.3.1 + ReactDOM + Framer Motion 10.18.0)
+  //     Elimina redirecciones HTTP 302 de unpkg.com y habilita modo 100% offline en file:///
+  // --------------------------------------------------------------------------
+  const vendorSources = [
+    "node_modules/react/umd/react.production.min.js",
+    "node_modules/react-dom/umd/react-dom.production.min.js",
+    "node_modules/framer-motion/dist/framer-motion.js"
+  ];
+  const vendorParts = vendorSources.map((rel) => {
+    const full = path.join(ROOT, rel);
+    if (!fs.existsSync(full)) {
+      throw new Error("Falta dependencia vendor: " + rel + ". Ejecutá primero: npm install");
+    }
+    return fs.readFileSync(full, "utf8").replace(/^\/\/#\s*sourceMappingURL=.*$/gm, "").trim();
+  });
+  const vendorAsset = writeAssetAndReport("vendor.bundle.min.js", vendorParts.join(";\n"), reportRows);
 
   // --------------------------------------------------------------------------
   // 2. Bundle Crítico 1: assets/core.bundle.min.js (~45 KB gzip)
@@ -848,25 +963,22 @@ async function main() {
   // --------------------------------------------------------------------------
   // 8. Reescritura optimizada de las 5 páginas principales hacia dist/
   // --------------------------------------------------------------------------
-  // 8A. index.html
+  // 8A. index.html (0 unpkg, 0 timer prematuro de Grimorio, LCP pre-pintado instantáneo)
   {
     let html = readUtf8("index.html");
     html = html.replace(
       /<script\s+src="https:\/\/cdn\.tailwindcss\.com"><\/script>/i,
-      '<link rel="preconnect" href="https://unpkg.com" crossorigin />\n  ' + inlineCssBlock
+      '<link rel="preload" as="image" href="' + cardBackAsset.path + '" fetchpriority="high" />\n  ' + inlineCssBlock
     );
     html = makeGoogleFontsNonBlocking(html);
     html = addMetricFontFallback(html);
     html = rewriteStaticCardLinks(html, slugById);
-    html = html.replace(/^\s*<script[^>]*@babel\/standalone[^>]*><\/script>\s*\r?\n?/gim, "");
-    html = html.replace(
-      /<script(\s+crossorigin)?\s+src="(https:\/\/unpkg\.com\/(?:react|react-dom|framer-motion)[^"]+)"><\/script>/gi,
-      '<script defer crossorigin src="$2"></script>'
-    );
+    html = html.replace(/^[ \t]*<script[^>]*unpkg\.com[^>]*><\/script>[ \t]*\r?\n?/gim, "");
 
     const lazyLoaderInline =
       '<script>' +
       'window.__VELO_STATIC_CARDS__=true;' +
+      'window.__VELO_CARD_BACK_URL__="' + cardBackAsset.path + '";' +
       '(function(){' +
       'var url="' + grimorioAsset.path + '";' +
       'var p=null;' +
@@ -887,17 +999,22 @@ async function main() {
       'if(window.location.search.indexOf("modo=sino")!==-1){kick();}' +
       'else{' +
         '["pointerdown","touchstart","keydown"].forEach(function(ev){window.addEventListener(ev,kick,{once:true,passive:true});});' +
-        'window.addEventListener("load",function(){setTimeout(kick,3800);},{once:true});' +
       '}' +
       '})();' +
       '</script>';
 
     html = html.replace(
       /<!--\s*1\.\s*Bases de datos[\s\S]*?<script\s+src="motor_tirada\.js[^"]*"><\/script>/i,
-      '<!-- Bundles críticos de producción (0 Babel, 0 Tailwind CDN, Grimorio 78 cartas diferido) -->\n' +
+      '<!-- Bundles críticos locales (0 unpkg, 0 Babel, 0 Tailwind CDN, Grimorio 78 cartas bajo demanda real) -->\n' +
       '  ' + lazyLoaderInline + '\n' +
+      '  <script defer src="' + vendorAsset.path + '"></script>\n' +
       '  <script defer src="' + coreAsset.path + '"></script>\n' +
       '  <script defer src="' + altarAsset.path + '"></script>'
+    );
+
+    html = html.replace(
+      '<div id="root"></div>',
+      '<div id="root">' + buildAltarPrepaintShell(cardBackAsset.path) + '</div>'
     );
 
     html = html.replace(
@@ -916,18 +1033,15 @@ async function main() {
     );
     html = html.replace(
       /<script\s+src="https:\/\/cdn\.tailwindcss\.com"><\/script>/i,
-      '<link rel="preconnect" href="https://unpkg.com" crossorigin />\n  ' + inlineCssBlock
+      inlineCssBlock
     );
     html = makeGoogleFontsNonBlocking(html);
     html = addMetricFontFallback(html);
-    html = html.replace(/^\s*<script[^>]*@babel\/standalone[^>]*><\/script>\s*\r?\n?/gim, "");
-    html = html.replace(
-      /<script(\s+crossorigin)?\s+src="(https:\/\/unpkg\.com\/(?:react|react-dom|framer-motion)[^"]+)"><\/script>/gi,
-      '<script defer crossorigin src="$2"></script>'
-    );
+    html = html.replace(/^[ \t]*<script[^>]*unpkg\.com[^>]*><\/script>[ \t]*\r?\n?/gim, "");
     html = html.replace(
       /(\s*<style>)/i,
       '\n  <script>window.__VELO_STATIC_CARDS__=true;</script>\n' +
+      '  <script defer src="' + vendorAsset.path + '"></script>\n' +
       '  <script defer src="' + coreAsset.path + '"></script>\n' +
       '  <script defer src="' + grimorioAsset.path + '"></script>\n' +
       '  <script defer src="' + cartaAsset.path + '"></script>\n$1'
@@ -1038,6 +1152,7 @@ async function main() {
       reviewer: pair.reviewer,
       slug: card.slug,
       inlineCssBlock,
+      vendorAsset,
       coreAsset,
       grimorioAsset,
       cartaAsset
@@ -1061,6 +1176,7 @@ async function main() {
     const content = fs.readFileSync(path.join(DIST, page), "utf8");
     if (content.includes("@babel/standalone")) throw new Error(page + " aún contiene @babel/standalone");
     if (content.includes("cdn.tailwindcss.com")) throw new Error(page + " aún contiene cdn.tailwindcss.com");
+    if (content.includes("unpkg.com")) throw new Error(page + " aún contiene unpkg.com");
     if (!content.includes('id="velo-tw-css"')) throw new Error(page + " no recibió CSS inline");
     if (!content.includes('media="print" onload="this.media=\'all\'"')) throw new Error(page + " aún tiene Google Fonts bloqueante");
     const refs = [...content.matchAll(/(?:src|href)="(assets\/[^"?]+)(?:\?[^"]*)?"/g)].map((m) => m[1]);
@@ -1078,6 +1194,7 @@ async function main() {
     if (!content.includes("<h1")) throw new Error("dist/cartas/" + cf + " no tiene <h1>");
     if (!content.includes("application/ld+json")) throw new Error("dist/cartas/" + cf + " no tiene JSON-LD");
     if (!content.includes('id="velo-tw-css"')) throw new Error("dist/cartas/" + cf + " no tiene CSS inline");
+    if (content.includes("unpkg.com")) throw new Error("dist/cartas/" + cf + " aún contiene unpkg.com");
   }
   const urlCount = (sitemapXml.match(/<url>/g) || []).length;
   if (urlCount !== 82) {
@@ -1085,7 +1202,7 @@ async function main() {
   }
 
   const elapsed = ((Date.now() - t0) / 1000).toFixed(2);
-  console.log("\n✔ BUILD v8.3 COMPLETADO EN " + elapsed + " s (78 Cartas SEO Estáticas + Sitemap 82 URLs)\n");
+  console.log("\n✔ BUILD v8.4 COMPLETADO EN " + elapsed + " s (Vendor Local + LCP Pre-pintado + 78 Cartas SEO + Sitemap 82 URLs)\n");
   console.table(reportRows);
   console.log("✦ Páginas SEO pre-renderizadas en dist/cartas/: " + generatedCardFiles.length + " (" + kb(totalStaticBytes) + " totales)");
   console.log("✦ dist/sitemap.xml actualizado automáticamente con " + urlCount + " URLs canónicas.\n");

@@ -1,14 +1,17 @@
 {
   "name": "oraculo-del-velo-astral",
-  "version": "8.0.0",
+  "version": "8.4.0",
   "private": true,
-  "description": "Build de producción sin Babel ni Tailwind CDN para Oráculo del Velo Astral (GitHub Pages y local)",
+  "description": "Build de producción autónomo (sin Babel, sin Tailwind CDN ni unpkg.com) para Oráculo del Velo Astral",
   "scripts": {
     "build": "node build_prod.mjs",
     "preview": "npx serve dist"
   },
   "devDependencies": {
     "esbuild": "^0.24.2",
+    "framer-motion": "10.18.0",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
     "tailwindcss": "3.4.17"
   }
 }
