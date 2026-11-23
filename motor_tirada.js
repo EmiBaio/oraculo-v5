@@ -189,8 +189,8 @@ const RevealedCardDiorama25D = memo(function RevealedCardDiorama25D({ card, acti
         <button
           type="button"
           onClick={onTogglePolarity}
-          style={{ fontFamily: "'Cinzel', serif" }}
-          className={"flex items-center gap-2 px-4 py-2 rounded-full border text-[11px] lg:text-xs uppercase tracking-[0.18em] transition-colors cursor-pointer shadow-md " + (card.isReversed ? "bg-gradient-to-r from-[#241038] via-[#581c87] to-[#241038] border-purple-300/80 text-purple-100 hover:border-amber-300 hover:text-amber-200" : "bg-[#120924]/95 border-amber-400/50 text-amber-200 hover:bg-amber-500/20")}
+          style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }}
+          className={"flex items-center gap-2 px-4 py-2 rounded-full border text-xs sm:text-sm uppercase tracking-[0.08em] transition-colors cursor-pointer shadow-md " + (card.isReversed ? "bg-gradient-to-r from-[#241038] via-[#581c87] to-[#241038] border-purple-300/80 text-purple-100 hover:border-amber-300 hover:text-amber-200" : "bg-[#120924]/95 border-amber-400/50 text-amber-200 hover:bg-amber-500/20")}
         >
           {card.isReversed ? <Sun className="w-3.5 h-3.5 text-amber-300" /> : <Moon className="w-3.5 h-3.5 text-purple-300" />}
           <span>{card.isReversed ? "✦ Transmutar Sombra en Luz" : "☽ Explorar Faz en Sombra"}</span>
@@ -719,19 +719,19 @@ const OracleDialogueBox = memo(function OracleDialogueBox({ phase, revealedCard,
       animate={{ opacity: isHidden ? 0 : 1, y: isHidden ? -8 : 0 }}
       transition={{ duration: 0.25 }}
       style={{ contain: 'layout style', pointerEvents: isHidden ? 'none' : 'auto' }}
-      className="relative w-[92%] max-w-2xl lg:max-w-3xl xl:max-w-4xl mt-1 lg:mt-2 px-4 sm:px-6 lg:px-8 py-2.5 sm:py-3 lg:py-3.5 rounded-2xl bg-[#090512]/95 border border-[#d4af37]/65 shadow-[0_12px_36px_rgba(0,0,0,0.88)]"
+      className="relative w-[94%] max-w-3xl lg:max-w-4xl mt-1.5 lg:mt-2.5 px-5 sm:px-7 lg:px-8 py-3 sm:py-3.5 lg:py-4 rounded-2xl bg-[#0c0717]/95 border border-[#d4af37]/55 shadow-[0_14px_38px_rgba(0,0,0,0.88)]"
     >
       <div className="flex items-center justify-between gap-2 mb-1">
-        <span style={{ fontFamily: "'Cinzel', serif" }} className="flex items-center gap-1.5 sm:gap-2 text-[9px] sm:text-[11px] lg:text-xs xl:text-sm uppercase tracking-[0.14em] sm:tracking-[0.24em] text-amber-400 font-bold min-w-0 truncate">
+        <span style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }} className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm uppercase tracking-[0.08em] sm:tracking-[0.12em] text-amber-400 font-bold min-w-0 truncate">
           <span className="truncate">Sibilia del Velo • Oráculo</span>
           <span className={"inline-block w-1.5 h-1.5 flex-shrink-0 rounded-full bg-amber-400 transition-opacity duration-200 " + (isTyping ? "opacity-100" : "opacity-40")} />
         </span>
-        <span className="text-[9px] sm:text-[10px] lg:text-xs uppercase tracking-wider text-purple-300/80 font-semibold flex-shrink-0 whitespace-nowrap">
+        <span className="text-xs lg:text-xs uppercase tracking-wider text-purple-200/95 font-semibold flex-shrink-0 whitespace-nowrap">
           {actBadge}
         </span>
       </div>
       {/* Grid superpuesto: reserva el alto exacto del texto completo sin cortar líneas en móvil y con 0 CLS */}
-      <div className="grid text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl text-amber-50/95 italic leading-snug min-h-[3.6rem] sm:min-h-[3.9rem] lg:min-h-[4.4rem]">
+      <div className="grid text-[15px] sm:text-lg md:text-[19px] lg:text-xl text-amber-50 italic leading-relaxed min-h-[4.4rem] sm:min-h-[4.6rem] lg:min-h-[4.8rem]">
         <p className="col-start-1 row-start-1 opacity-0 pointer-events-none select-none" aria-hidden="true">
           “{oracleDialogue}”
         </p>
@@ -1524,8 +1524,8 @@ function TarotSpreadApp() {
           <button
             type="button"
             onClick={() => openGrimoire('codice')}
-            style={{ fontFamily: "'Cinzel', serif" }}
-            className="group flex items-center gap-2 sm:gap-3 px-3.5 sm:px-4 py-1.5 rounded-full bg-[#120a22]/95 hover:bg-[#1e1138] border border-[#d4af37]/60 hover:border-amber-300 text-[10px] sm:text-xs text-amber-200 transition-colors cursor-pointer shadow-[0_0_16px_rgba(212,175,55,0.18)]"
+            style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }}
+            className="group flex items-center gap-2 sm:gap-3 px-4 sm:px-5 py-2 rounded-full bg-[#130b24]/95 hover:bg-[#1e1138] border border-[#d4af37]/60 hover:border-amber-300 text-xs sm:text-sm font-semibold text-amber-100 transition-colors cursor-pointer shadow-[0_0_18px_rgba(212,175,55,0.2)]"
           >
             <BookOpen className="w-3.5 h-3.5 text-amber-400 group-hover:text-amber-200 transition-colors" />
             <span>
@@ -1537,7 +1537,7 @@ function TarotSpreadApp() {
               </span>
             )}
             {readingsCount > 0 && (
-              <span className="hidden md:inline text-purple-200/85 border-l border-amber-500/30 pl-2.5">
+              <span className="hidden md:inline text-purple-100/95 border-l border-amber-500/30 pl-2.5">
                 {readingsCount} {readingsCount === 1 ? 'Lectura' : 'Lecturas'}
               </span>
             )}
@@ -1607,13 +1607,13 @@ function TarotSpreadApp() {
                 ))}
               </div>
 
-              <div className="flex flex-col items-center gap-2.5 sm:gap-3 z-50 px-4 w-full max-w-2xl">
+              <div className="flex flex-col items-center gap-3 sm:gap-3.5 z-50 px-4 w-full max-w-3xl">
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.96 }}
                   onClick={handleStartShuffle}
-                  style={{ fontFamily: "'Cinzel Decorative', serif" }}
-                  className="px-7 sm:px-9 lg:px-12 xl:px-14 py-3 sm:py-3.5 lg:py-4 rounded-full bg-gradient-to-r from-[#2c1b08] via-[#d4af37] to-[#2c1b08] text-[#07050a] font-black tracking-[0.18em] sm:tracking-[0.2em] uppercase text-xs sm:text-sm lg:text-base xl:text-lg border-2 border-amber-200 shadow-[0_0_24px_rgba(212,175,55,0.48)] cursor-pointer"
+                  style={{ fontFamily: "'Cinzel', Georgia, serif" }}
+                  className="px-8 sm:px-11 lg:px-14 py-3.5 sm:py-4 rounded-full bg-gradient-to-r from-[#b88920] via-[#f3d06b] to-[#b88920] text-[#09050e] font-bold tracking-[0.08em] uppercase text-sm sm:text-base lg:text-lg border-2 border-amber-100 shadow-[0_0_28px_rgba(212,175,55,0.48)] cursor-pointer"
                 >
                   <span className="flex items-center gap-2 lg:gap-3">
                     <Sparkles className="w-4 h-4 lg:w-5 lg:h-5 xl:w-6 xl:h-6" /> Barajar el Destino
@@ -1626,13 +1626,13 @@ function TarotSpreadApp() {
                       whileHover={{ scale: 1.04 }}
                       whileTap={{ scale: 0.96 }}
                       onClick={handleStartTrina}
-                      className="group w-full sm:w-auto flex flex-col items-center px-5 sm:px-7 py-2 sm:py-2.5 rounded-full bg-gradient-to-r from-[#1a0b2e] via-[#34165c] to-[#1a0b2e] border border-[#d4af37]/80 hover:border-purple-300 shadow-[0_0_18px_rgba(168,85,247,0.3)] cursor-pointer transition-colors"
+                      className="group w-full sm:w-auto flex flex-col items-center px-6 sm:px-8 py-2.5 sm:py-3 rounded-full bg-gradient-to-r from-[#1a0b2e] via-[#34165c] to-[#1a0b2e] border border-[#d4af37]/80 hover:border-purple-300 shadow-[0_0_20px_rgba(168,85,247,0.32)] cursor-pointer transition-colors"
                     >
-                      <span style={{ fontFamily: "'Cinzel Decorative', serif" }} className="flex items-center gap-2 text-amber-200 group-hover:text-amber-100 font-bold tracking-[0.14em] uppercase text-[11px] sm:text-xs">
+                      <span style={{ fontFamily: "'Cinzel', Georgia, serif" }} className="flex items-center gap-2 text-amber-100 group-hover:text-white font-bold tracking-[0.06em] uppercase text-[13px] sm:text-sm">
                         <Moon className="w-3.5 h-3.5 text-purple-300" />
                         El Hilo de las Tres Lunas
                       </span>
-                      <span style={{ fontFamily: "'Cinzel', serif" }} className="text-[9px] uppercase tracking-[0.22em] text-purple-200/80 mt-0.5">
+                      <span style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }} className="text-xs uppercase tracking-[0.12em] text-purple-100/95 mt-0.5">
                         Pasado • Presente • Futuro
                       </span>
                     </motion.button>
@@ -1643,20 +1643,20 @@ function TarotSpreadApp() {
                       whileHover={{ scale: 1.04 }}
                       whileTap={{ scale: 0.96 }}
                       onClick={openSiNoSetup}
-                      className="group w-full sm:w-auto flex flex-col items-center px-5 sm:px-7 py-2 sm:py-2.5 rounded-full bg-gradient-to-r from-[#07211b] via-[#13352f] to-[#07211b] border border-emerald-400/75 hover:border-amber-300 shadow-[0_0_18px_rgba(52,211,153,0.26)] cursor-pointer transition-colors"
+                      className="group w-full sm:w-auto flex flex-col items-center px-6 sm:px-8 py-2.5 sm:py-3 rounded-full bg-gradient-to-r from-[#07211b] via-[#13352f] to-[#07211b] border border-emerald-400/75 hover:border-amber-300 shadow-[0_0_20px_rgba(52,211,153,0.28)] cursor-pointer transition-colors"
                     >
-                      <span style={{ fontFamily: "'Cinzel Decorative', serif" }} className="flex items-center gap-2 text-emerald-200 group-hover:text-amber-100 font-bold tracking-[0.14em] uppercase text-[11px] sm:text-xs">
+                      <span style={{ fontFamily: "'Cinzel', Georgia, serif" }} className="flex items-center gap-2 text-emerald-100 group-hover:text-white font-bold tracking-[0.06em] uppercase text-[13px] sm:text-sm">
                         <ScaleIcon className="w-3.5 h-3.5 text-emerald-300" />
                         La Balanza Sí o No
                       </span>
-                      <span style={{ fontFamily: "'Cinzel', serif" }} className="text-[9px] uppercase tracking-[0.22em] text-emerald-200/80 mt-0.5">
+                      <span style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }} className="text-xs uppercase tracking-[0.12em] text-emerald-200/95 mt-0.5">
                         Pulso Rápido • 1 o 3 Cartas
                       </span>
                     </motion.button>
                   )}
                 </div>
 
-                <div style={{ fontFamily: "'Cinzel', serif" }} className="flex flex-wrap items-center justify-center gap-3 pt-1 text-[10px] uppercase tracking-[0.18em] text-amber-200/60">
+                <div style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }} className="flex flex-wrap items-center justify-center gap-3 pt-1 text-xs uppercase tracking-[0.08em] text-amber-200/90">
                   <a href="tarot-si-o-no.html" className="hover:text-emerald-300 transition-colors">Guía Sí o No</a>
                   <span className="text-amber-500/35">•</span>
                   <a href="sobre-nosotros.html" className="hover:text-amber-300 transition-colors">Sobre Nosotros</a>
@@ -1770,7 +1770,7 @@ function TarotSpreadApp() {
               )}
 
               {spreadMode === 'trina' && currentTrinaInfo && (
-                <span style={{ fontFamily: "'Cinzel', serif" }} className="absolute bottom-0 left-1/2 -translate-x-1/2 whitespace-nowrap px-4 py-1 rounded-full bg-[#090513]/95 border border-purple-400/40 text-[10px] sm:text-xs uppercase tracking-[0.22em] text-purple-200/90 pointer-events-none">
+                <span style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }} className="absolute bottom-0 left-1/2 -translate-x-1/2 whitespace-nowrap px-4 py-1 rounded-full bg-[#090513]/95 border border-purple-400/40 text-xs sm:text-[13px] uppercase tracking-[0.12em] text-purple-200/90 pointer-events-none">
                   ✦ {currentTrinaInfo.shuffleName} ✦
                 </span>
               )}
@@ -1887,8 +1887,8 @@ function TarotSpreadApp() {
               <button
                 type="button"
                 onClick={handleReset}
-                style={{ fontFamily: "'Cinzel', serif" }}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#241608] border border-[#d4af37] text-amber-200 text-[10px] uppercase tracking-wider font-bold cursor-pointer whitespace-nowrap"
+                style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#241608] border border-[#d4af37] text-amber-200 text-xs uppercase tracking-wider font-bold cursor-pointer whitespace-nowrap"
               >
                 <RotateCcw className="w-3.5 h-3.5" /> Nueva Tirada
               </button>
@@ -1896,15 +1896,15 @@ function TarotSpreadApp() {
                 <button
                   type="button"
                   onClick={() => openGrimoire('codice')}
-                  style={{ fontFamily: "'Cinzel', serif" }}
-                  className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-full bg-[#140b26] border border-amber-400/50 text-amber-200 text-[10px] uppercase tracking-wider cursor-pointer whitespace-nowrap"
+                  style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }}
+                  className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-full bg-[#140b26] border border-amber-400/50 text-amber-200 text-xs uppercase tracking-wider cursor-pointer whitespace-nowrap"
                 >
                   <BookOpen className="w-3 h-3 text-amber-300" /> Grimorio
                 </button>
                 <a
                   href={"carta.html?arcano=" + revealedCard.id + (isReversed ? "&modo=sombra" : "")}
-                  style={{ fontFamily: "'Cinzel', serif" }}
-                  className="px-2.5 py-1.5 rounded-full bg-purple-950/90 border border-purple-400/60 text-purple-200 text-[10px] uppercase tracking-wider whitespace-nowrap"
+                  style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }}
+                  className="px-2.5 py-1.5 rounded-full bg-purple-950/90 border border-purple-400/60 text-purple-200 text-xs uppercase tracking-wider whitespace-nowrap"
                 >
                   ✦ Códice
                 </a>
@@ -1917,7 +1917,7 @@ function TarotSpreadApp() {
               style={{ WebkitOverflowScrolling: 'touch', touchAction: 'pan-y' }}
               className="flex-1 overflow-y-auto overflow-x-hidden custom-scrollbar pt-4 sm:pt-6 lg:pt-14 pb-24 px-3 sm:px-6 lg:px-10"
             >
-            <div className="max-w-6xl mx-auto flex flex-col lg:flex-row items-center lg:items-start justify-start lg:justify-center gap-6 sm:gap-8 lg:gap-10 xl:gap-12">
+            <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center lg:items-start justify-start lg:justify-center gap-7 sm:gap-9 lg:gap-10 xl:gap-12">
             {/* COLUMNA IZQUIERDA: DIORAMA 2.5D + PALABRAS CLAVE + CONMUTADOR DE POLARIDAD */}
             <motion.div
               initial={isMobile ? { opacity: 0, scale: 0.92 } : { rotateY: 180, scale: 1.06, y: 0 }}
@@ -1935,7 +1935,7 @@ function TarotSpreadApp() {
               {revealedCard.correspondences?.keywords && (
                 <div className="flex flex-wrap justify-center gap-1.5 max-w-[270px] lg:max-w-[308px] xl:max-w-[332px]">
                   {revealedCard.correspondences.keywords.map((kw) => (
-                    <span key={kw} className={"px-2.5 py-0.5 rounded-md border text-[11px] lg:text-xs shadow-sm " + (isReversed ? "bg-purple-950/35 border-purple-400/30 text-purple-200/85" : "bg-white/[0.04] border-amber-500/25 text-amber-200/85")}>
+                    <span key={kw} className={"px-2.5 py-0.5 rounded-md border text-xs sm:text-sm shadow-sm " + (isReversed ? "bg-purple-950/35 border-purple-400/30 text-purple-100/95" : "bg-white/[0.04] border-amber-500/25 text-amber-200/85")}>
                       #{kw}
                     </span>
                   ))}
@@ -1949,7 +1949,7 @@ function TarotSpreadApp() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.18, duration: 0.42 }}
               style={{ contain: 'layout style' }}
-              className={"w-full max-w-2xl xl:max-w-3xl rounded-2xl bg-[#090513]/95 border p-4 sm:p-6 lg:p-7 shadow-[0_18px_50px_rgba(0,0,0,0.92)] space-y-4 " + (isReversed ? "border-purple-400/70" : "border-[#d4af37]/75")}
+              className={"w-full flex-1 min-w-0 max-w-3xl xl:max-w-4xl rounded-3xl bg-[#0c0717]/95 border p-5 sm:p-7 lg:p-9 shadow-[0_20px_55px_rgba(0,0,0,0.92)] space-y-5 " + (isReversed ? "border-purple-400/70" : "border-[#d4af37]/70")}
             >
               {/* 1. BANNER DE SINCRONICIDAD KÁRMICA */}
               {activeSynchronicity && (
@@ -1961,11 +1961,11 @@ function TarotSpreadApp() {
                   <Sparkles className={"w-5 h-5 flex-shrink-0 mt-0.5 " + (recentDrawCount >= 2 ? "text-amber-300" : "text-amber-400")} />
                   <div className="space-y-0.5">
                     <div className="flex flex-wrap items-center gap-2">
-                      <span style={{ fontFamily: "'Cinzel', serif" }} className="text-[10px] sm:text-xs uppercase tracking-[0.22em] font-bold text-amber-300">
+                      <span style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }} className="text-xs sm:text-[13px] uppercase tracking-[0.12em] font-bold text-amber-300">
                         {recentDrawCount >= 2 ? ("✦ Sincronicidad Kármica • " + recentDrawCount + "ª Aparición en 7 Días") : "✦ Registro del Oráculo"}
                       </span>
                       {revealedCard.totalDrawsAllTime > 1 && (
-                        <span className="text-[10px] text-purple-300/75">
+                        <span className="text-xs text-purple-200/95">
                           (Total histórico: {revealedCard.totalDrawsAllTime})
                         </span>
                       )}
@@ -1981,15 +1981,15 @@ function TarotSpreadApp() {
               <div className="border-b border-amber-500/30 pb-3.5 space-y-2.5">
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <div className="flex flex-wrap items-center gap-2">
-                    <span style={{ fontFamily: "'Cinzel', serif" }} className="text-[11px] sm:text-xs lg:text-sm uppercase tracking-[0.24em] text-amber-400 font-bold">
+                    <span style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }} className="text-xs sm:text-sm uppercase tracking-[0.12em] text-amber-400 font-bold">
                       {revealedCard.type === 'minor' ? ("Palo de " + revealedCard.suitName) : ("Arcano Mayor " + revealedCard.numeral)}
                     </span>
                     {isReversed ? (
-                      <span className="px-2.5 py-0.5 rounded-full bg-purple-950/90 border border-purple-400/70 text-purple-200 text-[10px] lg:text-xs uppercase tracking-wider font-bold">
+                      <span className="px-2.5 py-0.5 rounded-full bg-purple-950/90 border border-purple-400/70 text-purple-200 text-xs sm:text-[13px] uppercase tracking-wider font-bold">
                         Invertida • Faz Lunar en Sombra
                       </span>
                     ) : (
-                      <span className="px-2.5 py-0.5 rounded-full bg-emerald-950/90 border border-emerald-500/60 text-emerald-300 text-[10px] lg:text-xs uppercase tracking-wider font-bold">
+                      <span className="px-2.5 py-0.5 rounded-full bg-emerald-950/90 border border-emerald-500/60 text-emerald-300 text-xs sm:text-[13px] uppercase tracking-wider font-bold">
                         Al Derecho • Faz Solar en Luz
                       </span>
                     )}
@@ -1998,21 +1998,21 @@ function TarotSpreadApp() {
                     <button
                       type="button"
                       onClick={() => openGrimoire('codice')}
-                      style={{ fontFamily: "'Cinzel', serif" }}
+                      style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }}
                       className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#140b26] hover:bg-amber-500/20 border border-amber-400/45 text-amber-200 text-xs lg:text-sm uppercase tracking-wider transition-colors cursor-pointer"
                     >
                       <BookOpen className="w-3.5 h-3.5 text-amber-300" /> Grimorio
                     </button>
-                    <a href={"carta.html?arcano=" + revealedCard.id + (isReversed ? "&modo=sombra" : "")} style={{ fontFamily: "'Cinzel', serif" }} className="px-3.5 py-1.5 rounded-full bg-purple-500/20 hover:bg-purple-500/35 border border-purple-400/60 text-purple-200 text-xs lg:text-sm uppercase tracking-wider transition-colors">
+                    <a href={"carta.html?arcano=" + revealedCard.id + (isReversed ? "&modo=sombra" : "")} style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }} className="px-3.5 py-1.5 rounded-full bg-purple-500/20 hover:bg-purple-500/35 border border-purple-400/60 text-purple-200 text-xs lg:text-sm uppercase tracking-wider transition-colors">
                       ✦ Códice Completo
                     </a>
-                    <button onClick={handleReset} style={{ fontFamily: "'Cinzel', serif" }} className="flex items-center gap-1.5 px-3.5 sm:px-4 py-1.5 rounded-full bg-amber-500/15 hover:bg-amber-500/30 border border-[#d4af37] text-amber-200 text-xs lg:text-sm uppercase tracking-wider transition-colors cursor-pointer">
+                    <button onClick={handleReset} style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }} className="flex items-center gap-1.5 px-3.5 sm:px-4 py-1.5 rounded-full bg-amber-500/15 hover:bg-amber-500/30 border border-[#d4af37] text-amber-200 text-xs lg:text-sm uppercase tracking-wider transition-colors cursor-pointer">
                       <RotateCcw className="w-3.5 h-3.5" /> Nueva Tirada
                     </button>
                   </div>
                 </div>
 
-                <h2 style={{ fontFamily: "'Cinzel Decorative', serif" }} className="text-xl sm:text-2xl md:text-3xl xl:text-4xl text-amber-200 font-bold leading-tight">
+                <h2 style={{ fontFamily: "'Cinzel', Georgia, serif" }} className="text-xl sm:text-2xl md:text-3xl xl:text-4xl text-amber-200 font-bold leading-tight">
                   {revealedCard.name}: <span className={isReversed ? "text-purple-300" : "text-amber-300"}>{revealedCard.subtitle}</span>
                 </h2>
 
@@ -2039,10 +2039,10 @@ function TarotSpreadApp() {
               {/* 3. LA VOZ DEL ARQUETIPO EN PRIMERA PERSONA */}
               {revealedCard.oracleVoice && (
                 <div className={"p-3.5 sm:p-4 rounded-xl border relative overflow-hidden " + (isReversed ? "bg-gradient-to-r from-[#1c0d2b] via-[#11081c] to-[#1c0d2b] border-purple-400/45" : "bg-gradient-to-r from-[#241707] via-[#120b1d] to-[#241707] border-amber-400/45")}>
-                  <div style={{ fontFamily: "'Cinzel', serif" }} className={"text-[10px] sm:text-xs uppercase tracking-[0.24em] font-bold mb-1 flex items-center justify-between " + (isReversed ? "text-purple-300" : "text-amber-400")}>
+                  <div style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }} className={"text-xs sm:text-[13px] uppercase tracking-[0.12em] font-bold mb-1 flex items-center justify-between " + (isReversed ? "text-purple-300" : "text-amber-400")}>
                     <span>{isReversed ? ("☽ Voz de " + revealedCard.name + " en Sombra") : ("☉ Voz de " + revealedCard.name + " en Luz")}</span>
                     {revealedCard.correspondences?.alchemy && (
-                      <span className="text-[10px] text-amber-200/70 hidden sm:inline">Alquimia: {revealedCard.correspondences.alchemy.split('•')[0]}</span>
+                      <span className="text-xs text-amber-200/90 hidden sm:inline">Alquimia: {revealedCard.correspondences.alchemy.split('•')[0]}</span>
                     )}
                   </div>
                   <p className="text-base sm:text-lg lg:text-xl text-amber-50 italic leading-relaxed">
@@ -2050,7 +2050,7 @@ function TarotSpreadApp() {
                   </p>
                   {revealedCard.correspondences?.hermeticAxiom && (
                     <p className="mt-2 pt-2 border-t border-white/10 text-xs sm:text-sm text-amber-300/85">
-                      <strong style={{ fontFamily: "'Cinzel', serif" }} className="uppercase tracking-wider text-[10px] mr-1.5">Axioma Hermético:</strong>
+                      <strong style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }} className="uppercase tracking-wider text-xs mr-1.5">Axioma Hermético:</strong>
                       {revealedCard.correspondences.hermeticAxiom}
                     </p>
                   )}
@@ -2066,7 +2066,7 @@ function TarotSpreadApp() {
                         key={node.id}
                         type="button"
                         onClick={() => { sound?.playSkyrimNodeChime(i); setActiveNode(node); }}
-                        style={{ fontFamily: "'Cinzel', serif" }}
+                        style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }}
                         className={"px-3 py-1.5 rounded-full text-xs lg:text-sm border transition-colors cursor-pointer " + (activeNode?.id === node.id ? (isReversed ? "bg-purple-300 text-black border-white font-bold" : "bg-amber-400 text-black border-white font-bold") : "bg-[#120924] border-amber-500/40 text-amber-200 hover:border-amber-300")}
                       >
                         ✦ Símbolo {i + 1}: {node.title}
@@ -2081,11 +2081,11 @@ function TarotSpreadApp() {
                       className={"p-3.5 sm:p-4 rounded-xl border-l-4 shadow-sm space-y-2 " + (isReversed ? "bg-gradient-to-r from-purple-900/35 via-[#120822] to-transparent border-purple-400" : "bg-gradient-to-r from-amber-500/15 via-purple-900/25 to-transparent border-amber-400")}
                     >
                       <div className="flex flex-wrap items-center justify-between gap-2">
-                        <span style={{ fontFamily: "'Cinzel', serif" }} className="text-xs lg:text-sm font-bold uppercase tracking-widest text-amber-300 flex items-center gap-1.5">
+                        <span style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }} className="text-xs lg:text-sm font-bold uppercase tracking-widest text-amber-300 flex items-center gap-1.5">
                           <Sparkles className="w-3.5 h-3.5 text-amber-400" /> Secreto del Relicario: {activeNode.title}
                         </span>
                         {activeNode.esotericFormula && (
-                          <span className="px-2.5 py-0.5 rounded bg-black/50 border border-amber-400/35 font-mono text-[11px] text-amber-300">
+                          <span className="px-2.5 py-0.5 rounded bg-black/50 border border-amber-400/35 font-mono text-xs text-amber-300">
                             {activeNode.esotericFormula}
                           </span>
                         )}
@@ -2120,8 +2120,8 @@ function TarotSpreadApp() {
                         key={tab.id}
                         type="button"
                         onClick={() => { sound?.playHarpNote?.(2); setActiveTab(tab.id); }}
-                        style={{ fontFamily: "'Cinzel', serif" }}
-                        className={"flex items-center justify-center gap-1.5 py-2 px-2 rounded-lg text-[11px] lg:text-xs uppercase tracking-wider font-bold transition-colors cursor-pointer " + (isActive ? (isReversed ? "bg-purple-600 text-white" : "bg-gradient-to-r from-amber-500 to-amber-300 text-black") : "text-amber-200/70 hover:text-amber-200 hover:bg-white/[0.04]")}
+                        style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }}
+                        className={"flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-lg text-xs sm:text-sm uppercase tracking-wider font-semibold transition-colors cursor-pointer " + (isActive ? (isReversed ? "bg-purple-600 text-white" : "bg-gradient-to-r from-amber-500 to-amber-300 text-black") : "text-amber-200/90 hover:text-amber-200 hover:bg-white/[0.04]")}
                       >
                         <IconComp className="w-3.5 h-3.5" />
                         <span>{tab.label}</span>
@@ -2131,12 +2131,12 @@ function TarotSpreadApp() {
                 </div>
 
                 {activeTab === 'oracle' && (
-                  <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} className="space-y-3.5 text-sm sm:text-base lg:text-lg">
+                  <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} className="space-y-4 text-base sm:text-[17px] leading-relaxed">
                     <div className="p-4 rounded-xl bg-white/[0.03] border border-white/10 shadow-sm space-y-2">
-                      <h4 style={{ fontFamily: "'Cinzel', serif" }} className="text-xs lg:text-sm uppercase tracking-widest text-amber-400 font-bold flex items-center justify-between">
+                      <h4 style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }} className="text-xs lg:text-sm uppercase tracking-widest text-amber-400 font-bold flex items-center justify-between">
                         <span className="flex items-center gap-1.5"><Sun className="w-4 h-4" /> {isReversed ? "Lectura Esotérica en Sombra" : "Lectura Esotérica en Luz"}</span>
                         {(revealedCard.correspondences?.treeOfLifePath || revealedCard.correspondences?.qliphoth) && (
-                          <span className="text-[11px] text-purple-300 font-normal">
+                          <span className="text-xs text-purple-300 font-normal">
                             {isReversed && revealedCard.correspondences?.qliphoth ? ("Qliphoth: " + revealedCard.correspondences.qliphoth.split('•')[0]) : (revealedCard.correspondences?.treeOfLifePath?.split('•')[0] || "")}
                           </span>
                         )}
@@ -2145,20 +2145,20 @@ function TarotSpreadApp() {
                     </div>
 
                     <div className="p-4 rounded-xl bg-white/[0.03] border border-white/10 shadow-sm space-y-1.5">
-                      <h4 style={{ fontFamily: "'Cinzel', serif" }} className="text-xs lg:text-sm uppercase tracking-widest text-purple-300 font-bold flex items-center gap-1.5">
+                      <h4 style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }} className="text-xs lg:text-sm uppercase tracking-widest text-purple-300 font-bold flex items-center gap-1.5">
                         <Moon className="w-4 h-4" /> Dualidad: Luz y Sombra del Arcano
                       </h4>
-                      <p className="text-amber-50/90 leading-relaxed">{activeLightAndShadow}</p>
+                      <p className="text-amber-50/95 leading-relaxed">{activeLightAndShadow}</p>
                       {revealedCard.correspondences?.tarotTiming && (
                         <p className="pt-2 text-xs sm:text-sm text-amber-300/90">
-                          <strong style={{ fontFamily: "'Cinzel', serif" }} className="uppercase tracking-wider">Tiempo y Ritmo Astral: </strong>
+                          <strong style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }} className="uppercase tracking-wider">Tiempo y Ritmo Astral: </strong>
                           {revealedCard.correspondences.tarotTiming}
                         </p>
                       )}
                     </div>
 
                     <div className="p-4 rounded-xl bg-amber-500/[0.09] border border-amber-400/40 shadow-sm">
-                      <h4 style={{ fontFamily: "'Cinzel', serif" }} className="text-xs lg:text-sm uppercase tracking-widest text-amber-300 font-bold mb-1 flex items-center gap-1.5">
+                      <h4 style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }} className="text-xs lg:text-sm uppercase tracking-widest text-amber-300 font-bold mb-1 flex items-center gap-1.5">
                         <ShieldAlert className="w-4 h-4" /> Sentencia y Consejo Oracular
                       </h4>
                       <p className="text-amber-100 font-semibold italic text-base sm:text-lg lg:text-xl leading-relaxed">
@@ -2169,10 +2169,10 @@ function TarotSpreadApp() {
                 )}
 
                 {activeTab === 'psyche' && (
-                  <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} className="space-y-3.5 text-sm sm:text-base lg:text-lg">
+                  <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} className="space-y-4 text-base sm:text-[17px] leading-relaxed">
                     {(revealedCard.correspondences?.jungianArchetype || revealedCard.correspondences?.jungianComplex) && (
                       <div className="p-3.5 rounded-xl bg-purple-950/35 border border-purple-400/35 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                        <span style={{ fontFamily: "'Cinzel', serif" }} className="text-xs uppercase tracking-widest text-purple-300 font-bold">
+                        <span style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }} className="text-xs uppercase tracking-widest text-purple-300 font-bold">
                           {isReversed ? "Complejo Psíquico Activo:" : "Arquetipo Junguiano:"}
                         </span>
                         <span className="text-sm sm:text-base text-amber-200 font-semibold">
@@ -2184,16 +2184,16 @@ function TarotSpreadApp() {
                     {isReversed && revealedCard.shadowPolarity && (
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                         <div className="p-3.5 rounded-xl bg-rose-950/30 border border-rose-500/35 space-y-1">
-                          <h5 style={{ fontFamily: "'Cinzel', serif" }} className="text-xs uppercase tracking-wider text-rose-300 font-bold">
+                          <h5 style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }} className="text-xs uppercase tracking-wider text-rose-300 font-bold">
                             ▲ Sombra por Exceso (Desborde)
                           </h5>
-                          <p className="text-xs sm:text-sm text-amber-50/90 leading-relaxed">{revealedCard.shadowPolarity.byExcess}</p>
+                          <p className="text-sm sm:text-[15px] text-amber-50/95 leading-relaxed">{revealedCard.shadowPolarity.byExcess}</p>
                         </div>
                         <div className="p-3.5 rounded-xl bg-sky-950/30 border border-sky-500/35 space-y-1">
-                          <h5 style={{ fontFamily: "'Cinzel', serif" }} className="text-xs uppercase tracking-wider text-sky-300 font-bold">
+                          <h5 style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }} className="text-xs uppercase tracking-wider text-sky-300 font-bold">
                             ▼ Sombra por Defecto (Parálisis)
                           </h5>
-                          <p className="text-xs sm:text-sm text-amber-50/90 leading-relaxed">{revealedCard.shadowPolarity.byDeficiency}</p>
+                          <p className="text-sm sm:text-[15px] text-amber-50/95 leading-relaxed">{revealedCard.shadowPolarity.byDeficiency}</p>
                         </div>
                       </div>
                     )}
@@ -2201,14 +2201,14 @@ function TarotSpreadApp() {
                     {isReversed && revealedCard.theWound ? (
                       <React.Fragment>
                         <div className="p-4 rounded-xl bg-white/[0.03] border border-purple-400/35 space-y-1.5">
-                          <h4 style={{ fontFamily: "'Cinzel', serif" }} className="text-xs lg:text-sm uppercase tracking-widest text-purple-300 font-bold">
+                          <h4 style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }} className="text-xs lg:text-sm uppercase tracking-widest text-purple-300 font-bold">
                             ✦ La Herida Raíz Inconsciente
                           </h4>
                           <p className="text-amber-50/95 leading-relaxed">{revealedCard.theWound}</p>
                         </div>
                         {revealedCard.theIllusion && (
                           <div className="p-4 rounded-xl bg-amber-500/[0.06] border border-amber-400/35 space-y-1.5">
-                            <h4 style={{ fontFamily: "'Cinzel', serif" }} className="text-xs lg:text-sm uppercase tracking-widest text-amber-300 font-bold">
+                            <h4 style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }} className="text-xs lg:text-sm uppercase tracking-widest text-amber-300 font-bold">
                               ✦ El Espejismo del Ego (La Coartada a Desmantelar)
                             </h4>
                             <p className="text-amber-100/95 leading-relaxed">{revealedCard.theIllusion}</p>
@@ -2217,7 +2217,7 @@ function TarotSpreadApp() {
                       </React.Fragment>
                     ) : (
                       <div className="p-4 rounded-xl bg-white/[0.03] border border-amber-400/30 space-y-2">
-                        <h4 style={{ fontFamily: "'Cinzel', serif" }} className="text-xs lg:text-sm uppercase tracking-widest text-amber-300 font-bold">
+                        <h4 style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }} className="text-xs lg:text-sm uppercase tracking-widest text-amber-300 font-bold">
                           ✦ El Espejo Psicológico (Clínica de Individuación)
                         </h4>
                         <p className="text-amber-50/95 leading-relaxed">
@@ -2232,28 +2232,28 @@ function TarotSpreadApp() {
                   <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} className="space-y-3">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                       <div className="p-3.5 rounded-xl bg-pink-500/[0.07] border border-pink-400/30 space-y-1">
-                        <h4 style={{ fontFamily: "'Cinzel', serif" }} className="text-xs uppercase tracking-wider text-pink-300 font-bold">♥ Amor y Vínculos</h4>
-                        <p className="text-sm sm:text-base text-amber-50/90 leading-relaxed">{activeDomains.love}</p>
+                        <h4 style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }} className="text-xs uppercase tracking-wider text-pink-300 font-bold">♥ Amor y Vínculos</h4>
+                        <p className="text-[15px] sm:text-base text-amber-50/95 leading-relaxed">{activeDomains.love}</p>
                       </div>
                       <div className="p-3.5 rounded-xl bg-amber-500/[0.07] border border-amber-400/30 space-y-1">
-                        <h4 style={{ fontFamily: "'Cinzel', serif" }} className="text-xs uppercase tracking-wider text-amber-300 font-bold">✦ Trabajo, Oficio y Estrategia</h4>
-                        <p className="text-sm sm:text-base text-amber-50/90 leading-relaxed">{activeDomains.work}</p>
+                        <h4 style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }} className="text-xs uppercase tracking-wider text-amber-300 font-bold">✦ Trabajo, Oficio y Estrategia</h4>
+                        <p className="text-[15px] sm:text-base text-amber-50/95 leading-relaxed">{activeDomains.work}</p>
                       </div>
                       {activeDomains.money && (
                         <div className="p-3.5 rounded-xl bg-emerald-500/[0.07] border border-emerald-400/30 space-y-1">
-                          <h4 style={{ fontFamily: "'Cinzel', serif" }} className="text-xs uppercase tracking-wider text-emerald-300 font-bold">◈ Dinero y Patrimonio</h4>
-                          <p className="text-sm sm:text-base text-amber-50/90 leading-relaxed">{activeDomains.money}</p>
+                          <h4 style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }} className="text-xs uppercase tracking-wider text-emerald-300 font-bold">◈ Dinero y Patrimonio</h4>
+                          <p className="text-[15px] sm:text-base text-amber-50/95 leading-relaxed">{activeDomains.money}</p>
                         </div>
                       )}
                       <div className="p-3.5 rounded-xl bg-indigo-500/[0.08] border border-indigo-400/30 space-y-1">
-                        <h4 style={{ fontFamily: "'Cinzel', serif" }} className="text-xs uppercase tracking-wider text-indigo-300 font-bold">❂ Camino Espiritual</h4>
-                        <p className="text-sm sm:text-base text-amber-50/90 leading-relaxed">{activeDomains.spirit}</p>
+                        <h4 style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }} className="text-xs uppercase tracking-wider text-indigo-300 font-bold">❂ Camino Espiritual</h4>
+                        <p className="text-[15px] sm:text-base text-amber-50/95 leading-relaxed">{activeDomains.spirit}</p>
                       </div>
                     </div>
                     {activeDomains.healthAndEnergy && (
                       <div className="p-3.5 rounded-xl bg-cyan-500/[0.07] border border-cyan-400/30 space-y-1">
-                        <h4 style={{ fontFamily: "'Cinzel', serif" }} className="text-xs uppercase tracking-wider text-cyan-300 font-bold">⚡ Salud, Cuerpo y Bioelectricidad</h4>
-                        <p className="text-sm sm:text-base text-amber-50/90 leading-relaxed">{activeDomains.healthAndEnergy}</p>
+                        <h4 style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }} className="text-xs uppercase tracking-wider text-cyan-300 font-bold">⚡ Salud, Cuerpo y Bioelectricidad</h4>
+                        <p className="text-[15px] sm:text-base text-amber-50/95 leading-relaxed">{activeDomains.healthAndEnergy}</p>
                       </div>
                     )}
                   </motion.div>
@@ -2265,21 +2265,21 @@ function TarotSpreadApp() {
                       <React.Fragment>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                           <div className="p-3.5 rounded-xl bg-emerald-950/35 border border-emerald-400/40 space-y-1">
-                            <h4 style={{ fontFamily: "'Cinzel', serif" }} className="text-xs uppercase tracking-wider text-emerald-300 font-bold">
+                            <h4 style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }} className="text-xs uppercase tracking-wider text-emerald-300 font-bold">
                               ✦ El Decreto Ejecutivo (Hoy)
                             </h4>
-                            <p className="text-sm sm:text-base text-amber-50/95 leading-relaxed">{activeAction.command}</p>
+                            <p className="text-[15px] sm:text-base text-amber-50/95 leading-relaxed">{activeAction.command}</p>
                           </div>
                           <div className="p-3.5 rounded-xl bg-rose-950/35 border border-rose-400/40 space-y-1">
-                            <h4 style={{ fontFamily: "'Cinzel', serif" }} className="text-xs uppercase tracking-wider text-rose-300 font-bold">
+                            <h4 style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }} className="text-xs uppercase tracking-wider text-rose-300 font-bold">
                               ⊘ La Prohibición Tabú
                             </h4>
-                            <p className="text-sm sm:text-base text-amber-50/95 leading-relaxed">{activeAction.prohibition}</p>
+                            <p className="text-[15px] sm:text-base text-amber-50/95 leading-relaxed">{activeAction.prohibition}</p>
                           </div>
                         </div>
 
                         <div className="p-4 rounded-xl bg-gradient-to-r from-purple-950/50 via-[#120824] to-amber-950/30 border border-amber-400/45 space-y-1.5">
-                          <h4 style={{ fontFamily: "'Cinzel', serif" }} className="text-xs lg:text-sm uppercase tracking-widest text-amber-300 font-bold flex items-center gap-1.5">
+                          <h4 style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }} className="text-xs lg:text-sm uppercase tracking-widest text-amber-300 font-bold flex items-center gap-1.5">
                             <Flame className="w-4 h-4 text-amber-400" /> Acto de Psicomagia y Laboratorio
                           </h4>
                           <p className="text-sm sm:text-base lg:text-lg text-amber-100/95 leading-relaxed">
@@ -2289,7 +2289,7 @@ function TarotSpreadApp() {
 
                         {activeAction.talismanPhrase && (
                           <div className="p-4 rounded-xl bg-[#06030c] border-2 border-[#d4af37]/70 text-center space-y-3 shadow-[0_0_25px_rgba(212,175,55,0.18)]">
-                            <span style={{ fontFamily: "'Cinzel', serif" }} className="text-[10px] sm:text-xs uppercase tracking-[0.28em] text-amber-400 block">
+                            <span style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }} className="text-xs sm:text-[13px] uppercase tracking-[0.08em] text-amber-400 block">
                               ✦ Mantra y Talismán Verbal del Arcano ✦
                             </span>
                             <p className="text-base sm:text-lg lg:text-xl font-bold italic text-amber-200">
@@ -2298,8 +2298,8 @@ function TarotSpreadApp() {
                             <button
                               type="button"
                               onClick={handleSealPsychomagic}
-                              style={{ fontFamily: "'Cinzel', serif" }}
-                              className={"inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs uppercase tracking-[0.2em] font-bold transition-transform cursor-pointer " + (actSealed ? "bg-emerald-500/25 border border-emerald-400 text-emerald-200" : "bg-gradient-to-r from-[#2c1b08] via-[#d4af37] to-[#2c1b08] text-black border border-amber-200 hover:scale-105")}
+                              style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }}
+                              className={"inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs uppercase tracking-[0.1em] font-bold transition-transform cursor-pointer " + (actSealed ? "bg-emerald-500/25 border border-emerald-400 text-emerald-200" : "bg-gradient-to-r from-[#2c1b08] via-[#d4af37] to-[#2c1b08] text-black border border-amber-200 hover:scale-105")}
                             >
                               {actSealed ? (
                                 <React.Fragment><CheckCircle2 className="w-4 h-4" /> Decreto Sellado • Talismán Copiado</React.Fragment>

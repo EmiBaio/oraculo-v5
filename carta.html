@@ -27,7 +27,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;500;600;700;800;900&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
   <!-- React, ReactDOM, Framer Motion y Babel -->
   <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
@@ -54,7 +54,7 @@
       min-height: 100%;
       background-color: var(--bg-abyss);
       color: #fffbeb;
-      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-family: 'Lora', 'Lora Fallback', Georgia, serif; font-size: 16px; line-height: 1.65; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
       overflow-x: hidden;
       scroll-behavior: smooth;
       -webkit-font-smoothing: antialiased;
@@ -65,6 +65,10 @@
     ::-webkit-scrollbar-track { background: rgba(10, 5, 20, 0.6); }
     ::-webkit-scrollbar-thumb { background: rgba(212, 175, 55, 0.35); border-radius: 9999px; }
     ::-webkit-scrollbar-thumb:hover { background: rgba(212, 175, 55, 0.7); }
+
+    .font-ui { font-family: 'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, -apple-system, sans-serif; }
+    .font-body { font-family: 'Lora', 'Lora Fallback', Georgia, serif; }
+    .font-display, .font-cinzel, .font-cinzel-dec { font-family: 'Cinzel', Georgia, serif; }
   </style>
 </head>
 <body class="bg-[#040207] text-amber-50 m-0 p-0 overflow-x-hidden font-['Cormorant_Garamond'] selection:bg-amber-400 selection:text-black">
@@ -180,7 +184,7 @@
 
   <!-- 5. Concilio del Velo Astral y Layout Maestro del Códice -->
   <script src="concilio_tarotistas.js?v=7"></script>
-  <script src="layout_arcano.js?v=10"></script>
+  <script src="layout_arcano.js?v=11"></script>
 
   <!-- 6. Arranque Blindado de la Aplicación (Compatible 100% con file:///) -->
   <script>

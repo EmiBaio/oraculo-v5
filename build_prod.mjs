@@ -1,5 +1,5 @@
 // ============================================================================
-// ARCHIVO: build_prod.mjs (v8.1 • Optimizado para PageSpeed 95+ en Móvil 4G)
+// ARCHIVO: build_prod.mjs (v8.2 • Optimizado para PageSpeed 95+ en Móvil 4G)
 // Compilador de Producción para Oráculo del Velo Astral
 // - Elimina @babel/standalone (-2.8 MB) y cdn.tailwindcss.com (-410 KB JIT)
 // - Incrusta styles.min.css inline en cada HTML (0 ms de CSS bloqueante)
@@ -132,34 +132,31 @@ function writeAssetAndReport(filename, contentStr, reportRows) {
   return { filename, hash, path: "assets/" + filename + "?v=" + hash };
 }
 
-// Convierte Google Fonts en no bloqueante y recorta pesos redundantes (ahorra ~750 ms en móvil 4G)
+// Convierte Google Fonts en no bloqueante (Cinzel + Lora + Plus Jakarta Sans, 0 ms render-blocking)
 function makeGoogleFontsNonBlocking(html) {
   return html.replace(
     /<link\s+href="(https:\/\/fonts\.googleapis\.com\/css2\?[^"]+)"\s+rel="stylesheet"\s*\/?>/i,
     function (_, rawHref) {
-      let slimHref = rawHref
-        .replace(/Cinzel:wght@600;700;800;900/g, "Cinzel:wght@600;700")
-        .replace(/Cinzel:wght@600;700;800/g, "Cinzel:wght@600;700");
       return (
-        '<link rel="preload" as="style" href="' + slimHref + '" />\n' +
-        '  <link rel="stylesheet" href="' + slimHref + '" media="print" onload="this.media=\'all\'" />\n' +
-        '  <noscript><link rel="stylesheet" href="' + slimHref + '" /></noscript>'
+        '<link rel="preload" as="style" href="' + rawHref + '" />\n' +
+        '  <link rel="stylesheet" href="' + rawHref + '" media="print" onload="this.media=\'all\'" />\n' +
+        '  <noscript><link rel="stylesheet" href="' + rawHref + '" /></noscript>'
       );
     }
   );
 }
 
-// Agrega 'Cormorant Fallback' métricamente calibrado para minimizar CLS al cargar la webfont
+// Mantiene el fallback métricamente calibrado para minimizar CLS al cargar Lora
 function addMetricFontFallback(html) {
   return html.replace(
     /font-family:\s*'Cormorant Garamond',\s*Georgia,\s*serif;/g,
-    "font-family: 'Cormorant Garamond', 'Cormorant Fallback', Georgia, serif;"
+    "font-family: 'Lora', 'Lora Fallback', Georgia, serif;"
   );
 }
 
 async function main() {
   const t0 = Date.now();
-  console.log("✦ Iniciando build de producción v8.1 (Core Diferido + 0 Render-Blocking)...\n");
+  console.log("✦ Iniciando build de producción v8.2 (Core Diferido + 0 Render-Blocking)...\n");
 
   if (fs.existsSync(DIST)) {
     fs.rmSync(DIST, { recursive: true, force: true });
@@ -520,7 +517,7 @@ async function main() {
   }
 
   const elapsed = ((Date.now() - t0) / 1000).toFixed(2);
-  console.log("\n✔ BUILD v8.1 COMPLETADO EN " + elapsed + " s (0 Render-Blocking • Core Diferido)\n");
+  console.log("\n✔ BUILD v8.2 COMPLETADO EN " + elapsed + " s (0 Render-Blocking • Core Diferido)\n");
   console.table(reportRows);
   console.log("✦ Carga crítica inicial de index.html: solo core.bundle + altar.bundle (~99 KB gzip vs 496 KB antes)");
   console.log("✦ grimorio.bundle (~400 KB) se precarga en segundo plano sin afectar FCP ni LCP.\n");

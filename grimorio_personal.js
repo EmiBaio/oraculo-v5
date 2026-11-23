@@ -553,7 +553,7 @@ const GrimorioModal = memo(function GrimorioModal({
             exit={{ opacity: 0, scale: 0.96, y: 12 }}
             transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
             style={{ contain: "layout style" }}
-            className="relative w-full max-w-5xl max-h-[92dvh] flex flex-col rounded-3xl bg-[#090513] border-2 border-[#d4af37]/75 shadow-[0_28px_80px_rgba(0,0,0,0.95)] overflow-hidden text-amber-50 select-text"
+            className="relative w-full max-w-6xl max-h-[92dvh] flex flex-col rounded-3xl bg-[#090513] border-2 border-[#d4af37]/75 shadow-[0_28px_80px_rgba(0,0,0,0.95)] overflow-hidden text-amber-50 select-text"
           >
             {/* CABECERA DEL GRIMORIO PERSONAL */}
             <header className="flex-shrink-0 px-4 sm:px-6 lg:px-8 pt-4 sm:pt-5 pb-4 bg-gradient-to-b from-[#170c2b] to-[#090513] border-b border-amber-500/30 space-y-3.5">
@@ -561,11 +561,11 @@ const GrimorioModal = memo(function GrimorioModal({
                 <div className="space-y-1">
                   <div className="flex items-center gap-2 text-amber-400">
                     <BookOpenIcon className="w-4 h-4 sm:w-5 sm:h-5" />
-                    <span style={{ fontFamily: "'Cinzel', serif" }} className="text-[10px] sm:text-xs uppercase tracking-[0.26em] font-bold">
+                    <span style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }} className="text-xs sm:text-[13px] uppercase tracking-[0.12em] font-bold">
                       Grimorio Personal del Consultante
                     </span>
                   </div>
-                  <h2 style={{ fontFamily: "'Cinzel Decorative', serif" }} className="text-xl sm:text-2xl md:text-3xl text-amber-200 font-bold leading-tight">
+                  <h2 style={{ fontFamily: "'Cinzel', Georgia, serif" }} className="text-xl sm:text-2xl md:text-3xl text-amber-200 font-bold leading-tight">
                     Códice del Velo Astral
                   </h2>
                 </div>
@@ -584,17 +584,17 @@ const GrimorioModal = memo(function GrimorioModal({
               <div className="space-y-1.5">
                 <div className="flex flex-wrap items-center justify-between gap-2 text-xs sm:text-sm">
                   <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-                    <span style={{ fontFamily: "'Cinzel', serif" }} className="text-amber-300 font-bold">
+                    <span style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }} className="text-amber-300 font-bold">
                       {snapshot.summary.unlockedCount}/{snapshot.summary.totalMajors} Arcanos Desbloqueados ({pct}%)
                     </span>
-                    <span className="text-amber-200/75 text-[11px] sm:text-xs flex items-center gap-1">
+                    <span className="text-amber-200/95 text-xs sm:text-sm flex items-center gap-1">
                       <SunIcon className="w-3 h-3 text-amber-300" /> {snapshot.summary.solarUnlocked} en Luz
                     </span>
-                    <span className="text-purple-200/80 text-[11px] sm:text-xs flex items-center gap-1">
+                    <span className="text-purple-100/95 text-xs sm:text-sm flex items-center gap-1">
                       <MoonIcon className="w-3 h-3 text-purple-300" /> {snapshot.summary.lunarUnlocked} en Sombra
                     </span>
                   </div>
-                  <span className="text-[11px] text-purple-200/70">
+                  <span className="text-xs text-purple-100/90">
                     {snapshot.summary.totalDraws} {snapshot.summary.totalDraws === 1 ? "revelación total" : "revelaciones totales"}
                   </span>
                 </div>
@@ -626,17 +626,17 @@ const GrimorioModal = memo(function GrimorioModal({
                         sound && sound.playHarpNote && sound.playHarpNote(2);
                         setActiveTab(tab.id);
                       }}
-                      style={{ fontFamily: "'Cinzel', serif" }}
+                      style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }}
                       className={
-                        "flex items-center justify-center gap-1.5 sm:gap-2 py-2 px-2 rounded-lg text-[10px] sm:text-xs uppercase tracking-wider font-bold transition-colors cursor-pointer " +
+                        "flex items-center justify-center gap-1.5 sm:gap-2 py-2.5 px-3 rounded-lg text-xs sm:text-[13px] uppercase tracking-wider font-bold transition-colors cursor-pointer " +
                         (active
                           ? "bg-gradient-to-r from-amber-500 to-amber-300 text-black shadow-[0_0_16px_rgba(251,191,36,0.35)]"
-                          : "text-amber-200/75 hover:text-amber-100 hover:bg-white/[0.04]")
+                          : "text-amber-200/95 hover:text-amber-100 hover:bg-white/[0.04]")
                       }
                     >
                       <IconC className="w-3.5 h-3.5 flex-shrink-0" />
                       <span className="truncate">{tab.label}</span>
-                      <span className={"hidden sm:inline px-1.5 py-0.5 rounded-full text-[10px] " + (active ? "bg-black/20 text-black" : "bg-white/10 text-amber-200")}>
+                      <span className={"hidden sm:inline px-1.5 py-0.5 rounded-full text-xs " + (active ? "bg-black/20 text-black" : "bg-white/10 text-amber-200")}>
                         {tab.count}
                       </span>
                     </button>
@@ -652,14 +652,14 @@ const GrimorioModal = memo(function GrimorioModal({
                 <div className="space-y-4">
                   <div className="flex flex-col md:flex-row gap-2.5 items-stretch md:items-center justify-between">
                     <div className="relative flex-1">
-                      <SearchIcon className="w-4 h-4 text-amber-400/75 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                      <SearchIcon className="w-4 h-4 text-amber-300/95 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                       <input
                         type="text"
                         value={searchQuery}
                         onChange={function (e) { setSearchQuery(e.target.value); }}
                         placeholder="Buscar arcano por nombre, numeral, planeta o palabra clave..."
                         style={{ userSelect: "text", WebkitUserSelect: "text" }}
-                        className="w-full pl-10 pr-4 py-2 rounded-xl bg-[#05020a] border border-amber-500/35 focus:border-amber-300 focus:outline-none text-sm sm:text-base text-amber-50 placeholder:text-amber-200/40 select-text"
+                        className="w-full pl-10 pr-4 py-2 rounded-xl bg-[#05020a] border border-amber-500/35 focus:border-amber-300 focus:outline-none text-sm sm:text-base text-amber-50 placeholder:text-amber-200/60 select-text"
                       />
                     </div>
 
@@ -675,9 +675,9 @@ const GrimorioModal = memo(function GrimorioModal({
                             key={f.id}
                             type="button"
                             onClick={function () { setStatusFilter(f.id); }}
-                            style={{ fontFamily: "'Cinzel', serif" }}
+                            style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }}
                             className={
-                              "px-2.5 py-1.5 rounded-lg text-[10px] sm:text-[11px] uppercase tracking-wider border transition-colors cursor-pointer " +
+                              "px-2.5 py-1.5 rounded-lg text-xs sm:text-[13px] uppercase tracking-wider border transition-colors cursor-pointer " +
                               (sel ? "bg-amber-400 text-black border-amber-200 font-bold" : "bg-white/[0.03] border-white/15 text-amber-200/80 hover:border-amber-400/50")
                             }
                           >
@@ -689,7 +689,7 @@ const GrimorioModal = memo(function GrimorioModal({
                   </div>
 
                   <div className="flex flex-wrap items-center gap-1.5">
-                    <span style={{ fontFamily: "'Cinzel', serif" }} className="text-[10px] uppercase tracking-widest text-purple-300/80 mr-1">
+                    <span style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }} className="text-xs uppercase tracking-widest text-purple-200/95 mr-1">
                       Elemento:
                     </span>
                     {["all", "Fuego", "Agua", "Aire", "Tierra"].map(function (el) {
@@ -703,7 +703,7 @@ const GrimorioModal = memo(function GrimorioModal({
                             "px-2.5 py-0.5 rounded-full text-xs border transition-colors cursor-pointer " +
                             (sel
                               ? "bg-purple-500/35 border-purple-300 text-white font-semibold"
-                              : "bg-white/[0.03] border-white/15 text-amber-100/70 hover:border-amber-400/40")
+                              : "bg-white/[0.03] border-white/15 text-amber-50/95 hover:border-amber-400/40")
                           }
                         >
                           {el === "all" ? "Todos" : el}
@@ -713,7 +713,7 @@ const GrimorioModal = memo(function GrimorioModal({
                   </div>
 
                   {filteredArcana.length === 0 ? (
-                    <div className="p-8 rounded-2xl bg-white/[0.02] border border-white/10 text-center text-amber-200/75 italic">
+                    <div className="p-8 rounded-2xl bg-white/[0.02] border border-white/10 text-center text-amber-200/95 italic">
                       Ningún arcano coincide con ese filtro. Probá limpiando la búsqueda.
                     </div>
                   ) : (
@@ -734,7 +734,7 @@ const GrimorioModal = memo(function GrimorioModal({
                               <div className="flex items-start justify-between gap-2">
                                 <div className="flex items-center gap-2.5">
                                   <span
-                                    style={{ fontFamily: "'Cinzel Decorative', serif" }}
+                                    style={{ fontFamily: "'Cinzel', Georgia, serif" }}
                                     className={
                                       "w-9 h-9 rounded-xl border flex items-center justify-center text-xs font-black flex-shrink-0 " +
                                       (item.unlocked
@@ -745,10 +745,10 @@ const GrimorioModal = memo(function GrimorioModal({
                                     {item.numeral}
                                   </span>
                                   <div className="min-w-0">
-                                    <h3 style={{ fontFamily: "'Cinzel Decorative', serif" }} className={"text-base font-bold truncate " + (item.unlocked ? "text-amber-200" : "text-purple-100/70")}>
+                                    <h3 style={{ fontFamily: "'Cinzel', Georgia, serif" }} className={"text-base font-bold truncate " + (item.unlocked ? "text-amber-200" : "text-purple-100/90")}>
                                       {item.name}
                                     </h3>
-                                    <p className="text-xs italic text-purple-200/70 truncate">
+                                    <p className="text-sm italic text-purple-100/90 truncate">
                                       {item.unlocked ? ("“" + item.subtitle + "”") : "Aguarda revelación en el altar"}
                                     </p>
                                   </div>
@@ -761,7 +761,7 @@ const GrimorioModal = memo(function GrimorioModal({
                                 )}
                               </div>
 
-                              <div className="flex flex-wrap items-center gap-1.5 text-[11px]">
+                              <div className="flex flex-wrap items-center gap-1.5 text-xs">
                                 <span className={"px-2 py-0.5 rounded-md border " + elBadge}>
                                   {item.element}
                                 </span>
@@ -781,7 +781,7 @@ const GrimorioModal = memo(function GrimorioModal({
                                   </React.Fragment>
                                 ) : (
                                   item.astro && (
-                                    <span className="px-2 py-0.5 rounded-md bg-white/[0.03] border border-white/10 text-purple-200/55 truncate max-w-[140px]">
+                                    <span className="px-2 py-0.5 rounded-md bg-white/[0.03] border border-white/10 text-purple-100/85 truncate max-w-[140px]">
                                       {item.astro}
                                     </span>
                                   )
@@ -792,12 +792,12 @@ const GrimorioModal = memo(function GrimorioModal({
                             <div className="flex items-center gap-1.5 pt-2 border-t border-white/10">
                               <a
                                 href={"carta.html?arcano=" + item.id}
-                                style={{ fontFamily: "'Cinzel', serif" }}
+                                style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }}
                                 className={
-                                  "flex-1 inline-flex items-center justify-center gap-1.5 py-1.5 px-2.5 rounded-lg text-[10px] uppercase tracking-wider font-bold border transition-colors " +
+                                  "flex-1 inline-flex items-center justify-center gap-1.5 py-1.5 px-2.5 rounded-lg text-xs uppercase tracking-wider font-bold border transition-colors " +
                                   (item.unlocked
                                     ? "bg-amber-500/15 hover:bg-amber-500/30 border-amber-400/50 text-amber-200"
-                                    : "bg-white/[0.03] hover:bg-purple-500/20 border-white/15 text-purple-200/80")
+                                    : "bg-white/[0.03] hover:bg-purple-500/20 border-white/15 text-purple-100/95")
                                 }
                               >
                                 <span>{item.unlocked ? "✦ Códice Luz" : "Explorar Códice"}</span>
@@ -806,8 +806,8 @@ const GrimorioModal = memo(function GrimorioModal({
                               <a
                                 href={"carta.html?arcano=" + item.id + "&modo=sombra"}
                                 title="Abrir directamente en Faz Lunar (Sombra)"
-                                style={{ fontFamily: "'Cinzel', serif" }}
-                                className="inline-flex items-center justify-center gap-1 py-1.5 px-2.5 rounded-lg text-[10px] uppercase tracking-wider border bg-purple-950/50 hover:bg-purple-900/70 border-purple-400/40 text-purple-200 transition-colors"
+                                style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }}
+                                className="inline-flex items-center justify-center gap-1 py-1.5 px-2.5 rounded-lg text-xs uppercase tracking-wider border bg-purple-950/50 hover:bg-purple-900/70 border-purple-400/40 text-purple-200 transition-colors"
                               >
                                 <MoonIcon className="w-3 h-3" />
                                 <span>Sombra</span>
@@ -827,10 +827,10 @@ const GrimorioModal = memo(function GrimorioModal({
                   {snapshot.seals.length === 0 ? (
                     <div className="p-8 sm:p-10 rounded-2xl bg-[#0d0719] border border-amber-500/30 text-center space-y-3">
                       <FlameIcon className="w-8 h-8 text-amber-400 mx-auto opacity-80" />
-                      <h3 style={{ fontFamily: "'Cinzel Decorative', serif" }} className="text-lg sm:text-xl text-amber-200 font-bold">
+                      <h3 style={{ fontFamily: "'Cinzel', Georgia, serif" }} className="text-lg sm:text-xl text-amber-200 font-bold">
                         Tu Altar de Talismanes está en silencio
                       </h3>
-                      <p className="text-sm sm:text-base text-purple-200/80 max-w-lg mx-auto italic">
+                      <p className="text-sm sm:text-base text-purple-100/95 max-w-lg mx-auto italic">
                         Cuando reveles una carta y selles su decreto en <strong>Psicomagia</strong> o en <strong>La Balanza Sí o No</strong>, tus mantras y compromisos activos quedarán guardados acá.
                       </p>
                     </div>
@@ -854,19 +854,19 @@ const GrimorioModal = memo(function GrimorioModal({
                               <div className="flex items-start justify-between gap-2">
                                 <div>
                                   <div className="flex flex-wrap items-center gap-2">
-                                    <span style={{ fontFamily: "'Cinzel Decorative', serif" }} className="text-base sm:text-lg font-bold text-amber-200">
+                                    <span style={{ fontFamily: "'Cinzel', Georgia, serif" }} className="text-base sm:text-lg font-bold text-amber-200">
                                       {seal.cardNumeral ? (seal.cardNumeral + " • ") : ""}{seal.cardName}
                                     </span>
-                                    <span className={"px-2 py-0.5 rounded-full text-[10px] uppercase tracking-wider font-bold border " + (seal.isReversed ? "bg-purple-950 border-purple-400/60 text-purple-200" : "bg-amber-500/15 border-amber-400/50 text-amber-200")}>
+                                    <span className={"px-2 py-0.5 rounded-full text-xs uppercase tracking-wider font-bold border " + (seal.isReversed ? "bg-purple-950 border-purple-400/60 text-purple-200" : "bg-amber-500/15 border-amber-400/50 text-amber-200")}>
                                       {seal.isReversed ? "☽ Sombra" : "☉ Luz"}
                                     </span>
                                     {seal.completed && (
-                                      <span className="px-2 py-0.5 rounded-full text-[10px] uppercase tracking-wider font-bold bg-emerald-500/20 border border-emerald-400/60 text-emerald-200">
+                                      <span className="px-2 py-0.5 rounded-full text-xs uppercase tracking-wider font-bold bg-emerald-500/20 border border-emerald-400/60 text-emerald-200">
                                         ✔ Cumplido
                                       </span>
                                     )}
                                   </div>
-                                  <span className="text-[11px] text-purple-200/65 block mt-0.5">
+                                  <span className="text-xs text-purple-100/90 block mt-0.5">
                                     Sellado el {formatArgentineDate(seal.sealedAt)}
                                   </span>
                                 </div>
@@ -887,7 +887,7 @@ const GrimorioModal = memo(function GrimorioModal({
                               )}
 
                               {seal.command && (
-                                <p className="text-xs sm:text-sm text-amber-50/85 leading-relaxed">
+                                <p className="text-sm sm:text-[15px] text-amber-50/95 leading-relaxed">
                                   <strong className="text-emerald-300">✦ Decreto: </strong>{seal.command}
                                 </p>
                               )}
@@ -899,8 +899,8 @@ const GrimorioModal = memo(function GrimorioModal({
                                   <button
                                     type="button"
                                     onClick={function () { handleCopyText("seal_" + seal.key, seal.talismanPhrase); }}
-                                    style={{ fontFamily: "'Cinzel', serif" }}
-                                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-500/15 hover:bg-amber-500/30 border border-amber-400/45 text-[10px] uppercase tracking-wider text-amber-200 cursor-pointer transition-colors"
+                                    style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }}
+                                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-500/15 hover:bg-amber-500/30 border border-amber-400/45 text-xs uppercase tracking-wider text-amber-200 cursor-pointer transition-colors"
                                   >
                                     {isCopied ? <React.Fragment><CheckIcon /> Copiado</React.Fragment> : <React.Fragment><CopyIcon /> Copiar Mantra</React.Fragment>}
                                   </button>
@@ -908,12 +908,12 @@ const GrimorioModal = memo(function GrimorioModal({
                                 <button
                                   type="button"
                                   onClick={function () { handleToggleSealDone(seal.key); }}
-                                  style={{ fontFamily: "'Cinzel', serif" }}
+                                  style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }}
                                   className={
-                                    "inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border text-[10px] uppercase tracking-wider cursor-pointer transition-colors " +
+                                    "inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border text-xs uppercase tracking-wider cursor-pointer transition-colors " +
                                     (seal.completed
                                       ? "bg-emerald-500/25 border-emerald-400 text-emerald-200"
-                                      : "bg-white/[0.04] hover:bg-emerald-500/20 border-white/15 text-amber-100/80")
+                                      : "bg-white/[0.04] hover:bg-emerald-500/20 border-white/15 text-amber-50/95")
                                   }
                                 >
                                   <CheckIcon /> {seal.completed ? "Cumplido" : "Marcar Cumplido"}
@@ -954,9 +954,9 @@ const GrimorioModal = memo(function GrimorioModal({
                             key={f.id}
                             type="button"
                             onClick={function () { setDiaryFilter(f.id); }}
-                            style={{ fontFamily: "'Cinzel', serif" }}
+                            style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }}
                             className={
-                              "px-3 py-1.5 rounded-lg text-[10px] sm:text-xs uppercase tracking-wider border transition-colors cursor-pointer " +
+                              "px-3 py-1.5 rounded-lg text-xs sm:text-[13px] uppercase tracking-wider border transition-colors cursor-pointer " +
                               (sel ? "bg-amber-400 text-black border-amber-200 font-bold" : "bg-white/[0.03] border-white/15 text-amber-200/80 hover:border-amber-400/50")
                             }
                           >
@@ -965,7 +965,7 @@ const GrimorioModal = memo(function GrimorioModal({
                         );
                       })}
                     </div>
-                    <span className="text-xs text-purple-200/65 italic">
+                    <span className="text-xs text-purple-100/90 italic">
                       Se guardan automáticamente tus últimas {MAX_DIARY_ENTRIES} consultas en este navegador.
                     </span>
                   </div>
@@ -973,10 +973,10 @@ const GrimorioModal = memo(function GrimorioModal({
                   {filteredReadings.length === 0 ? (
                     <div className="p-8 sm:p-10 rounded-2xl bg-[#0d0719] border border-purple-500/30 text-center space-y-3">
                       <ScrollIcon className="w-8 h-8 text-purple-300 mx-auto opacity-80" />
-                      <h3 style={{ fontFamily: "'Cinzel Decorative', serif" }} className="text-lg sm:text-xl text-amber-200 font-bold">
+                      <h3 style={{ fontFamily: "'Cinzel', Georgia, serif" }} className="text-lg sm:text-xl text-amber-200 font-bold">
                         Aún no hay crónicas registradas
                       </h3>
-                      <p className="text-sm sm:text-base text-purple-200/80 max-w-lg mx-auto italic">
+                      <p className="text-sm sm:text-base text-purple-100/95 max-w-lg mx-auto italic">
                         Cada tirada clásica, consulta de <strong>La Balanza Sí o No</strong> o crónica de <strong>El Hilo de las Tres Lunas</strong> quedará asentada aquí para que puedas volver a leerla, añadir tus notas personales o revivirla en el altar.
                       </p>
                     </div>
@@ -1005,9 +1005,9 @@ const GrimorioModal = memo(function GrimorioModal({
                             <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/10 pb-2.5">
                               <div className="flex flex-wrap items-center gap-2">
                                 <span
-                                  style={{ fontFamily: "'Cinzel', serif" }}
+                                  style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }}
                                   className={
-                                    "px-2.5 py-0.5 rounded-full text-[10px] uppercase tracking-wider font-bold border " +
+                                    "px-2.5 py-0.5 rounded-full text-xs uppercase tracking-wider font-bold border " +
                                     (isSiNo
                                       ? "bg-emerald-500/15 border-emerald-400/55 text-emerald-200"
                                       : isTrina
@@ -1018,22 +1018,22 @@ const GrimorioModal = memo(function GrimorioModal({
                                   {isSiNo ? "♎ Balanza Sí o No" : isTrina ? "☽ El Hilo de las Tres Lunas" : "☉ Arcano Único"}
                                 </span>
                                 {isSiNo && entry.verdictLabel && (
-                                  <span style={{ fontFamily: "'Cinzel', serif" }} className={"px-2.5 py-0.5 rounded-full text-[10px] uppercase tracking-wider font-bold border " + verdictCls}>
+                                  <span style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }} className={"px-2.5 py-0.5 rounded-full text-xs uppercase tracking-wider font-bold border " + verdictCls}>
                                     {entry.verdictLabel}
                                   </span>
                                 )}
                                 {isSiNo && entry.domainLabel && (
-                                  <span className="px-2 py-0.5 rounded-full text-[10px] bg-white/[0.05] border border-white/15 text-amber-100/80">
+                                  <span className="px-2 py-0.5 rounded-full text-xs bg-white/[0.05] border border-white/15 text-amber-50/95">
                                     {entry.domainLabel}
                                   </span>
                                 )}
                                 {!isSiNo && entry.arcTitle && (
-                                  <span style={{ fontFamily: "'Cinzel Decorative', serif" }} className="text-sm sm:text-base font-bold text-amber-200">
+                                  <span style={{ fontFamily: "'Cinzel', Georgia, serif" }} className="text-sm sm:text-base font-bold text-amber-200">
                                     {entry.arcTitle}
                                   </span>
                                 )}
                               </div>
-                              <span className="text-[11px] text-purple-200/65">
+                              <span className="text-xs text-purple-100/90">
                                 {formatArgentineDate(entry.timestamp)}
                               </span>
                             </div>
@@ -1058,10 +1058,10 @@ const GrimorioModal = memo(function GrimorioModal({
                                     }
                                   >
                                     <div className="min-w-0">
-                                      <span style={{ fontFamily: "'Cinzel', serif" }} className="text-[9px] uppercase tracking-widest text-amber-300/80 block">
+                                      <span style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }} className="text-xs uppercase tracking-widest text-amber-300/95 block">
                                         {c.positionLabel} • {c.isReversed ? "Sombra" : "Luz"}
                                       </span>
-                                      <span style={{ fontFamily: "'Cinzel Decorative', serif" }} className="text-sm sm:text-base font-bold text-amber-100 block truncate">
+                                      <span style={{ fontFamily: "'Cinzel', Georgia, serif" }} className="text-sm sm:text-base font-bold text-amber-100 block truncate">
                                         {c.numeral ? (c.numeral + " • ") : ""}{c.name}
                                       </span>
                                     </div>
@@ -1078,7 +1078,7 @@ const GrimorioModal = memo(function GrimorioModal({
                             </div>
 
                             {entry.summary && (
-                              <p className="text-sm sm:text-base italic text-amber-100/90 leading-relaxed bg-black/30 p-3 rounded-xl border border-white/10">
+                              <p className="text-[15px] sm:text-base italic text-amber-50/95 leading-relaxed bg-black/30 p-3 rounded-xl border border-white/10">
                                 “{entry.summary}”
                               </p>
                             )}
@@ -1091,22 +1091,22 @@ const GrimorioModal = memo(function GrimorioModal({
                                   onChange={function (e) { setNoteDraft(e.target.value); }}
                                   placeholder="Anotá qué preguntaste, cómo te sentías o qué ocurrió después..."
                                   style={{ userSelect: "text", WebkitUserSelect: "text" }}
-                                  className="w-full p-3 rounded-xl bg-[#05020a] border border-amber-400/50 focus:border-amber-300 focus:outline-none text-sm text-amber-50 placeholder:text-amber-200/40 resize-none select-text"
+                                  className="w-full p-3 rounded-xl bg-[#05020a] border border-amber-400/50 focus:border-amber-300 focus:outline-none text-sm text-amber-50 placeholder:text-amber-200/60 resize-none select-text"
                                 />
                                 <div className="flex items-center gap-2">
                                   <button
                                     type="button"
                                     onClick={function () { handleSaveNote(entry.id); }}
-                                    style={{ fontFamily: "'Cinzel', serif" }}
-                                    className="px-3.5 py-1.5 rounded-lg bg-amber-400 text-black text-[10px] uppercase tracking-wider font-bold cursor-pointer hover:bg-amber-300"
+                                    style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }}
+                                    className="px-3.5 py-1.5 rounded-lg bg-amber-400 text-black text-xs uppercase tracking-wider font-bold cursor-pointer hover:bg-amber-300"
                                   >
                                     Guardar Nota
                                   </button>
                                   <button
                                     type="button"
                                     onClick={function () { setEditingNoteId(null); setNoteDraft(""); }}
-                                    style={{ fontFamily: "'Cinzel', serif" }}
-                                    className="px-3.5 py-1.5 rounded-lg bg-white/[0.05] text-amber-200/80 text-[10px] uppercase tracking-wider cursor-pointer hover:bg-white/10"
+                                    style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }}
+                                    className="px-3.5 py-1.5 rounded-lg bg-white/[0.05] text-amber-200/80 text-xs uppercase tracking-wider cursor-pointer hover:bg-white/10"
                                   >
                                     Cancelar
                                   </button>
@@ -1126,8 +1126,8 @@ const GrimorioModal = memo(function GrimorioModal({
                                   <button
                                     type="button"
                                     onClick={function () { onReopenReading(entry); }}
-                                    style={{ fontFamily: "'Cinzel', serif" }}
-                                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gradient-to-r from-amber-500/25 to-purple-500/25 hover:brightness-125 border border-amber-300/60 text-[10px] uppercase tracking-wider font-bold text-amber-100 cursor-pointer transition"
+                                    style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }}
+                                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gradient-to-r from-amber-500/25 to-purple-500/25 hover:brightness-125 border border-amber-300/60 text-xs uppercase tracking-wider font-bold text-amber-100 cursor-pointer transition"
                                   >
                                     <SparklesIcon className="w-3.5 h-3.5 text-amber-300" /> Revivir en el Altar
                                   </button>
@@ -1138,16 +1138,16 @@ const GrimorioModal = memo(function GrimorioModal({
                                     setEditingNoteId(entry.id);
                                     setNoteDraft(entry.note || "");
                                   }}
-                                  style={{ fontFamily: "'Cinzel', serif" }}
-                                  className="px-3 py-1.5 rounded-lg bg-white/[0.04] hover:bg-white/10 border border-white/15 text-[10px] uppercase tracking-wider text-amber-200/85 cursor-pointer transition-colors"
+                                  style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }}
+                                  className="px-3 py-1.5 rounded-lg bg-white/[0.04] hover:bg-white/10 border border-white/15 text-xs uppercase tracking-wider text-amber-200/85 cursor-pointer transition-colors"
                                 >
                                   {entry.note ? "Editar Nota" : "+ Añadir Nota"}
                                 </button>
                                 <button
                                   type="button"
                                   onClick={function () { handleCopyReading(entry); }}
-                                  style={{ fontFamily: "'Cinzel', serif" }}
-                                  className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-white/[0.04] hover:bg-white/10 border border-white/15 text-[10px] uppercase tracking-wider text-amber-200/85 cursor-pointer transition-colors"
+                                  style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }}
+                                  className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-white/[0.04] hover:bg-white/10 border border-white/15 text-xs uppercase tracking-wider text-amber-200/85 cursor-pointer transition-colors"
                                 >
                                   {isCopied ? <React.Fragment><CheckIcon /> Copiada</React.Fragment> : <React.Fragment><CopyIcon /> Copiar</React.Fragment>}
                                 </button>

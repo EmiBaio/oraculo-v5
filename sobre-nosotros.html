@@ -26,7 +26,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@600;700;800&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
   <script src="concilio_tarotistas.js?v=7"></script>
 
@@ -128,11 +128,14 @@
       padding: 0;
       background-color: #040207;
       color: #fffbeb;
-      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-family: 'Lora', 'Lora Fallback', Georgia, serif;
+      font-size: 16px;
+      line-height: 1.65;
       -webkit-font-smoothing: antialiased;
     }
-    .font-cinzel { font-family: 'Cinzel', serif; }
-    .font-cinzel-dec { font-family: 'Cinzel Decorative', serif; }
+    .font-ui { font-family: 'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, -apple-system, sans-serif; }
+    .font-body { font-family: 'Lora', 'Lora Fallback', Georgia, serif; }
+    .font-display, .font-cinzel, .font-cinzel-dec { font-family: 'Cinzel', Georgia, serif; }
     ::-webkit-scrollbar { width: 6px; }
     ::-webkit-scrollbar-track { background: rgba(10, 5, 20, 0.7); }
     ::-webkit-scrollbar-thumb { background: rgba(212, 175, 55, 0.35); border-radius: 9999px; }
@@ -143,8 +146,8 @@
 
   <!-- Cabecera fija opaca -->
   <header class="sticky top-0 z-50 bg-[#040207] border-b border-[#d4af37]/35 shadow-[0_8px_24px_rgba(0,0,0,0.85)] px-3 sm:px-8 py-3">
-    <div class="max-w-5xl mx-auto flex flex-wrap items-center justify-between gap-2">
-      <nav aria-label="Ruta de navegación" class="font-cinzel text-[10px] sm:text-xs uppercase tracking-[0.14em] sm:tracking-[0.2em] text-amber-200/75 flex items-center min-w-0">
+    <div class="max-w-6xl xl:max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
+      <nav aria-label="Ruta de navegación" class="font-ui text-xs sm:text-[13px] uppercase tracking-[0.08em] sm:tracking-[0.1em] text-amber-200/95 flex items-center min-w-0">
         <a href="index.html" class="hover:text-amber-300 transition-colors whitespace-nowrap">Oráculo del Velo Astral</a>
         <span class="mx-2 text-amber-500">›</span>
         <span class="text-amber-300 font-bold truncate">Sobre Nosotros</span>
@@ -152,13 +155,13 @@
       <div class="flex items-center gap-2">
         <a
           href="carta.html?arcano=0"
-          class="font-cinzel hidden sm:inline-block px-3 py-1.5 rounded-full bg-[#140b26] hover:bg-purple-500/25 border border-purple-400/50 text-[10px] sm:text-xs uppercase tracking-wider text-purple-200 transition-colors whitespace-nowrap"
+          class="font-ui hidden sm:inline-block px-3 py-1.5 rounded-full bg-[#140b26] hover:bg-purple-500/25 border border-purple-400/50 text-xs sm:text-[13px] uppercase tracking-wider text-purple-200 transition-colors whitespace-nowrap"
         >
           Explorar Códice
         </a>
         <a
           href="index.html"
-          class="font-cinzel px-3.5 py-1.5 rounded-full bg-[#241608] hover:bg-amber-500/25 border border-[#d4af37]/70 text-[10px] sm:text-xs uppercase tracking-wider text-amber-200 transition-colors whitespace-nowrap"
+          class="font-ui px-3.5 py-1.5 rounded-full bg-[#241608] hover:bg-amber-500/25 border border-[#d4af37]/70 text-xs sm:text-[13px] uppercase tracking-wider text-amber-200 transition-colors whitespace-nowrap"
         >
           ✦ Ir al Altar
         </a>
@@ -166,40 +169,40 @@
     </div>
   </header>
 
-  <main class="max-w-5xl mx-auto px-4 sm:px-6 py-10 sm:py-14 space-y-14">
+  <main class="max-w-6xl xl:max-w-7xl mx-auto px-4 sm:px-8 py-10 sm:py-14 space-y-14">
 
     <!-- PORTADA EDITORIAL -->
     <header class="text-center space-y-5 pb-8 border-b border-amber-500/25">
-      <span class="font-cinzel inline-block px-4 py-1 rounded-full bg-amber-500/10 border border-amber-400/40 text-[10px] sm:text-xs uppercase tracking-[0.28em] text-amber-300">
+      <span class="font-ui inline-block px-4 py-1 rounded-full bg-amber-500/10 border border-amber-400/40 text-xs sm:text-[13px] uppercase tracking-[0.08em] text-amber-300">
         Manifiesto y Dirección Editorial
       </span>
-      <h1 class="font-cinzel-dec text-3xl sm:text-5xl md:text-6xl font-bold text-amber-200 leading-tight">
+      <h1 class="font-display text-3xl sm:text-5xl md:text-6xl font-bold text-amber-200 leading-tight">
         Sobre Oráculo del Velo Astral
       </h1>
-      <p class="text-lg sm:text-xl text-purple-200/85 max-w-3xl mx-auto italic leading-relaxed">
+      <p class="text-lg sm:text-xl text-purple-100/95 max-w-3xl mx-auto italic leading-relaxed">
         Una biblioteca viva del tarot construida sobre tres pilares: respeto por la simbología clásica, lucidez psicológica y una experiencia interactiva diseñada con cuidado artesanal.
       </p>
 
       <!-- Navegación rápida hacia las 5 integrantes -->
       <div id="concilio-quick-nav" class="flex flex-wrap items-center justify-center gap-2 pt-2">
-        <a href="#sofia" style="font-family: 'Cinzel', serif;" class="px-3.5 py-1.5 rounded-full bg-[#120924] hover:bg-amber-500/20 border border-amber-400/40 text-[11px] uppercase tracking-wider text-amber-200 transition-colors"><span class="text-amber-400 mr-1.5">☉</span>Sofía Lindholm</a>
-        <a href="#miriam" style="font-family: 'Cinzel', serif;" class="px-3.5 py-1.5 rounded-full bg-[#120924] hover:bg-amber-500/20 border border-amber-400/40 text-[11px] uppercase tracking-wider text-amber-200 transition-colors"><span class="text-amber-400 mr-1.5">✡</span>Miriam Al-Zahra</a>
-        <a href="#clara" style="font-family: 'Cinzel', serif;" class="px-3.5 py-1.5 rounded-full bg-[#120924] hover:bg-amber-500/20 border border-amber-400/40 text-[11px] uppercase tracking-wider text-amber-200 transition-colors"><span class="text-amber-400 mr-1.5">♀</span>Clara del Río</a>
-        <a href="#lyra" style="font-family: 'Cinzel', serif;" class="px-3.5 py-1.5 rounded-full bg-[#120924] hover:bg-amber-500/20 border border-amber-400/40 text-[11px] uppercase tracking-wider text-amber-200 transition-colors"><span class="text-amber-400 mr-1.5">☀</span>Lyra Vane</a>
-        <a href="#elena" style="font-family: 'Cinzel', serif;" class="px-3.5 py-1.5 rounded-full bg-[#120924] hover:bg-amber-500/20 border border-amber-400/40 text-[11px] uppercase tracking-wider text-amber-200 transition-colors"><span class="text-amber-400 mr-1.5">☿</span>Elena Kovács</a>
+        <a href="#sofia" style="font-family: 'Cinzel', serif;" class="px-3.5 py-1.5 rounded-full bg-[#120924] hover:bg-amber-500/20 border border-amber-400/40 text-xs uppercase tracking-wider text-amber-200 transition-colors"><span class="text-amber-400 mr-1.5">☉</span>Sofía Lindholm</a>
+        <a href="#miriam" style="font-family: 'Cinzel', serif;" class="px-3.5 py-1.5 rounded-full bg-[#120924] hover:bg-amber-500/20 border border-amber-400/40 text-xs uppercase tracking-wider text-amber-200 transition-colors"><span class="text-amber-400 mr-1.5">✡</span>Miriam Al-Zahra</a>
+        <a href="#clara" style="font-family: 'Cinzel', serif;" class="px-3.5 py-1.5 rounded-full bg-[#120924] hover:bg-amber-500/20 border border-amber-400/40 text-xs uppercase tracking-wider text-amber-200 transition-colors"><span class="text-amber-400 mr-1.5">♀</span>Clara del Río</a>
+        <a href="#lyra" style="font-family: 'Cinzel', serif;" class="px-3.5 py-1.5 rounded-full bg-[#120924] hover:bg-amber-500/20 border border-amber-400/40 text-xs uppercase tracking-wider text-amber-200 transition-colors"><span class="text-amber-400 mr-1.5">☀</span>Lyra Vane</a>
+        <a href="#elena" style="font-family: 'Cinzel', serif;" class="px-3.5 py-1.5 rounded-full bg-[#120924] hover:bg-amber-500/20 border border-amber-400/40 text-xs uppercase tracking-wider text-amber-200 transition-colors"><span class="text-amber-400 mr-1.5">☿</span>Elena Kovács</a>
       </div>
     </header>
 
     <!-- 1. POR QUÉ EXISTE EL PROYECTO -->
     <section class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-      <div class="lg:col-span-7 p-6 sm:p-8 rounded-3xl bg-[#090513]/95 border border-[#d4af37]/45 space-y-4">
-        <span class="font-cinzel text-[11px] uppercase tracking-[0.24em] text-amber-400 font-bold block">
+      <div class="lg:col-span-7 p-6 sm:p-8 rounded-3xl bg-[#0c0717]/95 border border-[#d4af37]/45 space-y-4">
+        <span class="font-ui text-xs uppercase tracking-[0.12em] text-amber-400 font-bold block">
           ✦ Nuestra Postura Frente al Tarot
         </span>
-        <h2 class="font-cinzel-dec text-2xl sm:text-3xl text-amber-200">
+        <h2 class="font-display text-2xl sm:text-3xl text-amber-200">
           Lucidez simbólica, lejos del fatalismo
         </h2>
-        <div class="space-y-3.5 text-base sm:text-lg text-amber-50/90 leading-relaxed">
+        <div class="space-y-3.5 text-base sm:text-lg text-amber-50/95 leading-relaxed">
           <p>
             Oráculo del Velo Astral nació frente a un problema frecuente en internet: casi todos los sitios de tarot se reparten entre listas mecánicas de tres líneas que no dicen nada concreto, o discursos alarmistas que buscan generar dependencia emocional.
           </p>
@@ -215,55 +218,55 @@
       <!-- Cifras reales del Códice -->
       <aside class="lg:col-span-5 grid grid-cols-2 gap-3.5">
         <div class="p-5 rounded-2xl bg-[#0d0719] border border-amber-400/35 space-y-1">
-          <span class="font-cinzel-dec text-3xl sm:text-4xl text-amber-300 font-bold block">78</span>
-          <span class="font-cinzel text-[11px] uppercase tracking-wider text-amber-100 font-bold block">Arcanos Catalogados</span>
-          <p class="text-xs sm:text-sm text-purple-200/75 leading-snug">22 Arcanos Mayores ilustrados en capas 2.5D y los 56 Arcanos Menores en los cuatro palos.</p>
+          <span class="font-display text-3xl sm:text-4xl text-amber-300 font-bold block">78</span>
+          <span class="font-ui text-xs uppercase tracking-wider text-amber-100 font-bold block">Arcanos Catalogados</span>
+          <p class="text-xs sm:text-sm text-purple-100/90 leading-snug">22 Arcanos Mayores ilustrados en capas 2.5D y los 56 Arcanos Menores en los cuatro palos.</p>
         </div>
         <div class="p-5 rounded-2xl bg-[#0d0719] border border-purple-400/35 space-y-1">
-          <span class="font-cinzel-dec text-3xl sm:text-4xl text-purple-300 font-bold block">5×2</span>
-          <span class="font-cinzel text-[11px] uppercase tracking-wider text-amber-100 font-bold block">Octavas en Luz y Sombra</span>
-          <p class="text-xs sm:text-sm text-purple-200/75 leading-snug">Lecturas polimórficas que profundizan la interpretación cuando un arcano reaparece en tu camino.</p>
+          <span class="font-display text-3xl sm:text-4xl text-purple-300 font-bold block">5×2</span>
+          <span class="font-ui text-xs uppercase tracking-wider text-amber-100 font-bold block">Octavas en Luz y Sombra</span>
+          <p class="text-xs sm:text-sm text-purple-100/90 leading-snug">Lecturas polimórficas que profundizan la interpretación cuando un arcano reaparece en tu camino.</p>
         </div>
         <div class="p-5 rounded-2xl bg-[#0d0719] border border-purple-400/35 space-y-1">
-          <span class="font-cinzel-dec text-3xl sm:text-4xl text-amber-300 font-bold block">5</span>
-          <span class="font-cinzel text-[11px] uppercase tracking-wider text-amber-100 font-bold block">Voces Especialistas</span>
-          <p class="text-xs sm:text-sm text-purple-200/75 leading-snug">Cada ficha pasa por redacción especializada y una segunda revisión simbólica cruzada.</p>
+          <span class="font-display text-3xl sm:text-4xl text-amber-300 font-bold block">5</span>
+          <span class="font-ui text-xs uppercase tracking-wider text-amber-100 font-bold block">Voces Especialistas</span>
+          <p class="text-xs sm:text-sm text-purple-100/90 leading-snug">Cada ficha pasa por redacción especializada y una segunda revisión simbólica cruzada.</p>
         </div>
         <div class="p-5 rounded-2xl bg-[#0d0719] border border-amber-400/35 space-y-1">
-          <span class="font-cinzel-dec text-3xl sm:text-4xl text-emerald-300 font-bold block">100%</span>
-          <span class="font-cinzel text-[11px] uppercase tracking-wider text-amber-100 font-bold block">Privacidad Local</span>
-          <p class="text-xs sm:text-sm text-purple-200/75 leading-snug">Sin cuentas ni registro: tu Diario y tus Talismanes se guardan únicamente en tu propio dispositivo.</p>
+          <span class="font-display text-3xl sm:text-4xl text-emerald-300 font-bold block">100%</span>
+          <span class="font-ui text-xs uppercase tracking-wider text-amber-100 font-bold block">Privacidad Local</span>
+          <p class="text-xs sm:text-sm text-purple-100/90 leading-snug">Sin cuentas ni registro: tu Diario y tus Talismanes se guardan únicamente en tu propio dispositivo.</p>
         </div>
       </aside>
     </section>
 
     <!-- 2. METODOLOGÍA DE REVISIÓN CRUZADA -->
-    <section class="p-6 sm:p-8 rounded-3xl bg-[#090513]/95 border border-purple-400/40 space-y-6">
+    <section class="p-6 sm:p-8 rounded-3xl bg-[#0c0717]/95 border border-purple-400/40 space-y-6">
       <div class="space-y-1.5 border-b border-purple-500/25 pb-4">
-        <span class="font-cinzel text-[11px] uppercase tracking-[0.24em] text-purple-300 font-bold block">
+        <span class="font-ui text-xs uppercase tracking-[0.12em] text-purple-300 font-bold block">
           ✦ Cómo Se Escribe y Revisa el Códice
         </span>
-        <h2 class="font-cinzel-dec text-2xl sm:text-3xl text-amber-200">
+        <h2 class="font-display text-2xl sm:text-3xl text-amber-200">
           Protocolo Editorial de Tres Filtros
         </h2>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
         <div class="p-5 rounded-2xl bg-white/[0.03] border border-amber-400/25 space-y-2">
-          <span class="font-cinzel-dec text-lg text-amber-300 font-bold block">I. Rigor Simbólico</span>
-          <p class="text-sm sm:text-base text-amber-50/90 leading-relaxed">
+          <span class="font-display text-lg text-amber-300 font-bold block">I. Rigor Simbólico</span>
+          <p class="text-sm sm:text-base text-amber-50/95 leading-relaxed">
             Contrastamos la iconografía clásica (Marsella y Rider-Waite-Smith), la letra hebrea, el sendero en el Árbol de la Vida y el elemento raíz antes de redactar cualquier interpretación.
           </p>
         </div>
         <div class="p-5 rounded-2xl bg-white/[0.03] border border-purple-400/25 space-y-2">
-          <span class="font-cinzel-dec text-lg text-purple-300 font-bold block">II. Lectura en Luz y Sombra</span>
-          <p class="text-sm sm:text-base text-amber-50/90 leading-relaxed">
+          <span class="font-display text-lg text-purple-300 font-bold block">II. Lectura en Luz y Sombra</span>
+          <p class="text-sm sm:text-base text-amber-50/95 leading-relaxed">
             Ninguna carta se escribe solo en positivo o desde el miedo. Auditamos los cinco dominios vitales y la polaridad invertida para señalar bloqueos reales sin fomentar dependencia.
           </p>
         </div>
         <div class="p-5 rounded-2xl bg-white/[0.03] border border-emerald-400/25 space-y-2">
-          <span class="font-cinzel-dec text-lg text-emerald-300 font-bold block">III. Revisión Cruzada y Claridad</span>
-          <p class="text-sm sm:text-base text-amber-50/90 leading-relaxed">
+          <span class="font-display text-lg text-emerald-300 font-bold block">III. Revisión Cruzada y Claridad</span>
+          <p class="text-sm sm:text-base text-amber-50/95 leading-relaxed">
             Cada ficha del Códice tiene una redactora principal y una revisora distinta que verifica tono, coherencia doctrinaria y aplicabilidad práctica de los decretos de cierre.
           </p>
         </div>
@@ -273,30 +276,30 @@
     <!-- 3. EL CONCILIO DEL VELO ASTRAL (Pre-renderizado para SEO + sincronizado con concilio_tarotistas.js) -->
     <section id="concilio" class="scroll-mt-20 space-y-8">
       <div class="text-center space-y-2 max-w-3xl mx-auto">
-        <span class="font-cinzel text-xs uppercase tracking-[0.26em] text-amber-400 font-bold block">
+        <span class="font-ui text-xs uppercase tracking-[0.12em] text-amber-400 font-bold block">
           ✦ Mesa Editorial y Revisión Simbólica
         </span>
-        <h2 class="font-cinzel-dec text-3xl sm:text-4xl text-amber-200 font-bold">
+        <h2 class="font-display text-3xl sm:text-4xl text-amber-200 font-bold">
           El Concilio del Velo Astral
         </h2>
-        <p class="text-base sm:text-lg text-purple-200/85 italic">
+        <p class="text-base sm:text-lg text-purple-100/95 italic">
           Cinco miradas complementarias que escriben, contrastan y custodian el rigor del Códice desde la cábala, la iconografía, los vínculos, la estrategia material y la pedagogía clara.
         </p>
       </div>
 
       <div id="concilio-profiles-list" class="space-y-6">
-        <article id="sofia" class="scroll-mt-24 rounded-3xl bg-[#090513]/95 border border-[#d4af37]/50 p-5 sm:p-8 shadow-[0_18px_48px_rgba(0,0,0,0.8)]">
+        <article id="sofia" class="scroll-mt-24 rounded-3xl bg-[#0c0717]/95 border border-[#d4af37]/50 p-5 sm:p-8 shadow-[0_18px_48px_rgba(0,0,0,0.8)]">
           <div class="flex flex-col md:flex-row  items-center md:items-start gap-6 sm:gap-8">
             <div class="flex-shrink-0 flex flex-col items-center gap-3 w-full md:w-52">
               <div class="relative w-44 h-44 sm:w-52 sm:h-52 rounded-2xl overflow-hidden border-2 border-[#d4af37]/75 bg-[#120924] shadow-[0_14px_34px_rgba(0,0,0,0.85)]">
                 <img src="img/concilio/sofia.webp" alt="Retrato de Sofía Lindholm sosteniendo la carta de El Loco en su mesa de lectura con velas y cuarzos" width="640" height="640" loading="lazy" decoding="async" data-concilio-img="1" class="w-full h-full object-cover object-top" />
                 <div data-concilio-fallback="1" style="display:none" class="w-full h-full items-center justify-center flex-col gap-1 bg-gradient-to-b from-[#1a0d2e] to-[#090513] text-amber-300">
                   <span class="text-5xl">☉</span>
-                  <span style="font-family: 'Cinzel', serif;" class="text-[10px] uppercase tracking-widest text-amber-200/75">Sofía Lindholm</span>
+                  <span style="font-family: 'Cinzel', serif;" class="text-xs uppercase tracking-widest text-amber-200/95">Sofía Lindholm</span>
                 </div>
               </div>
               <div class="text-center space-y-1">
-                <span style="font-family: 'Cinzel', serif;" class="inline-block px-3 py-0.5 rounded-full bg-amber-500/15 border border-amber-400/40 text-[10px] uppercase tracking-[0.18em] text-amber-200">
+                <span style="font-family: 'Cinzel', serif;" class="inline-block px-3 py-0.5 rounded-full bg-amber-500/15 border border-amber-400/40 text-xs uppercase tracking-[0.08em] text-amber-200">
                   ☉ Elemento: Aire
                 </span>
               </div>
@@ -305,47 +308,47 @@
             <div class="flex-1 min-w-0 space-y-4 text-left">
               <div class="border-b border-amber-500/25 pb-3.5 space-y-1.5">
                 <div class="flex flex-wrap items-center justify-between gap-2">
-                  <h3 style="font-family: 'Cinzel Decorative', serif;" class="text-2xl sm:text-3xl text-amber-200 font-bold">Sofía Lindholm</h3>
-                  <span style="font-family: 'Cinzel', serif;" class="text-[10px] uppercase tracking-[0.2em] px-2.5 py-1 rounded-full bg-emerald-950/80 border border-emerald-400/45 text-emerald-300 font-bold">Miembro del Concilio</span>
+                  <h3 style="font-family: 'Cinzel', Georgia, serif;" class="text-2xl sm:text-3xl text-amber-200 font-bold">Sofía Lindholm</h3>
+                  <span style="font-family: 'Cinzel', serif;" class="text-xs uppercase tracking-[0.1em] px-2.5 py-1 rounded-full bg-emerald-950/80 border border-emerald-400/45 text-emerald-300 font-bold">Miembro del Concilio</span>
                 </div>
-                <p style="font-family: 'Cinzel', serif;" class="text-xs sm:text-sm uppercase tracking-[0.14em] text-purple-300 font-bold">Tarot Contemporáneo, Pedagogía Simbólica y Lectura Evolutiva</p>
+                <p style="font-family: 'Cinzel', serif;" class="text-xs sm:text-sm uppercase tracking-[0.08em] text-purple-300 font-bold">Tarot Contemporáneo, Pedagogía Simbólica y Lectura Evolutiva</p>
                 <p class="text-sm text-amber-200/80 italic">7 años de práctica con el mazo Rider-Waite-Smith y edición de guías de lectura clara</p>
               </div>
 
-              <div class="space-y-3 text-base sm:text-lg text-amber-50/90 leading-relaxed">
+              <div class="space-y-3 text-base sm:text-lg text-amber-50/95 leading-relaxed">
                 <p>Formada en estudio comparado del tarot contemporáneo y lectura simbólica aplicada, Sofía lleva siete años trabajando a diario con el mazo Rider-Waite-Smith. Su enfoque parte de una premisa sencilla: un símbolo antiguo solo sirve si la persona que consulta logra comprenderlo sin necesidad de un diccionario hermético. Dentro del Concilio oficia como editora de claridad, asegurándose de que cada ficha baje a tierra con consejos concretos y un tono honesto, libre de dramatismos innecesarios.</p>
               </div>
 
               <blockquote class="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-[#180d2c] via-[#0d0718] to-transparent border-l-4 border-[#d4af37] space-y-1.5">
-                <span style="font-family: 'Cinzel', serif;" class="text-[10px] uppercase tracking-[0.22em] text-amber-400 font-bold block">En sus palabras</span>
+                <span style="font-family: 'Cinzel', serif;" class="text-xs uppercase tracking-[0.12em] text-amber-400 font-bold block">En sus palabras</span>
                 <p class="text-base sm:text-lg italic text-amber-100/95 leading-relaxed">“Empecé a estudiar las cartas buscando orden en una etapa de muchos cambios, y enseguida noté que casi todo lo que se publicaba sobre tarot oscilaba entre lo demasiado críptico y las frases vacías. Por eso suelo tener a El Loco siempre a mano en la mesa: me recuerda mirar cada tirada sin prejuicios y escribir para alguien real que necesita entender qué tiene enfrente hoy, no adivinar un futuro rígido.”</p>
               </blockquote>
 
-              <div class="p-3.5 rounded-xl bg-white/[0.03] border border-white/10 text-xs sm:text-sm text-amber-100/85">
-                <strong style="font-family: 'Cinzel', serif;" class="text-[10px] uppercase tracking-widest text-emerald-300 mr-2">Función en el Códice:</strong>
+              <div class="p-3.5 rounded-xl bg-white/[0.03] border border-white/10 text-xs sm:text-sm text-amber-50/95">
+                <strong style="font-family: 'Cinzel', serif;" class="text-xs uppercase tracking-widest text-emerald-300 mr-2">Función en el Códice:</strong>
                 Redacción de lecturas accesibles y revisión de claridad práctica para el consultante
               </div>
 
               <div class="flex flex-wrap items-center justify-between gap-3 pt-1">
-                <div class="flex flex-wrap gap-1.5"><span class="px-2.5 py-1 rounded-full bg-white/[0.04] border border-amber-400/30 text-[11px] sm:text-xs text-amber-100/90">✦ Tarot Rider-Waite-Smith</span><span class="px-2.5 py-1 rounded-full bg-white/[0.04] border border-amber-400/30 text-[11px] sm:text-xs text-amber-100/90">✦ Arquetipos de Inicios</span><span class="px-2.5 py-1 rounded-full bg-white/[0.04] border border-amber-400/30 text-[11px] sm:text-xs text-amber-100/90">✦ Lectura Evolutiva</span><span class="px-2.5 py-1 rounded-full bg-white/[0.04] border border-amber-400/30 text-[11px] sm:text-xs text-amber-100/90">✦ Lenguaje Claro</span></div>
-                <a href="carta.html?arcano=0" style="font-family: 'Cinzel', serif;" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-purple-500/20 hover:bg-purple-500/35 border border-purple-400/50 text-[10px] sm:text-xs uppercase tracking-wider text-purple-200 transition-colors">Arcano de Referencia: 0 • El Loco ›</a>
+                <div class="flex flex-wrap gap-1.5"><span class="px-2.5 py-1 rounded-full bg-white/[0.04] border border-amber-400/30 text-xs sm:text-sm text-amber-100/90">✦ Tarot Rider-Waite-Smith</span><span class="px-2.5 py-1 rounded-full bg-white/[0.04] border border-amber-400/30 text-xs sm:text-sm text-amber-100/90">✦ Arquetipos de Inicios</span><span class="px-2.5 py-1 rounded-full bg-white/[0.04] border border-amber-400/30 text-xs sm:text-sm text-amber-100/90">✦ Lectura Evolutiva</span><span class="px-2.5 py-1 rounded-full bg-white/[0.04] border border-amber-400/30 text-xs sm:text-sm text-amber-100/90">✦ Lenguaje Claro</span></div>
+                <a href="carta.html?arcano=0" style="font-family: 'Cinzel', serif;" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-purple-500/20 hover:bg-purple-500/35 border border-purple-400/50 text-xs sm:text-[13px] uppercase tracking-wider text-purple-200 transition-colors">Arcano de Referencia: 0 • El Loco ›</a>
               </div>
             </div>
           </div>
         </article>
 
-        <article id="miriam" class="scroll-mt-24 rounded-3xl bg-[#090513]/95 border border-[#d4af37]/50 p-5 sm:p-8 shadow-[0_18px_48px_rgba(0,0,0,0.8)]">
+        <article id="miriam" class="scroll-mt-24 rounded-3xl bg-[#0c0717]/95 border border-[#d4af37]/50 p-5 sm:p-8 shadow-[0_18px_48px_rgba(0,0,0,0.8)]">
           <div class="flex flex-col md:flex-row md:flex-row-reverse items-center md:items-start gap-6 sm:gap-8">
             <div class="flex-shrink-0 flex flex-col items-center gap-3 w-full md:w-52">
               <div class="relative w-44 h-44 sm:w-52 sm:h-52 rounded-2xl overflow-hidden border-2 border-[#d4af37]/75 bg-[#120924] shadow-[0_14px_34px_rgba(0,0,0,0.85)]">
                 <img src="img/concilio/miriam.webp" alt="Retrato editorial de Miriam Al-Zahra con pendientes antiguos de filigrana dorada sobre fondo oscuro" width="640" height="640" loading="lazy" decoding="async" data-concilio-img="1" class="w-full h-full object-cover object-top" />
                 <div data-concilio-fallback="1" style="display:none" class="w-full h-full items-center justify-center flex-col gap-1 bg-gradient-to-b from-[#1a0d2e] to-[#090513] text-amber-300">
                   <span class="text-5xl">✡</span>
-                  <span style="font-family: 'Cinzel', serif;" class="text-[10px] uppercase tracking-widest text-amber-200/75">Miriam Al-Zahra</span>
+                  <span style="font-family: 'Cinzel', serif;" class="text-xs uppercase tracking-widest text-amber-200/95">Miriam Al-Zahra</span>
                 </div>
               </div>
               <div class="text-center space-y-1">
-                <span style="font-family: 'Cinzel', serif;" class="inline-block px-3 py-0.5 rounded-full bg-amber-500/15 border border-amber-400/40 text-[10px] uppercase tracking-[0.18em] text-amber-200">
+                <span style="font-family: 'Cinzel', serif;" class="inline-block px-3 py-0.5 rounded-full bg-amber-500/15 border border-amber-400/40 text-xs uppercase tracking-[0.08em] text-amber-200">
                   ✡ Elemento: Fuego y Tierra
                 </span>
               </div>
@@ -354,47 +357,47 @@
             <div class="flex-1 min-w-0 space-y-4 text-left">
               <div class="border-b border-amber-500/25 pb-3.5 space-y-1.5">
                 <div class="flex flex-wrap items-center justify-between gap-2">
-                  <h3 style="font-family: 'Cinzel Decorative', serif;" class="text-2xl sm:text-3xl text-amber-200 font-bold">Miriam Al-Zahra</h3>
-                  <span style="font-family: 'Cinzel', serif;" class="text-[10px] uppercase tracking-[0.2em] px-2.5 py-1 rounded-full bg-emerald-950/80 border border-emerald-400/45 text-emerald-300 font-bold">Miembro del Concilio</span>
+                  <h3 style="font-family: 'Cinzel', Georgia, serif;" class="text-2xl sm:text-3xl text-amber-200 font-bold">Miriam Al-Zahra</h3>
+                  <span style="font-family: 'Cinzel', serif;" class="text-xs uppercase tracking-[0.1em] px-2.5 py-1 rounded-full bg-emerald-950/80 border border-emerald-400/45 text-emerald-300 font-bold">Miembro del Concilio</span>
                 </div>
-                <p style="font-family: 'Cinzel', serif;" class="text-xs sm:text-sm uppercase tracking-[0.14em] text-purple-300 font-bold">Cábala Hermética, Astrología Tradicional y Revisión Esotérica</p>
+                <p style="font-family: 'Cinzel', serif;" class="text-xs sm:text-sm uppercase tracking-[0.08em] text-purple-300 font-bold">Cábala Hermética, Astrología Tradicional y Revisión Esotérica</p>
                 <p class="text-sm text-amber-200/80 italic">16 años de investigación en correspondencias cabalísticas, letras hebreas y decanatos astrológicos</p>
               </div>
 
-              <div class="space-y-3 text-base sm:text-lg text-amber-50/90 leading-relaxed">
+              <div class="space-y-3 text-base sm:text-lg text-amber-50/95 leading-relaxed">
                 <p>De raíces mediterráneas y formación autodidacta rigurosa en fuentes clásicas de cábala hermética y astrología helenística, Miriam dedica su trabajo al estudio estructural del tarot como sistema de correspondencias. En Oráculo del Velo Astral supervisa las fichas técnicas de los 78 arcanos: verifica cada asignación elemental, las dignidades planetarias, los senderos sefiróticos y las contrapartes en sombra para que el Códice conserve coherencia doctrinaria de principio a fin.</p>
               </div>
 
               <blockquote class="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-[#180d2c] via-[#0d0718] to-transparent border-l-4 border-[#d4af37] space-y-1.5">
-                <span style="font-family: 'Cinzel', serif;" class="text-[10px] uppercase tracking-[0.22em] text-amber-400 font-bold block">En sus palabras</span>
+                <span style="font-family: 'Cinzel', serif;" class="text-xs uppercase tracking-[0.12em] text-amber-400 font-bold block">En sus palabras</span>
                 <p class="text-base sm:text-lg italic text-amber-100/95 leading-relaxed">“Cuando alguien desprecia la estructura tradicional del tarot suele terminar improvisando lugares comunes. Cada letra hebrea, cada planeta y cada elemento dentro de una carta obedecen a siglos de observación simbólica. Mi tarea en el Concilio es custodiar ese andamiaje antiguo para que, aunque la web sea moderna y veloz, la arquitectura profunda que sostiene cada lectura siga siendo fiel a sus raíces.”</p>
               </blockquote>
 
-              <div class="p-3.5 rounded-xl bg-white/[0.03] border border-white/10 text-xs sm:text-sm text-amber-100/85">
-                <strong style="font-family: 'Cinzel', serif;" class="text-[10px] uppercase tracking-widest text-emerald-300 mr-2">Función en el Códice:</strong>
+              <div class="p-3.5 rounded-xl bg-white/[0.03] border border-white/10 text-xs sm:text-sm text-amber-50/95">
+                <strong style="font-family: 'Cinzel', serif;" class="text-xs uppercase tracking-widest text-emerald-300 mr-2">Función en el Códice:</strong>
                 Auditoría de senderos del Árbol de la Vida, regencias planetarias y consistencia alquímica
               </div>
 
               <div class="flex flex-wrap items-center justify-between gap-3 pt-1">
-                <div class="flex flex-wrap gap-1.5"><span class="px-2.5 py-1 rounded-full bg-white/[0.04] border border-amber-400/30 text-[11px] sm:text-xs text-amber-100/90">✦ Cábala Hermética</span><span class="px-2.5 py-1 rounded-full bg-white/[0.04] border border-amber-400/30 text-[11px] sm:text-xs text-amber-100/90">✦ Árbol de la Vida</span><span class="px-2.5 py-1 rounded-full bg-white/[0.04] border border-amber-400/30 text-[11px] sm:text-xs text-amber-100/90">✦ Astrología Clásica</span><span class="px-2.5 py-1 rounded-full bg-white/[0.04] border border-amber-400/30 text-[11px] sm:text-xs text-amber-100/90">✦ Alquimia Simbólica</span></div>
-                <a href="carta.html?arcano=10" style="font-family: 'Cinzel', serif;" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-purple-500/20 hover:bg-purple-500/35 border border-purple-400/50 text-[10px] sm:text-xs uppercase tracking-wider text-purple-200 transition-colors">Arcano de Referencia: X • La Rueda de la Fortuna ›</a>
+                <div class="flex flex-wrap gap-1.5"><span class="px-2.5 py-1 rounded-full bg-white/[0.04] border border-amber-400/30 text-xs sm:text-sm text-amber-100/90">✦ Cábala Hermética</span><span class="px-2.5 py-1 rounded-full bg-white/[0.04] border border-amber-400/30 text-xs sm:text-sm text-amber-100/90">✦ Árbol de la Vida</span><span class="px-2.5 py-1 rounded-full bg-white/[0.04] border border-amber-400/30 text-xs sm:text-sm text-amber-100/90">✦ Astrología Clásica</span><span class="px-2.5 py-1 rounded-full bg-white/[0.04] border border-amber-400/30 text-xs sm:text-sm text-amber-100/90">✦ Alquimia Simbólica</span></div>
+                <a href="carta.html?arcano=10" style="font-family: 'Cinzel', serif;" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-purple-500/20 hover:bg-purple-500/35 border border-purple-400/50 text-xs sm:text-[13px] uppercase tracking-wider text-purple-200 transition-colors">Arcano de Referencia: X • La Rueda de la Fortuna ›</a>
               </div>
             </div>
           </div>
         </article>
 
-        <article id="clara" class="scroll-mt-24 rounded-3xl bg-[#090513]/95 border border-[#d4af37]/50 p-5 sm:p-8 shadow-[0_18px_48px_rgba(0,0,0,0.8)]">
+        <article id="clara" class="scroll-mt-24 rounded-3xl bg-[#0c0717]/95 border border-[#d4af37]/50 p-5 sm:p-8 shadow-[0_18px_48px_rgba(0,0,0,0.8)]">
           <div class="flex flex-col md:flex-row  items-center md:items-start gap-6 sm:gap-8">
             <div class="flex-shrink-0 flex flex-col items-center gap-3 w-full md:w-52">
               <div class="relative w-44 h-44 sm:w-52 sm:h-52 rounded-2xl overflow-hidden border-2 border-[#d4af37]/75 bg-[#120924] shadow-[0_14px_34px_rgba(0,0,0,0.85)]">
                 <img src="img/concilio/clara.webp" alt="Retrato de Clara del Río con colgante de piedra lunar y blusa verde esmeralda bajo luz de velas" width="640" height="640" loading="lazy" decoding="async" data-concilio-img="1" class="w-full h-full object-cover object-top" />
                 <div data-concilio-fallback="1" style="display:none" class="w-full h-full items-center justify-center flex-col gap-1 bg-gradient-to-b from-[#1a0d2e] to-[#090513] text-amber-300">
                   <span class="text-5xl">♀</span>
-                  <span style="font-family: 'Cinzel', serif;" class="text-[10px] uppercase tracking-widest text-amber-200/75">Clara del Río</span>
+                  <span style="font-family: 'Cinzel', serif;" class="text-xs uppercase tracking-widest text-amber-200/95">Clara del Río</span>
                 </div>
               </div>
               <div class="text-center space-y-1">
-                <span style="font-family: 'Cinzel', serif;" class="inline-block px-3 py-0.5 rounded-full bg-amber-500/15 border border-amber-400/40 text-[10px] uppercase tracking-[0.18em] text-amber-200">
+                <span style="font-family: 'Cinzel', serif;" class="inline-block px-3 py-0.5 rounded-full bg-amber-500/15 border border-amber-400/40 text-xs uppercase tracking-[0.08em] text-amber-200">
                   ♀ Elemento: Agua
                 </span>
               </div>
@@ -403,47 +406,47 @@
             <div class="flex-1 min-w-0 space-y-4 text-left">
               <div class="border-b border-amber-500/25 pb-3.5 space-y-1.5">
                 <div class="flex flex-wrap items-center justify-between gap-2">
-                  <h3 style="font-family: 'Cinzel Decorative', serif;" class="text-2xl sm:text-3xl text-amber-200 font-bold">Clara del Río</h3>
-                  <span style="font-family: 'Cinzel', serif;" class="text-[10px] uppercase tracking-[0.2em] px-2.5 py-1 rounded-full bg-emerald-950/80 border border-emerald-400/45 text-emerald-300 font-bold">Miembro del Concilio</span>
+                  <h3 style="font-family: 'Cinzel', Georgia, serif;" class="text-2xl sm:text-3xl text-amber-200 font-bold">Clara del Río</h3>
+                  <span style="font-family: 'Cinzel', serif;" class="text-xs uppercase tracking-[0.1em] px-2.5 py-1 rounded-full bg-emerald-950/80 border border-emerald-400/45 text-emerald-300 font-bold">Miembro del Concilio</span>
                 </div>
-                <p style="font-family: 'Cinzel', serif;" class="text-xs sm:text-sm uppercase tracking-[0.14em] text-purple-300 font-bold">Tarot Vincular, Lectura Afectiva y Registros Astrales</p>
+                <p style="font-family: 'Cinzel', serif;" class="text-xs sm:text-sm uppercase tracking-[0.08em] text-purple-300 font-bold">Tarot Vincular, Lectura Afectiva y Registros Astrales</p>
                 <p class="text-sm text-amber-200/80 italic">11 años acompañando lecturas relacionales, ciclos emocionales y vínculos conscientes</p>
               </div>
 
-              <div class="space-y-3 text-base sm:text-lg text-amber-50/90 leading-relaxed">
+              <div class="space-y-3 text-base sm:text-lg text-amber-50/95 leading-relaxed">
                 <p>Con once años de experiencia en lecturas centradas en relaciones de pareja, duelos afectivos y patrones familiares, Clara construyó un método que se aleja deliberadamente del tarot de la dependencia emocional. En lugar de alimentar ansiedades sobre lo que piensa o hará otra persona, sus textos ayudan a leer la dinámica real del vínculo, detectar asimetrías y reconocer el propio lugar dentro de la escena afectiva.</p>
               </div>
 
               <blockquote class="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-[#180d2c] via-[#0d0718] to-transparent border-l-4 border-[#d4af37] space-y-1.5">
-                <span style="font-family: 'Cinzel', serif;" class="text-[10px] uppercase tracking-[0.22em] text-amber-400 font-bold block">En sus palabras</span>
+                <span style="font-family: 'Cinzel', serif;" class="text-xs uppercase tracking-[0.12em] text-amber-400 font-bold block">En sus palabras</span>
                 <p class="text-base sm:text-lg italic text-amber-100/95 leading-relaxed">“La mayoría de las personas llega a una tirada con una pregunta de amor en la garganta, y casi siempre busca certeza absoluta donde en realidad necesita perspectiva. Cuando redacto o reviso el apartado afectivo de una carta me importa una sola cosa: que quien la lea cierre la pantalla con más dignidad y claridad que antes de abrirla, nunca más ansioso ni atado a falsas promesas.”</p>
               </blockquote>
 
-              <div class="p-3.5 rounded-xl bg-white/[0.03] border border-white/10 text-xs sm:text-sm text-amber-100/85">
-                <strong style="font-family: 'Cinzel', serif;" class="text-[10px] uppercase tracking-widest text-emerald-300 mr-2">Función en el Códice:</strong>
+              <div class="p-3.5 rounded-xl bg-white/[0.03] border border-white/10 text-xs sm:text-sm text-amber-50/95">
+                <strong style="font-family: 'Cinzel', serif;" class="text-xs uppercase tracking-widest text-emerald-300 mr-2">Función en el Códice:</strong>
                 Redacción y curaduría del dominio de Amor y Vínculos en Luz y Sombra
               </div>
 
               <div class="flex flex-wrap items-center justify-between gap-3 pt-1">
-                <div class="flex flex-wrap gap-1.5"><span class="px-2.5 py-1 rounded-full bg-white/[0.04] border border-amber-400/30 text-[11px] sm:text-xs text-amber-100/90">✦ Tarot Vincular</span><span class="px-2.5 py-1 rounded-full bg-white/[0.04] border border-amber-400/30 text-[11px] sm:text-xs text-amber-100/90">✦ Reciprocidad Afectiva</span><span class="px-2.5 py-1 rounded-full bg-white/[0.04] border border-amber-400/30 text-[11px] sm:text-xs text-amber-100/90">✦ Ciclos Lunares</span><span class="px-2.5 py-1 rounded-full bg-white/[0.04] border border-amber-400/30 text-[11px] sm:text-xs text-amber-100/90">✦ Límites Emocionales</span></div>
-                <a href="carta.html?arcano=18" style="font-family: 'Cinzel', serif;" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-purple-500/20 hover:bg-purple-500/35 border border-purple-400/50 text-[10px] sm:text-xs uppercase tracking-wider text-purple-200 transition-colors">Arcano de Referencia: XVIII • La Luna ›</a>
+                <div class="flex flex-wrap gap-1.5"><span class="px-2.5 py-1 rounded-full bg-white/[0.04] border border-amber-400/30 text-xs sm:text-sm text-amber-100/90">✦ Tarot Vincular</span><span class="px-2.5 py-1 rounded-full bg-white/[0.04] border border-amber-400/30 text-xs sm:text-sm text-amber-100/90">✦ Reciprocidad Afectiva</span><span class="px-2.5 py-1 rounded-full bg-white/[0.04] border border-amber-400/30 text-xs sm:text-sm text-amber-100/90">✦ Ciclos Lunares</span><span class="px-2.5 py-1 rounded-full bg-white/[0.04] border border-amber-400/30 text-xs sm:text-sm text-amber-100/90">✦ Límites Emocionales</span></div>
+                <a href="carta.html?arcano=18" style="font-family: 'Cinzel', serif;" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-purple-500/20 hover:bg-purple-500/35 border border-purple-400/50 text-xs sm:text-[13px] uppercase tracking-wider text-purple-200 transition-colors">Arcano de Referencia: XVIII • La Luna ›</a>
               </div>
             </div>
           </div>
         </article>
 
-        <article id="lyra" class="scroll-mt-24 rounded-3xl bg-[#090513]/95 border border-[#d4af37]/50 p-5 sm:p-8 shadow-[0_18px_48px_rgba(0,0,0,0.8)]">
+        <article id="lyra" class="scroll-mt-24 rounded-3xl bg-[#0c0717]/95 border border-[#d4af37]/50 p-5 sm:p-8 shadow-[0_18px_48px_rgba(0,0,0,0.8)]">
           <div class="flex flex-col md:flex-row md:flex-row-reverse items-center md:items-start gap-6 sm:gap-8">
             <div class="flex-shrink-0 flex flex-col items-center gap-3 w-full md:w-52">
               <div class="relative w-44 h-44 sm:w-52 sm:h-52 rounded-2xl overflow-hidden border-2 border-[#d4af37]/75 bg-[#120924] shadow-[0_14px_34px_rgba(0,0,0,0.85)]">
                 <img src="img/concilio/lyra.webp" alt="Retrato de Lyra Vane con medallón solar dorado y camisa negra de seda en luz cálida" width="640" height="640" loading="lazy" decoding="async" data-concilio-img="1" class="w-full h-full object-cover object-top" />
                 <div data-concilio-fallback="1" style="display:none" class="w-full h-full items-center justify-center flex-col gap-1 bg-gradient-to-b from-[#1a0d2e] to-[#090513] text-amber-300">
                   <span class="text-5xl">☀</span>
-                  <span style="font-family: 'Cinzel', serif;" class="text-[10px] uppercase tracking-widest text-amber-200/75">Lyra Vane</span>
+                  <span style="font-family: 'Cinzel', serif;" class="text-xs uppercase tracking-widest text-amber-200/95">Lyra Vane</span>
                 </div>
               </div>
               <div class="text-center space-y-1">
-                <span style="font-family: 'Cinzel', serif;" class="inline-block px-3 py-0.5 rounded-full bg-amber-500/15 border border-amber-400/40 text-[10px] uppercase tracking-[0.18em] text-amber-200">
+                <span style="font-family: 'Cinzel', serif;" class="inline-block px-3 py-0.5 rounded-full bg-amber-500/15 border border-amber-400/40 text-xs uppercase tracking-[0.08em] text-amber-200">
                   ☀ Elemento: Fuego
                 </span>
               </div>
@@ -452,47 +455,47 @@
             <div class="flex-1 min-w-0 space-y-4 text-left">
               <div class="border-b border-amber-500/25 pb-3.5 space-y-1.5">
                 <div class="flex flex-wrap items-center justify-between gap-2">
-                  <h3 style="font-family: 'Cinzel Decorative', serif;" class="text-2xl sm:text-3xl text-amber-200 font-bold">Lyra Vane</h3>
-                  <span style="font-family: 'Cinzel', serif;" class="text-[10px] uppercase tracking-[0.2em] px-2.5 py-1 rounded-full bg-emerald-950/80 border border-emerald-400/45 text-emerald-300 font-bold">Miembro del Concilio</span>
+                  <h3 style="font-family: 'Cinzel', Georgia, serif;" class="text-2xl sm:text-3xl text-amber-200 font-bold">Lyra Vane</h3>
+                  <span style="font-family: 'Cinzel', serif;" class="text-xs uppercase tracking-[0.1em] px-2.5 py-1 rounded-full bg-emerald-950/80 border border-emerald-400/45 text-emerald-300 font-bold">Miembro del Concilio</span>
                 </div>
-                <p style="font-family: 'Cinzel', serif;" class="text-xs sm:text-sm uppercase tracking-[0.14em] text-purple-300 font-bold">Tarot Vocacional, Estrategia Material y Propósito</p>
+                <p style="font-family: 'Cinzel', serif;" class="text-xs sm:text-sm uppercase tracking-[0.08em] text-purple-300 font-bold">Tarot Vocacional, Estrategia Material y Propósito</p>
                 <p class="text-sm text-amber-200/80 italic">12 años integrando lectura arquetípica con toma de decisiones laborales y proyectos independientes</p>
               </div>
 
-              <div class="space-y-3 text-base sm:text-lg text-amber-50/90 leading-relaxed">
+              <div class="space-y-3 text-base sm:text-lg text-amber-50/95 leading-relaxed">
                 <p>Antes de dedicarse de lleno a la escritura editorial y la consultoría simbólica, Lyra trabajó durante años en gestión de proyectos creativos independientes. Esa experiencia práctica marcó su lectura del tarot: entiende los arcanos como un tablero estratégico para detectar bloqueos de ejecución, negociaciones desfavorables y momentos oportunos de expansión. En el Códice lidera las secciones de Trabajo, Dinero y los decretos de acción de cada carta.</p>
               </div>
 
               <blockquote class="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-[#180d2c] via-[#0d0718] to-transparent border-l-4 border-[#d4af37] space-y-1.5">
-                <span style="font-family: 'Cinzel', serif;" class="text-[10px] uppercase tracking-[0.22em] text-amber-400 font-bold block">En sus palabras</span>
+                <span style="font-family: 'Cinzel', serif;" class="text-xs uppercase tracking-[0.12em] text-amber-400 font-bold block">En sus palabras</span>
                 <p class="text-base sm:text-lg italic text-amber-100/95 leading-relaxed">“La intuición sin calendario se evapora rápido. Me fascina el momento exacto en que una carta deja de ser una metáfora bonita y se convierte en una decisión concreta: cobrar lo que vale tu oficio, cerrar un acuerdo que ya no rinde o animarte a lanzar lo que venís postergando. En cada ficha busco dejar esa palanca práctica a la vista.”</p>
               </blockquote>
 
-              <div class="p-3.5 rounded-xl bg-white/[0.03] border border-white/10 text-xs sm:text-sm text-amber-100/85">
-                <strong style="font-family: 'Cinzel', serif;" class="text-[10px] uppercase tracking-widest text-emerald-300 mr-2">Función en el Códice:</strong>
+              <div class="p-3.5 rounded-xl bg-white/[0.03] border border-white/10 text-xs sm:text-sm text-amber-50/95">
+                <strong style="font-family: 'Cinzel', serif;" class="text-xs uppercase tracking-widest text-emerald-300 mr-2">Función en el Códice:</strong>
                 Curaduría de los dominios de Trabajo, Dinero y protocolos de acción ejecutiva
               </div>
 
               <div class="flex flex-wrap items-center justify-between gap-3 pt-1">
-                <div class="flex flex-wrap gap-1.5"><span class="px-2.5 py-1 rounded-full bg-white/[0.04] border border-amber-400/30 text-[11px] sm:text-xs text-amber-100/90">✦ Propósito Vocacional</span><span class="px-2.5 py-1 rounded-full bg-white/[0.04] border border-amber-400/30 text-[11px] sm:text-xs text-amber-100/90">✦ Trabajo y Oficio</span><span class="px-2.5 py-1 rounded-full bg-white/[0.04] border border-amber-400/30 text-[11px] sm:text-xs text-amber-100/90">✦ Estrategia Personal</span><span class="px-2.5 py-1 rounded-full bg-white/[0.04] border border-amber-400/30 text-[11px] sm:text-xs text-amber-100/90">✦ Decretos de Acción</span></div>
-                <a href="carta.html?arcano=19" style="font-family: 'Cinzel', serif;" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-purple-500/20 hover:bg-purple-500/35 border border-purple-400/50 text-[10px] sm:text-xs uppercase tracking-wider text-purple-200 transition-colors">Arcano de Referencia: XIX • El Sol ›</a>
+                <div class="flex flex-wrap gap-1.5"><span class="px-2.5 py-1 rounded-full bg-white/[0.04] border border-amber-400/30 text-xs sm:text-sm text-amber-100/90">✦ Propósito Vocacional</span><span class="px-2.5 py-1 rounded-full bg-white/[0.04] border border-amber-400/30 text-xs sm:text-sm text-amber-100/90">✦ Trabajo y Oficio</span><span class="px-2.5 py-1 rounded-full bg-white/[0.04] border border-amber-400/30 text-xs sm:text-sm text-amber-100/90">✦ Estrategia Personal</span><span class="px-2.5 py-1 rounded-full bg-white/[0.04] border border-amber-400/30 text-xs sm:text-sm text-amber-100/90">✦ Decretos de Acción</span></div>
+                <a href="carta.html?arcano=19" style="font-family: 'Cinzel', serif;" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-purple-500/20 hover:bg-purple-500/35 border border-purple-400/50 text-xs sm:text-[13px] uppercase tracking-wider text-purple-200 transition-colors">Arcano de Referencia: XIX • El Sol ›</a>
               </div>
             </div>
           </div>
         </article>
 
-        <article id="elena" class="scroll-mt-24 rounded-3xl bg-[#090513]/95 border border-[#d4af37]/50 p-5 sm:p-8 shadow-[0_18px_48px_rgba(0,0,0,0.8)]">
+        <article id="elena" class="scroll-mt-24 rounded-3xl bg-[#0c0717]/95 border border-[#d4af37]/50 p-5 sm:p-8 shadow-[0_18px_48px_rgba(0,0,0,0.8)]">
           <div class="flex flex-col md:flex-row  items-center md:items-start gap-6 sm:gap-8">
             <div class="flex-shrink-0 flex flex-col items-center gap-3 w-full md:w-52">
               <div class="relative w-44 h-44 sm:w-52 sm:h-52 rounded-2xl overflow-hidden border-2 border-[#d4af37]/75 bg-[#120924] shadow-[0_14px_34px_rgba(0,0,0,0.85)]">
                 <img src="img/concilio/elena.webp" alt="Retrato editorial de Elena Kovács con chaqueta de terciopelo azul noche y colgante dorado de Mercurio" width="640" height="640" loading="lazy" decoding="async" data-concilio-img="1" class="w-full h-full object-cover object-top" />
                 <div data-concilio-fallback="1" style="display:none" class="w-full h-full items-center justify-center flex-col gap-1 bg-gradient-to-b from-[#1a0d2e] to-[#090513] text-amber-300">
                   <span class="text-5xl">☿</span>
-                  <span style="font-family: 'Cinzel', serif;" class="text-[10px] uppercase tracking-widest text-amber-200/75">Elena Kovács</span>
+                  <span style="font-family: 'Cinzel', serif;" class="text-xs uppercase tracking-widest text-amber-200/95">Elena Kovács</span>
                 </div>
               </div>
               <div class="text-center space-y-1">
-                <span style="font-family: 'Cinzel', serif;" class="inline-block px-3 py-0.5 rounded-full bg-amber-500/15 border border-amber-400/40 text-[10px] uppercase tracking-[0.18em] text-amber-200">
+                <span style="font-family: 'Cinzel', serif;" class="inline-block px-3 py-0.5 rounded-full bg-amber-500/15 border border-amber-400/40 text-xs uppercase tracking-[0.08em] text-amber-200">
                   ☿ Elemento: Aire y Agua
                 </span>
               </div>
@@ -501,30 +504,30 @@
             <div class="flex-1 min-w-0 space-y-4 text-left">
               <div class="border-b border-amber-500/25 pb-3.5 space-y-1.5">
                 <div class="flex flex-wrap items-center justify-between gap-2">
-                  <h3 style="font-family: 'Cinzel Decorative', serif;" class="text-2xl sm:text-3xl text-amber-200 font-bold">Elena Kovács</h3>
-                  <span style="font-family: 'Cinzel', serif;" class="text-[10px] uppercase tracking-[0.2em] px-2.5 py-1 rounded-full bg-emerald-950/80 border border-emerald-400/45 text-emerald-300 font-bold">Miembro del Concilio</span>
+                  <h3 style="font-family: 'Cinzel', Georgia, serif;" class="text-2xl sm:text-3xl text-amber-200 font-bold">Elena Kovács</h3>
+                  <span style="font-family: 'Cinzel', serif;" class="text-xs uppercase tracking-[0.1em] px-2.5 py-1 rounded-full bg-emerald-950/80 border border-emerald-400/45 text-emerald-300 font-bold">Miembro del Concilio</span>
                 </div>
-                <p style="font-family: 'Cinzel', serif;" class="text-xs sm:text-sm uppercase tracking-[0.14em] text-purple-300 font-bold">Simbología Hermética, Iconografía Histórica y Psicología Arquetípica</p>
+                <p style="font-family: 'Cinzel', serif;" class="text-xs sm:text-sm uppercase tracking-[0.08em] text-purple-300 font-bold">Simbología Hermética, Iconografía Histórica y Psicología Arquetípica</p>
                 <p class="text-sm text-amber-200/80 italic">15 años en estudio de iconografía del tarot europeo, lectura de sombra y simbología junguiana</p>
               </div>
 
-              <div class="space-y-3 text-base sm:text-lg text-amber-50/90 leading-relaxed">
+              <div class="space-y-3 text-base sm:text-lg text-amber-50/95 leading-relaxed">
                 <p>Nacida en Europa Central y dedicada desde hace quince años a la historia comparada de los mazos tradicionales (Marsella, Rider-Waite-Smith y corrientes herméticas del siglo XX), Elena aporta la mirada analítica y clínica sobre los símbolos. Es la principal responsable de la arquitectura de los nodos secretos de cada diorama y de las lecturas en Faz Lunar, donde la carta invertida deja de leerse como un mal augurio para revelar mecanismos inconscientes y puntos ciegos del ego.</p>
               </div>
 
               <blockquote class="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-[#180d2c] via-[#0d0718] to-transparent border-l-4 border-[#d4af37] space-y-1.5">
-                <span style="font-family: 'Cinzel', serif;" class="text-[10px] uppercase tracking-[0.22em] text-amber-400 font-bold block">En sus palabras</span>
+                <span style="font-family: 'Cinzel', serif;" class="text-xs uppercase tracking-[0.12em] text-amber-400 font-bold block">En sus palabras</span>
                 <p class="text-base sm:text-lg italic text-amber-100/95 leading-relaxed">“Una carta invertida nunca es una condena; suele ser el lugar exacto donde nuestra historia personal está pidiendo atención sin adornos. Al analizar cada detalle gráfico del mazo, desde una postura de manos hasta un objeto en segundo plano, buscamos devolverle al tarot su estatura original: un espejo lúcido para pensar mejor lo que nos pasa.”</p>
               </blockquote>
 
-              <div class="p-3.5 rounded-xl bg-white/[0.03] border border-white/10 text-xs sm:text-sm text-amber-100/85">
-                <strong style="font-family: 'Cinzel', serif;" class="text-[10px] uppercase tracking-widest text-emerald-300 mr-2">Función en el Códice:</strong>
+              <div class="p-3.5 rounded-xl bg-white/[0.03] border border-white/10 text-xs sm:text-sm text-amber-50/95">
+                <strong style="font-family: 'Cinzel', serif;" class="text-xs uppercase tracking-widest text-emerald-300 mr-2">Función en el Códice:</strong>
                 Dirección de coherencia simbólica, nodos secretos del diorama y textos de Faz Lunar (Sombra)
               </div>
 
               <div class="flex flex-wrap items-center justify-between gap-3 pt-1">
-                <div class="flex flex-wrap gap-1.5"><span class="px-2.5 py-1 rounded-full bg-white/[0.04] border border-amber-400/30 text-[11px] sm:text-xs text-amber-100/90">✦ Iconografía Histórica</span><span class="px-2.5 py-1 rounded-full bg-white/[0.04] border border-amber-400/30 text-[11px] sm:text-xs text-amber-100/90">✦ Psicología Arquetípica</span><span class="px-2.5 py-1 rounded-full bg-white/[0.04] border border-amber-400/30 text-[11px] sm:text-xs text-amber-100/90">✦ Integración de la Sombra</span><span class="px-2.5 py-1 rounded-full bg-white/[0.04] border border-amber-400/30 text-[11px] sm:text-xs text-amber-100/90">✦ Nodos Simbólicos</span></div>
-                <a href="carta.html?arcano=2" style="font-family: 'Cinzel', serif;" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-purple-500/20 hover:bg-purple-500/35 border border-purple-400/50 text-[10px] sm:text-xs uppercase tracking-wider text-purple-200 transition-colors">Arcano de Referencia: II • La Sacerdotisa ›</a>
+                <div class="flex flex-wrap gap-1.5"><span class="px-2.5 py-1 rounded-full bg-white/[0.04] border border-amber-400/30 text-xs sm:text-sm text-amber-100/90">✦ Iconografía Histórica</span><span class="px-2.5 py-1 rounded-full bg-white/[0.04] border border-amber-400/30 text-xs sm:text-sm text-amber-100/90">✦ Psicología Arquetípica</span><span class="px-2.5 py-1 rounded-full bg-white/[0.04] border border-amber-400/30 text-xs sm:text-sm text-amber-100/90">✦ Integración de la Sombra</span><span class="px-2.5 py-1 rounded-full bg-white/[0.04] border border-amber-400/30 text-xs sm:text-sm text-amber-100/90">✦ Nodos Simbólicos</span></div>
+                <a href="carta.html?arcano=2" style="font-family: 'Cinzel', serif;" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-purple-500/20 hover:bg-purple-500/35 border border-purple-400/50 text-xs sm:text-[13px] uppercase tracking-wider text-purple-200 transition-colors">Arcano de Referencia: II • La Sacerdotisa ›</a>
               </div>
             </div>
           </div>
@@ -534,25 +537,25 @@
 
     <!-- 4. COMPROMISO ÉTICO Y CTA -->
     <section class="p-6 sm:p-8 rounded-3xl bg-gradient-to-b from-[#170c2b] to-[#090513] border-2 border-[#d4af37]/70 text-center space-y-5 shadow-[0_0_50px_rgba(212,175,55,0.18)]">
-      <span class="font-cinzel text-[11px] uppercase tracking-[0.26em] text-amber-300 font-bold block">
+      <span class="font-ui text-xs uppercase tracking-[0.12em] text-amber-300 font-bold block">
         ✦ Compromiso con Quien Consulta
       </span>
-      <h2 class="font-cinzel-dec text-2xl sm:text-3xl text-amber-100">
+      <h2 class="font-display text-2xl sm:text-3xl text-amber-100">
         El tarot como espejo, nunca como reemplazo de tu criterio
       </h2>
-      <p class="text-base sm:text-lg text-amber-100/85 max-w-2xl mx-auto leading-relaxed">
+      <p class="text-base sm:text-lg text-amber-50/95 max-w-2xl mx-auto leading-relaxed">
         Mantenemos el acceso abierto, gratuito y respetuoso de tu intimidad. Nuestros textos acompañan procesos de reflexión cultural y simbólica, y nunca sustituyen el diagnóstico ni la orientación de profesionales de la salud, el derecho o las finanzas.
       </p>
       <div class="flex flex-wrap items-center justify-center gap-3 pt-2">
         <a
           href="index.html"
-          class="font-cinzel-dec inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-gradient-to-r from-[#2c1b08] via-[#d4af37] to-[#2c1b08] text-[#07050a] font-black tracking-[0.18em] uppercase text-xs sm:text-sm border-2 border-amber-100 shadow-[0_0_30px_rgba(251,191,36,0.55)] hover:scale-105 transition-transform"
+          class="font-display inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-gradient-to-r from-[#2c1b08] via-[#d4af37] to-[#2c1b08] text-[#07050a] font-black tracking-[0.08em] uppercase text-xs sm:text-sm border-2 border-amber-100 shadow-[0_0_30px_rgba(251,191,36,0.55)] hover:scale-105 transition-transform"
         >
           ✦ Consultar el Oráculo
         </a>
         <a
           href="privacidad.html"
-          class="font-cinzel inline-flex items-center gap-2 px-6 py-3.5 rounded-full bg-[#120924] hover:bg-purple-500/25 border border-amber-400/50 text-amber-200 text-xs uppercase tracking-[0.18em] transition-colors"
+          class="font-ui inline-flex items-center gap-2 px-6 py-3.5 rounded-full bg-[#120924] hover:bg-purple-500/25 border border-amber-400/50 text-amber-200 text-xs uppercase tracking-[0.08em] transition-colors"
         >
           Leer Política de Privacidad
         </a>
@@ -560,11 +563,11 @@
     </section>
 
     <!-- PIE DE PÁGINA -->
-    <footer class="pt-6 border-t border-amber-500/25 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs sm:text-sm text-amber-200/70">
-      <p class="font-cinzel tracking-wider">
+    <footer class="pt-6 border-t border-amber-500/25 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs sm:text-sm text-amber-200/90">
+      <p class="font-ui tracking-wider">
         ✦ Oráculo del Velo Astral
       </p>
-      <div class="flex flex-wrap items-center justify-center gap-4 font-cinzel uppercase tracking-wider text-[11px]">
+      <div class="flex flex-wrap items-center justify-center gap-4 font-ui uppercase tracking-wider text-xs">
         <a href="index.html" class="hover:text-amber-300 transition-colors">Altar Interactivo</a>
         <span class="text-amber-500/40">•</span>
         <a href="tarot-si-o-no.html" class="hover:text-emerald-300 transition-colors">Tarot Sí o No</a>
@@ -613,7 +616,7 @@
       if (members.length > 0 && quickNav && listEl) {
         quickNav.innerHTML = members.map(function (m) {
           return (
-            '<a href="#' + escapeHtml(m.id) + '" class="font-cinzel px-3.5 py-1.5 rounded-full bg-[#120924] hover:bg-amber-500/20 border border-amber-400/40 text-[11px] uppercase tracking-wider text-amber-200 transition-colors">' +
+            '<a href="#' + escapeHtml(m.id) + '" class="font-ui px-3.5 py-1.5 rounded-full bg-[#120924] hover:bg-amber-500/20 border border-amber-400/40 text-xs uppercase tracking-wider text-amber-200 transition-colors">' +
             '<span class="text-amber-400 mr-1.5">' + escapeHtml(m.sigil) + '</span>' + escapeHtml(m.name) +
             '</a>'
           );
@@ -622,26 +625,26 @@
         listEl.innerHTML = members.map(function (m, idx) {
           var isReverse = idx % 2 === 1;
           var tagsHtml = (m.focusTags || []).map(function (tag) {
-            return '<span class="px-2.5 py-1 rounded-full bg-white/[0.04] border border-amber-400/30 text-[11px] sm:text-xs text-amber-100/90">✦ ' + escapeHtml(tag) + '</span>';
+            return '<span class="px-2.5 py-1 rounded-full bg-white/[0.04] border border-amber-400/30 text-xs sm:text-sm text-amber-100/90">✦ ' + escapeHtml(tag) + '</span>';
           }).join("");
 
           var favLink = m.favoriteArcana
-            ? '<a href="carta.html?arcano=' + encodeURIComponent(m.favoriteArcana.id) + '" class="font-cinzel inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-purple-500/20 hover:bg-purple-500/35 border border-purple-400/50 text-[10px] sm:text-xs uppercase tracking-wider text-purple-200 transition-colors">Arcano de Referencia: ' + escapeHtml(m.favoriteArcana.numeral) + ' • ' + escapeHtml(m.favoriteArcana.name) + ' ›</a>'
+            ? '<a href="carta.html?arcano=' + encodeURIComponent(m.favoriteArcana.id) + '" class="font-ui inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-purple-500/20 hover:bg-purple-500/35 border border-purple-400/50 text-xs sm:text-[13px] uppercase tracking-wider text-purple-200 transition-colors">Arcano de Referencia: ' + escapeHtml(m.favoriteArcana.numeral) + ' • ' + escapeHtml(m.favoriteArcana.name) + ' ›</a>'
             : "";
 
           return (
-            '<article id="' + escapeHtml(m.id) + '" class="scroll-mt-24 rounded-3xl bg-[#090513]/95 border border-[#d4af37]/50 p-5 sm:p-8 shadow-[0_18px_48px_rgba(0,0,0,0.8)]">' +
+            '<article id="' + escapeHtml(m.id) + '" class="scroll-mt-24 rounded-3xl bg-[#0c0717]/95 border border-[#d4af37]/50 p-5 sm:p-8 shadow-[0_18px_48px_rgba(0,0,0,0.8)]">' +
               '<div class="flex flex-col md:flex-row ' + (isReverse ? "md:flex-row-reverse" : "") + ' items-center md:items-start gap-6 sm:gap-8">' +
                 '<div class="flex-shrink-0 flex flex-col items-center gap-3 w-full md:w-52">' +
                   '<div class="relative w-44 h-44 sm:w-52 sm:h-52 rounded-2xl overflow-hidden border-2 border-[#d4af37]/75 bg-[#120924] shadow-[0_14px_34px_rgba(0,0,0,0.85)]">' +
                     '<img src="' + escapeHtml(m.image) + '" alt="' + escapeHtml(m.imageAlt || m.name) + '" width="640" height="640" loading="lazy" decoding="async" data-concilio-img="1" class="w-full h-full object-cover object-top" />' +
                     '<div data-concilio-fallback="1" style="display:none" class="w-full h-full items-center justify-center flex-col gap-1 bg-gradient-to-b from-[#1a0d2e] to-[#090513] text-amber-300">' +
                       '<span class="text-5xl">' + escapeHtml(m.sigil) + '</span>' +
-                      '<span class="font-cinzel text-[10px] uppercase tracking-widest text-amber-200/75">' + escapeHtml(m.name) + '</span>' +
+                      '<span class="font-ui text-xs uppercase tracking-widest text-amber-200/95">' + escapeHtml(m.name) + '</span>' +
                     '</div>' +
                   '</div>' +
                   '<div class="text-center space-y-1">' +
-                    '<span class="font-cinzel inline-block px-3 py-0.5 rounded-full bg-amber-500/15 border border-amber-400/40 text-[10px] uppercase tracking-[0.18em] text-amber-200">' +
+                    '<span class="font-ui inline-block px-3 py-0.5 rounded-full bg-amber-500/15 border border-amber-400/40 text-xs uppercase tracking-[0.08em] text-amber-200">' +
                       escapeHtml(m.sigil) + ' Elemento: ' + escapeHtml(m.element) +
                     '</span>' +
                   '</div>' +
@@ -650,24 +653,24 @@
                 '<div class="flex-1 min-w-0 space-y-4 text-left">' +
                   '<div class="border-b border-amber-500/25 pb-3.5 space-y-1.5">' +
                     '<div class="flex flex-wrap items-center justify-between gap-2">' +
-                      '<h3 class="font-cinzel-dec text-2xl sm:text-3xl text-amber-200 font-bold">' + escapeHtml(m.name) + '</h3>' +
-                      '<span class="font-cinzel text-[10px] uppercase tracking-[0.2em] px-2.5 py-1 rounded-full bg-emerald-950/80 border border-emerald-400/45 text-emerald-300 font-bold">Miembro del Concilio</span>' +
+                      '<h3 class="font-display text-2xl sm:text-3xl text-amber-200 font-bold">' + escapeHtml(m.name) + '</h3>' +
+                      '<span class="font-ui text-xs uppercase tracking-[0.1em] px-2.5 py-1 rounded-full bg-emerald-950/80 border border-emerald-400/45 text-emerald-300 font-bold">Miembro del Concilio</span>' +
                     '</div>' +
-                    '<p class="font-cinzel text-xs sm:text-sm uppercase tracking-[0.14em] text-purple-300 font-bold">' + escapeHtml(m.role) + '</p>' +
+                    '<p class="font-ui text-xs sm:text-sm uppercase tracking-[0.08em] text-purple-300 font-bold">' + escapeHtml(m.role) + '</p>' +
                     '<p class="text-sm text-amber-200/80 italic">' + escapeHtml(m.shortCredential) + '</p>' +
                   '</div>' +
 
-                  '<div class="space-y-3 text-base sm:text-lg text-amber-50/90 leading-relaxed">' +
+                  '<div class="space-y-3 text-base sm:text-lg text-amber-50/95 leading-relaxed">' +
                     '<p>' + escapeHtml(m.extendedBio) + '</p>' +
                   '</div>' +
 
                   '<blockquote class="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-[#180d2c] via-[#0d0718] to-transparent border-l-4 border-[#d4af37] space-y-1.5">' +
-                    '<span class="font-cinzel text-[10px] uppercase tracking-[0.22em] text-amber-400 font-bold block">En sus palabras</span>' +
+                    '<span class="font-ui text-xs uppercase tracking-[0.12em] text-amber-400 font-bold block">En sus palabras</span>' +
                     '<p class="text-base sm:text-lg italic text-amber-100/95 leading-relaxed">“' + escapeHtml(m.firstPerson) + '”</p>' +
                   '</blockquote>' +
 
-                  '<div class="p-3.5 rounded-xl bg-white/[0.03] border border-white/10 text-xs sm:text-sm text-amber-100/85">' +
-                    '<strong class="font-cinzel text-[10px] uppercase tracking-widest text-emerald-300 mr-2">Función en el Códice:</strong>' +
+                  '<div class="p-3.5 rounded-xl bg-white/[0.03] border border-white/10 text-xs sm:text-sm text-amber-50/95">' +
+                    '<strong class="font-ui text-xs uppercase tracking-widest text-emerald-300 mr-2">Función en el Códice:</strong>' +
                     escapeHtml(m.editorialRole) +
                   '</div>' +
 

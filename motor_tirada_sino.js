@@ -199,7 +199,7 @@ const SiNoAltarTray = memo(function SiNoAltarTray({ pickedCards, currentAct, pha
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -8 }}
       transition={{ duration: 0.25 }}
-      className="relative z-30 grid grid-cols-3 items-stretch gap-1.5 sm:gap-3.5 px-2 sm:px-4 py-1.5 sm:py-2 w-[94vw] max-w-[540px] rounded-2xl bg-[#090514] border border-emerald-400/50 shadow-[0_10px_28px_rgba(0,0,0,0.88)]"
+      className="relative z-30 grid grid-cols-3 items-stretch gap-1.5 sm:gap-3.5 px-2 sm:px-4 py-1.5 sm:py-2 w-[94vw] max-w-[600px] rounded-2xl bg-[#090514] border border-emerald-400/50 shadow-[0_10px_28px_rgba(0,0,0,0.88)]"
       style={{ contain: "layout style" }}
     >
       {SINO_SLOTS.map(function (slot, idx) {
@@ -218,15 +218,15 @@ const SiNoAltarTray = memo(function SiNoAltarTray({ pickedCards, currentAct, pha
             }
           >
             <span
-              style={{ fontFamily: "'Cinzel', serif" }}
+              style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }}
               className={
-                "text-[9.5px] sm:text-[11px] uppercase tracking-normal sm:tracking-[0.06em] font-bold whitespace-nowrap " +
-                (isSealed ? "text-emerald-300" : isCurrent ? "text-amber-200" : "text-purple-200/70")
+                "text-[11px] sm:text-xs uppercase tracking-normal sm:tracking-[0.06em] font-bold whitespace-nowrap truncate max-w-full " +
+                (isSealed ? "text-emerald-300" : isCurrent ? "text-amber-200" : "text-purple-100/90")
               }
             >
               {slot.numeral}. {slot.name}
             </span>
-            <span className="text-[9px] sm:text-[10px] text-amber-100/75 whitespace-nowrap">
+            <span className="text-[11px] sm:text-xs text-amber-50/95 whitespace-nowrap truncate max-w-full">
               {isSealed ? "✦ En platillo" : isCurrent ? (phase === "SHUFFLING" ? "Calibrando..." : "Elegí carta") : "En espera"}
             </span>
           </div>
@@ -311,15 +311,15 @@ const SiNoSetupModal = memo(function SiNoSetupModal({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.96, y: 12 }}
             transition={{ duration: 0.24 }}
-            className="relative w-full max-w-xl max-h-[92dvh] flex flex-col rounded-3xl bg-[#090513] border-2 border-[#d4af37]/75 shadow-[0_24px_70px_rgba(0,0,0,0.95)] overflow-hidden text-amber-50 select-text"
+            className="relative w-full max-w-2xl max-h-[92dvh] flex flex-col rounded-3xl bg-[#090513] border-2 border-[#d4af37]/75 shadow-[0_24px_70px_rgba(0,0,0,0.95)] overflow-hidden text-amber-50 select-text"
           >
             {/* Cabecera fija */}
             <header className="flex-shrink-0 px-5 sm:px-6 py-4 bg-gradient-to-b from-[#170c2b] to-[#090513] border-b border-amber-500/25 flex items-center justify-between gap-3">
               <div>
-                <span style={{ fontFamily: "'Cinzel', serif" }} className="text-[10px] uppercase tracking-[0.26em] text-emerald-300 font-bold flex items-center gap-1.5">
+                <span style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }} className="text-xs uppercase tracking-[0.12em] text-emerald-300 font-bold flex items-center gap-1.5">
                   <ScaleIcon className="w-3.5 h-3.5" /> Oráculo de Respuesta Directa
                 </span>
-                <h2 style={{ fontFamily: "'Cinzel Decorative', serif" }} className="text-xl sm:text-2xl text-amber-200 font-bold leading-tight mt-0.5">
+                <h2 style={{ fontFamily: "'Cinzel', Georgia, serif" }} className="text-xl sm:text-2xl text-amber-200 font-bold leading-tight mt-0.5">
                   La Balanza Sí o No
                 </h2>
               </div>
@@ -337,7 +337,7 @@ const SiNoSetupModal = memo(function SiNoSetupModal({
             <div className="flex-1 overflow-y-auto px-5 sm:px-6 py-5 space-y-5" style={{ WebkitOverflowScrolling: "touch" }}>
               {/* 1. Selector de precisión: 1 Carta vs 3 Cartas */}
               <div className="space-y-2">
-                <span style={{ fontFamily: "'Cinzel', serif" }} className="text-[10px] sm:text-xs uppercase tracking-[0.2em] text-amber-300/90 font-bold block">
+                <span style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }} className="text-xs sm:text-[13px] uppercase tracking-[0.1em] text-amber-300/90 font-bold block">
                   1. Elegí el nivel de precisión
                 </span>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
@@ -352,14 +352,14 @@ const SiNoSetupModal = memo(function SiNoSetupModal({
                     }
                   >
                     <div className="flex items-center justify-between gap-2">
-                      <span style={{ fontFamily: "'Cinzel', serif" }} className="text-xs uppercase tracking-wider font-bold text-amber-200">
+                      <span style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }} className="text-xs uppercase tracking-wider font-bold text-amber-200">
                         ✦ Pulso Único
                       </span>
-                      <span className="px-2 py-0.5 rounded-full bg-amber-500/15 border border-amber-400/40 text-[10px] text-amber-200 font-bold">
+                      <span className="px-2 py-0.5 rounded-full bg-amber-500/15 border border-amber-400/40 text-xs text-amber-200 font-bold">
                         1 Carta
                       </span>
                     </div>
-                    <p className="text-xs sm:text-sm text-purple-200/80 mt-1 leading-snug">
+                    <p className="text-sm text-purple-100/95 mt-1.5 leading-relaxed">
                       Respuesta directa al instante con sello de 5 grados, llave de acción y horizonte temporal.
                     </p>
                   </button>
@@ -375,14 +375,14 @@ const SiNoSetupModal = memo(function SiNoSetupModal({
                     }
                   >
                     <div className="flex items-center justify-between gap-2">
-                      <span style={{ fontFamily: "'Cinzel', serif" }} className="text-xs uppercase tracking-wider font-bold text-emerald-200">
+                      <span style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }} className="text-xs uppercase tracking-wider font-bold text-emerald-200">
                         ♎ Balanza Trina
                       </span>
-                      <span className="px-2 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-400/40 text-[10px] text-emerald-200 font-bold">
+                      <span className="px-2 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-400/40 text-xs text-emerald-200 font-bold">
                         3 Cartas
                       </span>
                     </div>
-                    <p className="text-xs sm:text-sm text-purple-200/80 mt-1 leading-snug">
+                    <p className="text-sm text-purple-100/95 mt-1.5 leading-relaxed">
                       Pesa Impulso, Fiel y Desenlace para medir fuerzas a favor contra fricciones reales.
                     </p>
                   </button>
@@ -391,7 +391,7 @@ const SiNoSetupModal = memo(function SiNoSetupModal({
 
               {/* 2. Área de la pregunta */}
               <div className="space-y-2">
-                <span style={{ fontFamily: "'Cinzel', serif" }} className="text-[10px] sm:text-xs uppercase tracking-[0.2em] text-amber-300/90 font-bold block">
+                <span style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }} className="text-xs sm:text-[13px] uppercase tracking-[0.1em] text-amber-300/90 font-bold block">
                   2. Enfoque de tu consulta
                 </span>
                 <div className="flex flex-wrap gap-1.5">
@@ -402,9 +402,9 @@ const SiNoSetupModal = memo(function SiNoSetupModal({
                         key={d.id}
                         type="button"
                         onClick={function () { sound && sound.playHarpNote && sound.playHarpNote(3); setDomain(d.id); }}
-                        style={{ fontFamily: "'Cinzel', serif" }}
+                        style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }}
                         className={
-                          "px-3 py-1.5 rounded-full text-[11px] uppercase tracking-wider border transition-colors cursor-pointer " +
+                          "px-3 py-1.5 rounded-full text-xs uppercase tracking-wider border transition-colors cursor-pointer " +
                           (active
                             ? "bg-amber-400 text-black border-amber-200 font-bold"
                             : "bg-[#120924] border-amber-500/30 text-amber-200/85 hover:border-amber-300")
@@ -420,10 +420,10 @@ const SiNoSetupModal = memo(function SiNoSetupModal({
               {/* 3. Pregunta opcional privada */}
               <div className="space-y-1.5">
                 <div className="flex items-center justify-between gap-2">
-                  <label htmlFor="sino-question-input" style={{ fontFamily: "'Cinzel', serif" }} className="text-[10px] sm:text-xs uppercase tracking-[0.2em] text-amber-300/90 font-bold">
+                  <label htmlFor="sino-question-input" style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }} className="text-xs sm:text-[13px] uppercase tracking-[0.1em] text-amber-300/90 font-bold">
                     3. Tu pregunta (opcional)
                   </label>
-                  <span className="text-[11px] text-emerald-300/80">100% privada en tu equipo</span>
+                  <span className="text-xs text-emerald-300/95">100% privada en tu equipo</span>
                 </div>
                 <input
                   id="sino-question-input"
@@ -434,7 +434,7 @@ const SiNoSetupModal = memo(function SiNoSetupModal({
                   onKeyDown={function (e) { if (e.key === "Enter") handleLaunch(false); }}
                   placeholder="Ej: ¿Me conviene avanzar con esta propuesta este mes?"
                   style={{ userSelect: "text", WebkitUserSelect: "text" }}
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#05020a] border border-amber-500/40 focus:border-amber-300 focus:outline-none text-sm sm:text-base text-amber-50 placeholder:text-amber-200/35 select-text"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#05020a] border border-amber-500/40 focus:border-amber-300 focus:outline-none text-sm sm:text-base text-amber-50 placeholder:text-amber-200/60 select-text"
                 />
               </div>
 
@@ -444,7 +444,7 @@ const SiNoSetupModal = memo(function SiNoSetupModal({
                   <div className="flex items-start gap-2.5">
                     <ShieldIcon className="w-5 h-5 text-purple-300 flex-shrink-0 mt-0.5" />
                     <div className="space-y-1">
-                      <span style={{ fontFamily: "'Cinzel', serif" }} className="text-[10px] uppercase tracking-[0.22em] text-purple-200 font-bold block">
+                      <span style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }} className="text-xs uppercase tracking-[0.12em] text-purple-200 font-bold block">
                         ✦ Consejo de Sibilia antes de volver a tirar
                       </span>
                       <p className="text-sm sm:text-base text-amber-100/90 italic leading-snug">
@@ -457,8 +457,8 @@ const SiNoSetupModal = memo(function SiNoSetupModal({
                       <button
                         type="button"
                         onClick={function () { onClose && onClose(); onStartTrina(); }}
-                        style={{ fontFamily: "'Cinzel', serif" }}
-                        className="px-3.5 py-1.5 rounded-full bg-purple-500/25 hover:bg-purple-500/40 border border-purple-300/70 text-purple-100 text-[10px] uppercase tracking-wider font-bold cursor-pointer transition-colors"
+                        style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }}
+                        className="px-3.5 py-1.5 rounded-full bg-purple-500/25 hover:bg-purple-500/40 border border-purple-300/70 text-purple-100 text-xs uppercase tracking-wider font-bold cursor-pointer transition-colors"
                       >
                         ☽ Abrir El Hilo de las Tres Lunas
                       </button>
@@ -466,8 +466,8 @@ const SiNoSetupModal = memo(function SiNoSetupModal({
                     <button
                       type="button"
                       onClick={function () { handleLaunch(true); }}
-                      style={{ fontFamily: "'Cinzel', serif" }}
-                      className="px-3.5 py-1.5 rounded-full bg-amber-500/15 hover:bg-amber-500/30 border border-amber-400/50 text-amber-200 text-[10px] uppercase tracking-wider font-bold cursor-pointer transition-colors"
+                      style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }}
+                      className="px-3.5 py-1.5 rounded-full bg-amber-500/15 hover:bg-amber-500/30 border border-amber-400/50 text-amber-200 text-xs uppercase tracking-wider font-bold cursor-pointer transition-colors"
                     >
                       Es otra duda • Consultar igual
                     </button>
@@ -481,7 +481,7 @@ const SiNoSetupModal = memo(function SiNoSetupModal({
               <button
                 type="button"
                 onClick={onClose}
-                style={{ fontFamily: "'Cinzel', serif" }}
+                style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }}
                 className="px-4 py-2 rounded-full bg-white/[0.04] hover:bg-white/10 border border-white/15 text-amber-200/80 text-xs uppercase tracking-wider cursor-pointer transition-colors"
               >
                 Volver
@@ -489,8 +489,8 @@ const SiNoSetupModal = memo(function SiNoSetupModal({
               <button
                 type="button"
                 onClick={function () { handleLaunch(Boolean(compulsionAlert && compulsionAlert.triggered)); }}
-                style={{ fontFamily: "'Cinzel Decorative', serif" }}
-                className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-gradient-to-r from-[#2c1b08] via-[#d4af37] to-[#2c1b08] text-[#07050a] font-black text-xs sm:text-sm uppercase tracking-[0.16em] border-2 border-amber-200 shadow-[0_0_24px_rgba(212,175,55,0.45)] hover:scale-[1.02] transition-transform cursor-pointer"
+                style={{ fontFamily: "'Cinzel', Georgia, serif" }}
+                className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-gradient-to-r from-[#2c1b08] via-[#d4af37] to-[#2c1b08] text-[#07050a] font-black text-xs sm:text-sm uppercase tracking-[0.08em] border-2 border-amber-200 shadow-[0_0_24px_rgba(212,175,55,0.45)] hover:scale-[1.02] transition-transform cursor-pointer"
               >
                 <ScaleIcon className="w-4 h-4" />
                 <span>{subMode === "triad" ? "Barajar 3 Cartas" : "Consultar 1 Carta"}</span>
@@ -549,9 +549,9 @@ const SiNoMiniCard = memo(function SiNoMiniCard({ card, quality, size = "md", on
         <button
           type="button"
           onClick={onTogglePolarity}
-          style={{ fontFamily: "'Cinzel', serif" }}
+          style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }}
           className={
-            "inline-flex items-center gap-1.5 px-3 py-1 rounded-full border text-[10px] uppercase tracking-[0.14em] transition-colors cursor-pointer " +
+            "inline-flex items-center gap-1.5 px-3 py-1 rounded-full border text-xs uppercase tracking-[0.08em] transition-colors cursor-pointer " +
             (isRev
               ? "bg-purple-950/90 border-purple-400/70 text-purple-200 hover:border-amber-300"
               : "bg-[#120924] border-amber-400/50 text-amber-200 hover:bg-amber-500/20")
@@ -677,12 +677,12 @@ const SiNoRevealView = memo(function SiNoRevealView({
     >
       {/* BARRA SUPERIOR FIJA FUERA DEL SCROLL (0 SOLAPAMIENTO EN MÓVIL Y PC) */}
       <div className="flex-shrink-0 z-50 w-full bg-[#07040f] border-b border-[#d4af37]/50 shadow-[0_10px_28px_rgba(0,0,0,0.92)] px-3 sm:px-6 py-2 sm:py-2.5">
-        <div className="max-w-5xl mx-auto flex items-center justify-between gap-2">
+        <div className="max-w-6xl xl:max-w-7xl mx-auto flex items-center justify-between gap-3">
           <div className="flex items-center gap-2 min-w-0">
-            <span style={{ fontFamily: "'Cinzel Decorative', serif" }} className="text-xs sm:text-sm text-amber-300 font-bold truncate">
+            <span style={{ fontFamily: "'Cinzel', Georgia, serif" }} className="text-xs sm:text-sm text-amber-300 font-bold truncate">
               ♎ La Balanza Sí o No
             </span>
-            <span className={"hidden sm:inline-block px-2.5 py-0.5 rounded-full text-[10px] uppercase tracking-wider font-bold border " + st.pill}>
+            <span className={"hidden sm:inline-block px-2.5 py-0.5 rounded-full text-xs uppercase tracking-wider font-bold border " + st.pill}>
               {result.seal.label}
             </span>
           </div>
@@ -692,8 +692,8 @@ const SiNoRevealView = memo(function SiNoRevealView({
               <button
                 type="button"
                 onClick={onNewSiNo}
-                style={{ fontFamily: "'Cinzel', serif" }}
-                className="px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full bg-[#140b26] hover:bg-emerald-500/20 border border-emerald-400/55 text-emerald-200 text-[10px] sm:text-xs uppercase tracking-wider whitespace-nowrap cursor-pointer transition-colors"
+                style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }}
+                className="px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full bg-[#140b26] hover:bg-emerald-500/20 border border-emerald-400/55 text-emerald-200 text-xs sm:text-[13px] uppercase tracking-wider whitespace-nowrap cursor-pointer transition-colors"
               >
                 ♎ Otra Pregunta
               </button>
@@ -702,8 +702,8 @@ const SiNoRevealView = memo(function SiNoRevealView({
               <button
                 type="button"
                 onClick={function () { onOpenGrimoire("diary"); }}
-                style={{ fontFamily: "'Cinzel', serif" }}
-                className="px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full bg-[#140b26] hover:bg-purple-500/25 border border-purple-400/55 text-purple-200 text-[10px] sm:text-xs uppercase tracking-wider whitespace-nowrap cursor-pointer transition-colors"
+                style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }}
+                className="px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full bg-[#140b26] hover:bg-purple-500/25 border border-purple-400/55 text-purple-200 text-xs sm:text-[13px] uppercase tracking-wider whitespace-nowrap cursor-pointer transition-colors"
               >
                 ✦ Grimorio
               </button>
@@ -711,8 +711,8 @@ const SiNoRevealView = memo(function SiNoRevealView({
             <button
               type="button"
               onClick={onReset}
-              style={{ fontFamily: "'Cinzel', serif" }}
-              className="inline-flex items-center gap-1.5 px-3 py-1 sm:py-1.5 rounded-full bg-[#241608] hover:bg-amber-500/30 border border-[#d4af37] text-amber-200 text-[10px] sm:text-xs uppercase tracking-wider whitespace-nowrap cursor-pointer transition-colors"
+              style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }}
+              className="inline-flex items-center gap-1.5 px-3 py-1 sm:py-1.5 rounded-full bg-[#241608] hover:bg-amber-500/30 border border-[#d4af37] text-amber-200 text-xs sm:text-[13px] uppercase tracking-wider whitespace-nowrap cursor-pointer transition-colors"
             >
               <RotateCcwIcon className="w-3.5 h-3.5" /> Altar
             </button>
@@ -726,21 +726,21 @@ const SiNoRevealView = memo(function SiNoRevealView({
         className="flex-1 overflow-y-auto overflow-x-hidden px-3 sm:px-6 lg:px-10 pt-5 sm:pt-7 pb-24"
         style={{ WebkitOverflowScrolling: "touch", touchAction: "pan-y" }}
       >
-        <div className="max-w-5xl mx-auto space-y-6">
+        <div className="max-w-6xl xl:max-w-7xl mx-auto space-y-7">
           {/* 1. SELLO DEL VEREDICTO + BARRA DE LA BALANZA */}
           <section
             style={{ boxShadow: st.glow }}
             className={"rounded-3xl bg-gradient-to-r " + st.bg + " border-2 " + st.border + " p-5 sm:p-7 text-center space-y-4"}
           >
             <div className="flex flex-wrap items-center justify-center gap-2">
-              <span style={{ fontFamily: "'Cinzel', serif" }} className={"px-3 py-1 rounded-full text-[10px] sm:text-xs uppercase tracking-[0.22em] font-bold border " + st.pill}>
+              <span style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }} className={"px-3 py-1 rounded-full text-xs sm:text-[13px] uppercase tracking-[0.12em] font-bold border " + st.pill}>
                 {result.seal.badge}
               </span>
-              <span style={{ fontFamily: "'Cinzel', serif" }} className="px-3 py-1 rounded-full text-[10px] sm:text-xs uppercase tracking-[0.18em] bg-white/[0.05] border border-amber-400/35 text-amber-200">
+              <span style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }} className="px-3 py-1 rounded-full text-xs sm:text-[13px] uppercase tracking-[0.08em] bg-white/[0.05] border border-amber-400/35 text-amber-200">
                 {result.domainMeta ? (result.domainMeta.sigil + " " + result.domainMeta.label) : "✦ General"}
               </span>
               {isTriad && result.balanceLabel && (
-                <span style={{ fontFamily: "'Cinzel', serif" }} className="px-3 py-1 rounded-full text-[10px] sm:text-xs uppercase tracking-[0.16em] bg-black/40 border border-white/15 text-purple-200">
+                <span style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }} className="px-3 py-1 rounded-full text-xs sm:text-[13px] uppercase tracking-[0.08em] bg-black/40 border border-white/15 text-purple-200">
                   {result.balanceLabel}
                 </span>
               )}
@@ -752,7 +752,7 @@ const SiNoRevealView = memo(function SiNoRevealView({
               </p>
             )}
 
-            <h2 style={{ fontFamily: "'Cinzel Decorative', serif" }} className={"text-3xl sm:text-4xl md:text-5xl font-black tracking-wide " + st.title}>
+            <h2 style={{ fontFamily: "'Cinzel', Georgia, serif" }} className={"text-3xl sm:text-4xl md:text-5xl font-black tracking-wide " + st.title}>
               {result.seal.label}
             </h2>
 
@@ -762,9 +762,9 @@ const SiNoRevealView = memo(function SiNoRevealView({
 
             {/* Barra visual de inclinación de la Balanza */}
             <div className="max-w-lg mx-auto pt-2 space-y-1.5">
-              <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.2em] font-bold" style={{ fontFamily: "'Cinzel', serif" }}>
+              <div className="flex items-center justify-between text-xs uppercase tracking-[0.1em] font-bold" style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }}>
                 <span className="text-rose-300/90">No</span>
-                <span className="text-purple-300/80">Velado</span>
+                <span className="text-purple-200/95">Velado</span>
                 <span className="text-emerald-300/90">Sí</span>
               </div>
               <div className="relative h-3 rounded-full bg-[#06030c] border border-white/15 overflow-visible">
@@ -786,7 +786,7 @@ const SiNoRevealView = memo(function SiNoRevealView({
 
           {/* 2. CARTAS REVELADAS (1 CARTA O 3 CARTAS EN BALANZA) */}
           {!isTriad && result.card && (
-            <section className="rounded-3xl bg-[#090513]/95 border border-[#d4af37]/55 p-5 sm:p-7 flex flex-col lg:flex-row items-center lg:items-start gap-6 lg:gap-8">
+            <section className="rounded-3xl bg-[#0c0717]/95 border border-[#d4af37]/55 p-6 sm:p-8 flex flex-col lg:flex-row items-center lg:items-start gap-6 lg:gap-8">
               <div className="flex-shrink-0">
                 <SiNoMiniCard
                   card={result.card}
@@ -799,24 +799,24 @@ const SiNoRevealView = memo(function SiNoRevealView({
               <div className="flex-1 w-full space-y-4">
                 <div className="border-b border-amber-500/25 pb-3 space-y-1">
                   <div className="flex flex-wrap items-center justify-between gap-2">
-                    <span style={{ fontFamily: "'Cinzel', serif" }} className="text-xs uppercase tracking-[0.22em] text-amber-400 font-bold">
+                    <span style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }} className="text-xs uppercase tracking-[0.12em] text-amber-400 font-bold">
                       Arcano Mayor {result.cardData.numeral} • {result.cardData.isReversed ? "Faz Lunar (Sombra)" : "Faz Solar (Luz)"}
                     </span>
                     <a
                       href={"carta.html?arcano=" + result.card.id + (result.cardData.isReversed ? "&modo=sombra" : "")}
-                      style={{ fontFamily: "'Cinzel', serif" }}
-                      className="px-3 py-1 rounded-full bg-purple-500/20 hover:bg-purple-500/35 border border-purple-400/50 text-purple-200 text-[10px] uppercase tracking-wider transition-colors"
+                      style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }}
+                      className="px-3 py-1 rounded-full bg-purple-500/20 hover:bg-purple-500/35 border border-purple-400/50 text-purple-200 text-xs uppercase tracking-wider transition-colors"
                     >
                       ✦ Códice Completo
                     </a>
                   </div>
-                  <h3 style={{ fontFamily: "'Cinzel Decorative', serif" }} className="text-2xl sm:text-3xl text-amber-200 font-bold">
+                  <h3 style={{ fontFamily: "'Cinzel', Georgia, serif" }} className="text-2xl sm:text-3xl text-amber-200 font-bold">
                     {result.cardData.name}
                   </h3>
                 </div>
 
                 <div className="p-4 sm:p-5 rounded-2xl bg-white/[0.03] border border-amber-400/30 space-y-1.5">
-                  <span style={{ fontFamily: "'Cinzel', serif" }} className="text-[11px] uppercase tracking-[0.22em] text-amber-300 font-bold block">
+                  <span style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }} className="text-xs uppercase tracking-[0.12em] text-amber-300 font-bold block">
                     ✦ Respuesta en {result.domainMeta ? result.domainMeta.label : "General"}
                   </span>
                   <p className="text-base sm:text-lg lg:text-xl text-amber-50/95 leading-relaxed">
@@ -837,7 +837,7 @@ const SiNoRevealView = memo(function SiNoRevealView({
             <section className="space-y-5">
               {/* Síntesis unificada de las 3 cartas */}
               <div className="p-5 sm:p-6 rounded-3xl bg-[#090513]/95 border border-[#d4af37]/55 space-y-2.5">
-                <span style={{ fontFamily: "'Cinzel', serif" }} className="text-[11px] uppercase tracking-[0.24em] text-amber-300 font-bold block">
+                <span style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }} className="text-xs uppercase tracking-[0.12em] text-amber-300 font-bold block">
                   ✦ Lectura Conjunta de los Tres Platillos
                 </span>
                 <p className="text-base sm:text-lg lg:text-xl text-amber-50/95 leading-relaxed">
@@ -859,13 +859,13 @@ const SiNoRevealView = memo(function SiNoRevealView({
                   return (
                     <article
                       key={it.role.key + "_" + it.card.id}
-                      className={"rounded-2xl bg-[#090513]/95 border p-4 sm:p-5 flex flex-col items-center text-center gap-3.5 " + itemStyle.border}
+                      className={"rounded-2xl bg-[#0c0717]/95 border p-5 sm:p-6 flex flex-col items-center text-center gap-3.5 " + itemStyle.border}
                     >
                       <div className="w-full flex items-center justify-between gap-2 border-b border-white/10 pb-2">
-                        <span style={{ fontFamily: "'Cinzel', serif" }} className="text-[10px] uppercase tracking-[0.18em] text-amber-300 font-bold">
+                        <span style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }} className="text-xs uppercase tracking-[0.08em] text-amber-300 font-bold">
                           {it.role.numeral}. {it.role.label}
                         </span>
-                        <span className={"px-2 py-0.5 rounded-full text-[10px] font-bold border " + itemStyle.pill}>
+                        <span className={"px-2 py-0.5 rounded-full text-xs font-bold border " + itemStyle.pill}>
                           {weightLabel}
                         </span>
                       </div>
@@ -879,21 +879,21 @@ const SiNoRevealView = memo(function SiNoRevealView({
 
                       <div className="space-y-1.5 flex-1 flex flex-col justify-between w-full">
                         <div className="space-y-1">
-                          <h4 style={{ fontFamily: "'Cinzel Decorative', serif" }} className="text-lg text-amber-200 font-bold">
+                          <h4 style={{ fontFamily: "'Cinzel', Georgia, serif" }} className="text-lg text-amber-200 font-bold">
                             {it.data.name}
                           </h4>
-                          <span className="text-[11px] uppercase tracking-wider text-purple-300/85 block">
+                          <span className="text-xs uppercase tracking-wider text-purple-200/95 block">
                             {it.data.isReversed ? "☽ En Sombra" : "☉ En Luz"} • {it.seal.shortLabel}
                           </span>
-                          <p className="text-sm text-amber-50/90 leading-relaxed text-left pt-1">
+                          <p className="text-[15px] sm:text-base text-amber-50/95 leading-relaxed text-left pt-1.5">
                             {it.domainAnswer}
                           </p>
                         </div>
 
                         <a
                           href={"carta.html?arcano=" + it.card.id + (it.data.isReversed ? "&modo=sombra" : "")}
-                          style={{ fontFamily: "'Cinzel', serif" }}
-                          className="mt-2 inline-block text-[10px] uppercase tracking-[0.18em] text-purple-300 hover:text-amber-300 transition-colors"
+                          style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }}
+                          className="mt-2 inline-block text-xs uppercase tracking-[0.08em] text-purple-300 hover:text-amber-300 transition-colors"
                         >
                           Abrir Códice de {it.data.name} ›
                         </a>
@@ -909,7 +909,7 @@ const SiNoRevealView = memo(function SiNoRevealView({
           <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="p-5 rounded-2xl bg-[#0b0618] border border-emerald-400/45 space-y-3">
               <div className="flex items-center justify-between gap-2">
-                <span style={{ fontFamily: "'Cinzel', serif" }} className="text-xs uppercase tracking-[0.2em] text-emerald-300 font-bold flex items-center gap-1.5">
+                <span style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }} className="text-xs uppercase tracking-[0.1em] text-emerald-300 font-bold flex items-center gap-1.5">
                   <FlameIcon className="w-4 h-4" /> La Llave que Mueve la Balanza
                 </span>
               </div>
@@ -925,9 +925,9 @@ const SiNoRevealView = memo(function SiNoRevealView({
                 <button
                   type="button"
                   onClick={handleSeal}
-                  style={{ fontFamily: "'Cinzel', serif" }}
+                  style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }}
                   className={
-                    "inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-[10px] sm:text-xs uppercase tracking-wider font-bold border transition-colors cursor-pointer " +
+                    "inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs sm:text-[13px] uppercase tracking-wider font-bold border transition-colors cursor-pointer " +
                     (actSealed
                       ? "bg-emerald-500/25 border-emerald-400 text-emerald-200"
                       : "bg-amber-400/15 hover:bg-amber-400/30 border-amber-300/60 text-amber-200")
@@ -940,7 +940,7 @@ const SiNoRevealView = memo(function SiNoRevealView({
 
             <div className="p-5 rounded-2xl bg-[#0b0618] border border-amber-400/40 flex flex-col justify-between gap-4">
               <div className="space-y-2.5">
-                <span style={{ fontFamily: "'Cinzel', serif" }} className="text-xs uppercase tracking-[0.2em] text-amber-300 font-bold flex items-center gap-1.5">
+                <span style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }} className="text-xs uppercase tracking-[0.1em] text-amber-300 font-bold flex items-center gap-1.5">
                   <ClockIcon className="w-4 h-4" /> Horizonte Temporal
                 </span>
                 <p className="text-base sm:text-lg text-amber-50/95 leading-relaxed">
@@ -956,8 +956,8 @@ const SiNoRevealView = memo(function SiNoRevealView({
                   <button
                     type="button"
                     onClick={onSwitchToTrina}
-                    style={{ fontFamily: "'Cinzel', serif" }}
-                    className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-purple-500/25 hover:bg-purple-500/40 border border-purple-300/65 text-purple-100 text-[10px] uppercase tracking-wider font-bold cursor-pointer transition-colors"
+                    style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }}
+                    className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-purple-500/25 hover:bg-purple-500/40 border border-purple-300/65 text-purple-100 text-xs uppercase tracking-wider font-bold cursor-pointer transition-colors"
                   >
                     <MoonIcon className="w-3.5 h-3.5" /> Profundizar en Tres Lunas
                   </button>
@@ -971,9 +971,9 @@ const SiNoRevealView = memo(function SiNoRevealView({
             <button
               type="button"
               onClick={handleCopyVerdict}
-              style={{ fontFamily: "'Cinzel', serif" }}
+              style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }}
               className={
-                "inline-flex items-center gap-2 px-5 py-3 rounded-full text-xs uppercase tracking-[0.18em] font-bold border transition-colors cursor-pointer " +
+                "inline-flex items-center gap-2 px-5 py-3 rounded-full text-xs uppercase tracking-[0.08em] font-bold border transition-colors cursor-pointer " +
                 (copied
                   ? "bg-emerald-500/25 border-emerald-400 text-emerald-200"
                   : "bg-[#140a24] border-amber-400/60 text-amber-200 hover:bg-amber-500/20")
@@ -986,8 +986,8 @@ const SiNoRevealView = memo(function SiNoRevealView({
               <button
                 type="button"
                 onClick={onNewSiNo}
-                style={{ fontFamily: "'Cinzel Decorative', serif" }}
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-[#2c1b08] via-[#d4af37] to-[#2c1b08] text-[#07050a] font-black text-xs sm:text-sm uppercase tracking-[0.16em] border-2 border-amber-200 shadow-[0_0_25px_rgba(212,175,55,0.42)] hover:scale-105 transition-transform cursor-pointer"
+                style={{ fontFamily: "'Cinzel', Georgia, serif" }}
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-[#2c1b08] via-[#d4af37] to-[#2c1b08] text-[#07050a] font-black text-xs sm:text-sm uppercase tracking-[0.08em] border-2 border-amber-200 shadow-[0_0_25px_rgba(212,175,55,0.42)] hover:scale-105 transition-transform cursor-pointer"
               >
                 <ScaleIcon className="w-4 h-4" /> Nueva Pregunta Sí o No
               </button>

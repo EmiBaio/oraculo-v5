@@ -249,7 +249,7 @@ const RevealedCardDiorama25D = memo(function RevealedCardDiorama25D({ card, acti
           sound?.playHarpNote(isReversed ? 4 : 1);
           setIsReversed(!isReversed);
         }}
-        className={"group flex items-center gap-3 px-6 py-3 rounded-full border-2 transition-all duration-300 shadow-lg cursor-pointer font-['Cinzel'] " + (isReversed ? "bg-gradient-to-r from-[#241038] via-[#6b21a8] to-[#241038] border-purple-300 text-purple-100 shadow-[0_0_25px_rgba(168,85,247,0.5)] hover:scale-105" : "bg-gradient-to-r from-[#2c1b08] via-[#b45309] to-[#2c1b08] border-amber-300 text-[#07050a] font-bold shadow-[0_0_20px_rgba(212,175,55,0.5)] hover:scale-105")}
+        className={"group flex items-center gap-3 px-6 py-3 rounded-full border-2 transition-all duration-300 shadow-lg cursor-pointer font-ui " + (isReversed ? "bg-gradient-to-r from-[#241038] via-[#6b21a8] to-[#241038] border-purple-300 text-purple-100 shadow-[0_0_25px_rgba(168,85,247,0.5)] hover:scale-105" : "bg-gradient-to-r from-[#2c1b08] via-[#b45309] to-[#2c1b08] border-amber-300 text-[#07050a] font-bold shadow-[0_0_20px_rgba(212,175,55,0.5)] hover:scale-105")}
       >
         <svg className={"w-5 h-5 transition-transform duration-500 " + (isReversed ? "rotate-180 text-purple-200" : "text-amber-100")} viewBox="0 0 32 32" fill="none">
           <rect x="4" y="2" width="24" height="28" rx="4" stroke="currentColor" strokeWidth="1.6" strokeOpacity="0.45" />
@@ -259,7 +259,7 @@ const RevealedCardDiorama25D = memo(function RevealedCardDiorama25D({ card, acti
           <polygon points="11,18.5 6.5,22 11,25.5" fill="currentColor" />
           <polygon points="16,13.5 18,16 16,18.5 14,16" fill="currentColor" />
         </svg>
-        <span className="text-xs uppercase tracking-[0.2em]">
+        <span className="text-xs uppercase tracking-[0.1em]">
           {isReversed ? 'Enderezar Carta (Modo Luz)' : 'Invertir Arcano (Modo Sombra)'}
         </span>
       </button>
@@ -421,8 +421,8 @@ window.ArcanaPageLayout = function ArcanaPageLayout({ card, neighbors }) {
 
       {/* Cabecera sticky opaca para 60+ FPS al scrollear */}
       <header className="sticky top-0 z-50 bg-[#040207] border-b border-[#d4af37]/35 shadow-[0_8px_24px_rgba(0,0,0,0.85)] px-3 sm:px-8 py-2.5 sm:py-3">
-        <div className="max-w-5xl mx-auto flex flex-wrap items-center justify-between gap-2">
-          <nav aria-label="Breadcrumb" className="font-['Cinzel'] text-[10px] sm:text-xs uppercase tracking-[0.14em] sm:tracking-[0.2em] text-amber-200/75 flex items-center min-w-0">
+        <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
+          <nav aria-label="Breadcrumb" className="font-ui text-xs sm:text-[13px] uppercase tracking-[0.08em] sm:tracking-[0.1em] text-amber-200/95 flex items-center min-w-0">
             <a href="index.html" className="hover:text-amber-300 whitespace-nowrap">Oráculo</a>
             <span className="mx-1.5 sm:mx-2 text-amber-500 hidden sm:inline">›</span>
             <span className="hidden sm:inline whitespace-nowrap">{activeCard.type === 'minor' ? ("Palo de " + activeCard.suitName) : 'Arcanos Mayores'}</span>
@@ -433,49 +433,49 @@ window.ArcanaPageLayout = function ArcanaPageLayout({ card, neighbors }) {
             <button
               type="button"
               onClick={() => { sound?.playHarpNote?.(isReversed ? 4 : 1); setIsReversed(!isReversed); }}
-              className={"font-['Cinzel'] px-2.5 sm:px-3 py-1 rounded-full border text-[10px] uppercase tracking-wider cursor-pointer transition whitespace-nowrap " + (isReversed ? "bg-purple-900/60 border-purple-300 text-purple-100" : "bg-amber-500/15 border-amber-400/50 text-amber-200")}
+              className={"font-ui px-2.5 sm:px-3 py-1 rounded-full border text-xs uppercase tracking-wider cursor-pointer transition whitespace-nowrap " + (isReversed ? "bg-purple-900/60 border-purple-300 text-purple-100" : "bg-amber-500/15 border-amber-400/50 text-amber-200")}
             >
               {isReversed ? "☽ Sombra" : "☉ Luz"}
             </button>
-            <button onClick={handleShare} className="font-['Cinzel'] px-3 py-1 rounded-full bg-amber-500/10 border border-[#d4af37]/50 text-[10px] uppercase tracking-wider text-amber-200 hover:bg-amber-500/25 cursor-pointer transition whitespace-nowrap">
+            <button onClick={handleShare} className="font-ui px-3 py-1 rounded-full bg-amber-500/10 border border-[#d4af37]/50 text-xs uppercase tracking-wider text-amber-200 hover:bg-amber-500/25 cursor-pointer transition whitespace-nowrap">
               {copied ? '✔ Copiado' : '✦ Compartir'}
             </button>
           </div>
         </div>
       </header>
 
-      <main className="max-w-5xl mx-auto px-4 sm:px-6 py-10 space-y-12">
+      <main className="max-w-7xl mx-auto px-4 sm:px-8 py-10 sm:py-12 space-y-14">
         {/* CABECERA MAGISTRAL DEL ARCANO */}
         <header className="text-center space-y-4">
           <div className="flex flex-wrap items-center justify-center gap-2">
-            <span className="font-['Cinzel'] inline-block px-4 py-1 rounded-full bg-amber-500/10 border border-amber-400/40 text-xs uppercase tracking-[0.3em] text-amber-300">
+            <span className="font-ui inline-block px-4 py-1 rounded-full bg-amber-500/10 border border-amber-400/40 text-xs uppercase tracking-[0.08em] text-amber-300">
               {activeCard.type === 'minor' ? ("Arcano Menor • Palo de " + activeCard.suitName) : ("Arcano Mayor " + activeCard.numeral)}
             </span>
-            <span className={"font-['Cinzel'] inline-block px-4 py-1 rounded-full border text-xs uppercase tracking-[0.22em] font-bold " + (isReversed ? "bg-purple-950/80 border-purple-400 text-purple-200" : "bg-emerald-950/80 border-emerald-400/60 text-emerald-300")}>
+            <span className={"font-ui inline-block px-4 py-1 rounded-full border text-xs uppercase tracking-[0.12em] font-bold " + (isReversed ? "bg-purple-950/80 border-purple-400 text-purple-200" : "bg-emerald-950/80 border-emerald-400/60 text-emerald-300")}>
               {isReversed ? "En Sombra (Invertida)" : "En Luz (Al Derecho)"}
             </span>
           </div>
 
-          <h1 className="font-['Cinzel_Decorative'] text-3xl sm:text-5xl md:text-6xl font-bold text-amber-200 break-words">
+          <h1 className="font-display text-3xl sm:text-5xl md:text-6xl font-bold text-amber-200 break-words">
             {activeCard.name}
           </h1>
-          <p className={"font-['Cinzel'] text-sm sm:text-base uppercase tracking-[0.28em] " + (isReversed ? "text-purple-300" : "text-amber-300/90")}>
+          <p className={"font-ui text-sm sm:text-base uppercase tracking-[0.08em] " + (isReversed ? "text-purple-300" : "text-amber-300/90")}>
             “{activeCard.subtitle}”
           </p>
 
           {/* SELECTOR DE LAS 5 OCTAVAS POLIMÓRFICAS (PARA ARCANOS MAYORES) */}
           {isMajor && (
             <div className="pt-2 flex flex-col items-center gap-2">
-              <span className="font-['Cinzel'] text-[10px] uppercase tracking-[0.25em] text-amber-300/80">
+              <span className="font-ui text-xs uppercase tracking-[0.12em] text-amber-300/95">
                 ✦ Explorar las 5 Octavas de Sabiduría del Grimorio ✦
               </span>
-              <div className="inline-flex flex-wrap justify-center gap-1.5 p-1.5 rounded-full bg-[#090513]/90 border border-amber-500/35">
+              <div className="inline-flex flex-wrap justify-center gap-1.5 p-1.5 rounded-full bg-[#0c0717]/95 border border-amber-500/35">
                 {[0, 1, 2, 3, 4].map((idx) => (
                   <button
                     key={idx}
                     type="button"
                     onClick={() => { sound?.playHarpNote?.(idx); setOctaveIdx(idx); }}
-                    className={"font-['Cinzel'] px-3.5 py-1 rounded-full text-xs uppercase tracking-wider transition cursor-pointer " + (octaveIdx === idx ? (isReversed ? "bg-purple-500 text-white font-bold shadow-[0_0_12px_rgba(168,85,247,0.6)]" : "bg-amber-400 text-black font-bold shadow-[0_0_12px_rgba(251,191,36,0.6)]") : "text-amber-200/75 hover:text-amber-200 hover:bg-white/[0.05]")}
+                    className={"font-ui px-3.5 py-1 rounded-full text-xs uppercase tracking-wider transition cursor-pointer " + (octaveIdx === idx ? (isReversed ? "bg-purple-500 text-white font-bold shadow-[0_0_12px_rgba(168,85,247,0.6)]" : "bg-amber-400 text-black font-bold shadow-[0_0_12px_rgba(251,191,36,0.6)]") : "text-amber-200/95 hover:text-amber-200 hover:bg-white/[0.05]")}
                   >
                     Octava {["I", "II", "III", "IV", "V"][idx]}
                   </button>
@@ -518,11 +518,11 @@ window.ArcanaPageLayout = function ArcanaPageLayout({ card, neighbors }) {
         {activeCard.oracleVoice && (
           <section className={"p-6 sm:p-8 rounded-3xl border-2 shadow-xl space-y-3 " + (isReversed ? "bg-gradient-to-r from-[#1c0d2b] via-[#0c0614] to-[#1c0d2b] border-purple-400/60" : "bg-gradient-to-r from-[#241606] via-[#0d0716] to-[#241606] border-[#d4af37]/70")}>
             <div className="flex flex-wrap items-center justify-between gap-2">
-              <span className={"font-['Cinzel'] text-xs uppercase tracking-[0.25em] font-bold " + (isReversed ? "text-purple-300" : "text-amber-400")}>
+              <span className={"font-ui text-xs uppercase tracking-[0.12em] font-bold " + (isReversed ? "text-purple-300" : "text-amber-400")}>
                 {isReversed ? ("☽ La Voz de " + activeCard.name + " en Sombra (Octava " + ["I", "II", "III", "IV", "V"][octaveIdx] + ")") : ("☉ La Voz de " + activeCard.name + " en Luz (Octava " + ["I", "II", "III", "IV", "V"][octaveIdx] + ")")}
               </span>
               {activeCard.correspondences?.alchemy && (
-                <span className="font-['Cinzel'] text-[11px] text-amber-200/80">
+                <span className="font-ui text-xs text-amber-200/80">
                   Operación Alquímica: {activeCard.correspondences.alchemy}
                 </span>
               )}
@@ -532,7 +532,7 @@ window.ArcanaPageLayout = function ArcanaPageLayout({ card, neighbors }) {
             </blockquote>
             {activeCard.correspondences?.hermeticAxiom && (
               <div className="pt-3 border-t border-white/10 text-sm sm:text-base text-amber-300/90">
-                <strong className="font-['Cinzel'] uppercase tracking-wider text-xs mr-2">Axioma Hermético:</strong>
+                <strong className="font-ui uppercase tracking-wider text-xs mr-2">Axioma Hermético:</strong>
                 {activeCard.correspondences.hermeticAxiom}
               </div>
             )}
@@ -541,7 +541,7 @@ window.ArcanaPageLayout = function ArcanaPageLayout({ card, neighbors }) {
 
         {/* MAPA DE LECTURA RÁPIDA */}
         <nav aria-label="Mapa de lectura" className="p-5 rounded-2xl bg-[#090513]/85 border border-[#d4af37]/40">
-          <h2 className="font-['Cinzel'] text-xs uppercase tracking-[0.24em] text-amber-400 font-bold mb-3">
+          <h2 className="font-ui text-xs uppercase tracking-[0.12em] text-amber-400 font-bold mb-3">
             ✦ Mapa del Códice de {activeCard.name}
           </h2>
           <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 text-sm text-amber-100/90">
@@ -562,12 +562,12 @@ window.ArcanaPageLayout = function ArcanaPageLayout({ card, neighbors }) {
 
           <div className="flex-1 space-y-6">
             <div className={"p-5 rounded-xl border " + (isReversed ? "bg-purple-950/35 border-purple-400/40 text-purple-100" : "bg-amber-500/10 border-amber-400/35 text-amber-50")}>
-              <div className="font-['Cinzel'] text-xs uppercase tracking-[0.2em] font-bold mb-2 flex items-center justify-between gap-2">
+              <div className="font-ui text-xs uppercase tracking-[0.1em] font-bold mb-2 flex items-center justify-between gap-2">
                 <span className="flex items-center gap-2">
                   {isReversed ? <Moon className="w-4 h-4 text-purple-300" /> : <Sun className="w-4 h-4 text-amber-300" />}
                   <span>{isReversed ? 'Magisterio en Sombra (Invertida):' : 'Magisterio en Luz (Al Derecho):'}</span>
                 </span>
-                {isMajor && <span className="text-[10px] opacity-75">Octava {["I", "II", "III", "IV", "V"][octaveIdx]}</span>}
+                {isMajor && <span className="text-xs opacity-75">Octava {["I", "II", "III", "IV", "V"][octaveIdx]}</span>}
               </div>
               <p className="text-lg leading-relaxed">{activeCard.meaning}</p>
             </div>
@@ -577,9 +577,9 @@ window.ArcanaPageLayout = function ArcanaPageLayout({ card, neighbors }) {
                 <button
                   key={node.id}
                   onClick={() => { sound?.playSkyrimNodeChime(i); setActiveNode(node); }}
-                  className={"text-left p-3 rounded-xl border transition-all font-['Cinzel'] cursor-pointer " + (activeNode?.id === node.id ? (isReversed ? "bg-purple-900/50 border-purple-300" : "bg-amber-400/25 border-amber-300") : "bg-[#120924]/70 border-amber-500/25 hover:border-amber-400/60")}
+                  className={"text-left p-3 rounded-xl border transition-all font-ui cursor-pointer " + (activeNode?.id === node.id ? (isReversed ? "bg-purple-900/50 border-purple-300" : "bg-amber-400/25 border-amber-300") : "bg-[#120924]/70 border-amber-500/25 hover:border-amber-400/60")}
                 >
-                  <span className="text-[10px] uppercase tracking-wider text-amber-400 block mb-1">Símbolo 0{i + 1}</span>
+                  <span className="text-xs uppercase tracking-wider text-amber-400 block mb-1">Símbolo 0{i + 1}</span>
                   <span className="text-xs font-bold text-amber-100 leading-snug">{node.title}</span>
                 </button>
               ))}
@@ -588,7 +588,7 @@ window.ArcanaPageLayout = function ArcanaPageLayout({ card, neighbors }) {
             {activeNode && (
               <div className={"p-5 rounded-xl border-l-4 transition-all space-y-2.5 " + (isReversed ? "bg-purple-900/35 border-l-purple-400" : "bg-amber-500/15 border-l-amber-400")}>
                 <div className="flex flex-wrap items-center justify-between gap-2">
-                  <h4 className="font-['Cinzel'] text-xs font-bold uppercase tracking-[0.2em] text-amber-300">{activeNode.title}</h4>
+                  <h4 className="font-ui text-xs font-bold uppercase tracking-[0.1em] text-amber-300">{activeNode.title}</h4>
                   {activeNode.esotericFormula && (
                     <span className="px-2.5 py-0.5 rounded bg-black/50 border border-amber-400/40 font-mono text-xs text-amber-300">
                       {activeNode.esotericFormula}
@@ -609,14 +609,14 @@ window.ArcanaPageLayout = function ArcanaPageLayout({ card, neighbors }) {
 
         {/* SECCIÓN 02: PSICOLOGÍA JUNGUIANA, POLARIDAD Y CLÍNICA DE LA SOMBRA */}
         <section id="psique" className="scroll-mt-20 space-y-5">
-          <div className="p-6 sm:p-8 rounded-3xl bg-[#090513]/90 border border-purple-500/40 space-y-5">
+          <div className="p-6 sm:p-8 rounded-3xl bg-[#0c0717]/95 border border-purple-500/40 space-y-5">
             <div className="flex flex-wrap items-center justify-between gap-2 border-b border-purple-500/25 pb-3">
-              <h2 className="font-['Cinzel_Decorative'] text-2xl sm:text-3xl text-purple-200 flex items-center gap-2.5">
+              <h2 className="font-display text-2xl sm:text-3xl text-purple-200 flex items-center gap-2.5">
                 <Eye className="w-6 h-6 text-purple-300" />
                 <span>{isReversed ? "Diagnóstico Clínico de la Sombra" : "El Espejo Psicológico (Carl G. Jung)"}</span>
               </h2>
               {(activeCard.correspondences?.jungianArchetype || activeCard.correspondences?.jungianComplex) && (
-                <span className="font-['Cinzel'] text-xs px-3 py-1 rounded-full bg-purple-950/80 border border-purple-400/50 text-purple-200">
+                <span className="font-ui text-xs px-3 py-1 rounded-full bg-purple-950/80 border border-purple-400/50 text-purple-200">
                   {isReversed ? (activeCard.correspondences.jungianComplex || activeCard.correspondences.jungianArchetype) : activeCard.correspondences.jungianArchetype}
                 </span>
               )}
@@ -625,16 +625,16 @@ window.ArcanaPageLayout = function ArcanaPageLayout({ card, neighbors }) {
             {isReversed && activeCard.shadowPolarity && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="p-4 rounded-2xl bg-rose-950/30 border border-rose-500/40 space-y-1.5">
-                  <h3 className="font-['Cinzel'] text-xs uppercase tracking-widest text-rose-300 font-bold">
+                  <h3 className="font-ui text-xs uppercase tracking-widest text-rose-300 font-bold">
                     ▲ Polaridad por Exceso (Desborde / Inflación)
                   </h3>
-                  <p className="text-base text-amber-50/90 leading-relaxed">{activeCard.shadowPolarity.byExcess}</p>
+                  <p className="text-base sm:text-[17px] text-amber-50/95 leading-relaxed">{activeCard.shadowPolarity.byExcess}</p>
                 </div>
                 <div className="p-4 rounded-2xl bg-sky-950/30 border border-sky-500/40 space-y-1.5">
-                  <h3 className="font-['Cinzel'] text-xs uppercase tracking-widest text-sky-300 font-bold">
+                  <h3 className="font-ui text-xs uppercase tracking-widest text-sky-300 font-bold">
                     ▼ Polaridad por Defecto (Parálisis / Represión)
                   </h3>
-                  <p className="text-base text-amber-50/90 leading-relaxed">{activeCard.shadowPolarity.byDeficiency}</p>
+                  <p className="text-base sm:text-[17px] text-amber-50/95 leading-relaxed">{activeCard.shadowPolarity.byDeficiency}</p>
                 </div>
               </div>
             )}
@@ -642,14 +642,14 @@ window.ArcanaPageLayout = function ArcanaPageLayout({ card, neighbors }) {
             {isReversed && activeCard.theWound ? (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div className="p-5 rounded-2xl bg-white/[0.03] border border-purple-400/35 space-y-2">
-                  <h3 className="font-['Cinzel'] text-xs uppercase tracking-widest text-purple-300 font-bold">
+                  <h3 className="font-ui text-xs uppercase tracking-widest text-purple-300 font-bold">
                     ✦ La Herida Raíz Inconsciente
                   </h3>
                   <p className="text-lg text-amber-50/95 leading-relaxed">{activeCard.theWound}</p>
                 </div>
                 {activeCard.theIllusion && (
                   <div className="p-5 rounded-2xl bg-amber-500/[0.06] border border-amber-400/35 space-y-2">
-                    <h3 className="font-['Cinzel'] text-xs uppercase tracking-widest text-amber-300 font-bold">
+                    <h3 className="font-ui text-xs uppercase tracking-widest text-amber-300 font-bold">
                       ✦ El Espejismo del Ego (El Autoengaño)
                     </h3>
                     <p className="text-lg text-amber-100/95 leading-relaxed">{activeCard.theIllusion}</p>
@@ -663,7 +663,7 @@ window.ArcanaPageLayout = function ArcanaPageLayout({ card, neighbors }) {
             )}
 
             <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/10">
-              <h3 className="font-['Cinzel'] text-xs uppercase tracking-widest text-amber-400 font-bold mb-1">
+              <h3 className="font-ui text-xs uppercase tracking-widest text-amber-400 font-bold mb-1">
                 Síntesis de Dualidad (Luz y Sombra)
               </h3>
               <p className="text-base text-amber-100/90 leading-relaxed">{activeCard.lightAndShadow}</p>
@@ -674,37 +674,37 @@ window.ArcanaPageLayout = function ArcanaPageLayout({ card, neighbors }) {
         {/* SECCIÓN 03: LOS 5 DOMINIOS VITALES */}
         {activeDomains && (
           <section id="dominios" className="scroll-mt-20 space-y-4">
-            <h2 className="font-['Cinzel_Decorative'] text-2xl sm:text-3xl text-amber-200">
+            <h2 className="font-display text-2xl sm:text-3xl text-amber-200">
               Los 5 Dominios de {activeCard.name} ({isReversed ? "En Sombra" : "En Luz"})
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <section className="p-6 rounded-2xl bg-pink-500/[0.06] border border-pink-400/30 space-y-2">
-                <h3 className="font-['Cinzel'] text-sm uppercase tracking-widest text-pink-300 font-bold">♥ Amor y Vínculos</h3>
-                <p className="text-base text-amber-50/90 leading-relaxed">{activeDomains.love}</p>
+                <h3 className="font-ui text-sm uppercase tracking-widest text-pink-300 font-bold">♥ Amor y Vínculos</h3>
+                <p className="text-base sm:text-[17px] text-amber-50/95 leading-relaxed">{activeDomains.love}</p>
               </section>
 
               <section className="p-6 rounded-2xl bg-amber-500/[0.06] border border-amber-400/30 space-y-2">
-                <h3 className="font-['Cinzel'] text-sm uppercase tracking-widest text-amber-300 font-bold">✦ Trabajo, Oficio y Estrategia</h3>
-                <p className="text-base text-amber-50/90 leading-relaxed">{activeDomains.work}</p>
+                <h3 className="font-ui text-sm uppercase tracking-widest text-amber-300 font-bold">✦ Trabajo, Oficio y Estrategia</h3>
+                <p className="text-base sm:text-[17px] text-amber-50/95 leading-relaxed">{activeDomains.work}</p>
               </section>
 
               {activeDomains.money && (
                 <section className="p-6 rounded-2xl bg-emerald-500/[0.06] border border-emerald-400/30 space-y-2">
-                  <h3 className="font-['Cinzel'] text-sm uppercase tracking-widest text-emerald-300 font-bold">◈ Dinero y Patrimonio</h3>
-                  <p className="text-base text-amber-50/90 leading-relaxed">{activeDomains.money}</p>
+                  <h3 className="font-ui text-sm uppercase tracking-widest text-emerald-300 font-bold">◈ Dinero y Patrimonio</h3>
+                  <p className="text-base sm:text-[17px] text-amber-50/95 leading-relaxed">{activeDomains.money}</p>
                 </section>
               )}
 
               <section className="p-6 rounded-2xl bg-indigo-500/[0.08] border border-indigo-400/30 space-y-2">
-                <h3 className="font-['Cinzel'] text-sm uppercase tracking-widest text-indigo-300 font-bold">❂ Camino Espiritual</h3>
-                <p className="text-base text-amber-50/90 leading-relaxed">{activeDomains.spirit}</p>
+                <h3 className="font-ui text-sm uppercase tracking-widest text-indigo-300 font-bold">❂ Camino Espiritual</h3>
+                <p className="text-base sm:text-[17px] text-amber-50/95 leading-relaxed">{activeDomains.spirit}</p>
               </section>
             </div>
 
             {activeDomains.healthAndEnergy && (
               <section className="p-6 rounded-2xl bg-cyan-500/[0.06] border border-cyan-400/30 space-y-2">
-                <h3 className="font-['Cinzel'] text-sm uppercase tracking-widest text-cyan-300 font-bold">⚡ Salud, Cuerpo y Bioelectricidad</h3>
-                <p className="text-base text-amber-50/90 leading-relaxed">{activeDomains.healthAndEnergy}</p>
+                <h3 className="font-ui text-sm uppercase tracking-widest text-cyan-300 font-bold">⚡ Salud, Cuerpo y Bioelectricidad</h3>
+                <p className="text-base sm:text-[17px] text-amber-50/95 leading-relaxed">{activeDomains.healthAndEnergy}</p>
               </section>
             )}
           </section>
@@ -714,24 +714,24 @@ window.ArcanaPageLayout = function ArcanaPageLayout({ card, neighbors }) {
         {activeAction && (
           <section id="psicomagia" className="scroll-mt-20 p-6 sm:p-8 rounded-3xl bg-gradient-to-b from-[#150c28] to-[#090513] border-2 border-[#d4af37]/70 space-y-6 shadow-[0_0_40px_rgba(212,175,55,0.15)]">
             <div className="flex flex-wrap items-center justify-between gap-2 border-b border-amber-500/25 pb-3">
-              <h2 className="font-['Cinzel_Decorative'] text-2xl sm:text-3xl text-amber-200 flex items-center gap-2.5">
+              <h2 className="font-display text-2xl sm:text-3xl text-amber-200 flex items-center gap-2.5">
                 <Flame className="w-6 h-6 text-amber-400" />
                 <span>{isReversed ? "Alquimia de Transmutación y Psicomagia" : "Oráculo de Acción y Psicomagia"}</span>
               </h2>
-              <span className="font-['Cinzel'] text-xs uppercase tracking-widest text-amber-300">
+              <span className="font-ui text-xs uppercase tracking-widest text-amber-300">
                 Protocolo Operativo
               </span>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="p-5 rounded-2xl bg-emerald-950/35 border border-emerald-400/40 space-y-1.5">
-                <h3 className="font-['Cinzel'] text-xs uppercase tracking-widest text-emerald-300 font-bold">
+                <h3 className="font-ui text-xs uppercase tracking-widest text-emerald-300 font-bold">
                   ✦ El Decreto Ejecutivo
                 </h3>
                 <p className="text-base sm:text-lg text-amber-50/95 leading-relaxed">{activeAction.command}</p>
               </div>
               <div className="p-5 rounded-2xl bg-rose-950/35 border border-rose-400/40 space-y-1.5">
-                <h3 className="font-['Cinzel'] text-xs uppercase tracking-widest text-rose-300 font-bold">
+                <h3 className="font-ui text-xs uppercase tracking-widest text-rose-300 font-bold">
                   ⊘ La Prohibición Iniciática
                 </h3>
                 <p className="text-base sm:text-lg text-amber-50/95 leading-relaxed">{activeAction.prohibition}</p>
@@ -739,7 +739,7 @@ window.ArcanaPageLayout = function ArcanaPageLayout({ card, neighbors }) {
             </div>
 
             <div className="p-5 rounded-2xl bg-amber-500/[0.08] border border-amber-400/45 space-y-2">
-              <h3 className="font-['Cinzel'] text-xs uppercase tracking-widest text-amber-300 font-bold">
+              <h3 className="font-ui text-xs uppercase tracking-widest text-amber-300 font-bold">
                 ⚗ Acto de Psicomagia y Laboratorio
               </h3>
               <p className="text-lg text-amber-100 leading-relaxed">{activeAction.psychomagicAct}</p>
@@ -747,7 +747,7 @@ window.ArcanaPageLayout = function ArcanaPageLayout({ card, neighbors }) {
 
             {activeAction.talismanPhrase && (
               <div className="p-6 rounded-2xl bg-[#05020a] border border-[#d4af37] text-center space-y-4">
-                <span className="font-['Cinzel'] text-xs uppercase tracking-[0.28em] text-amber-400 block">
+                <span className="font-ui text-xs uppercase tracking-[0.08em] text-amber-400 block">
                   ✦ Frase Talismán de {activeCard.name} ✦
                 </span>
                 <p className="text-xl sm:text-2xl italic font-bold text-amber-200">
@@ -756,7 +756,7 @@ window.ArcanaPageLayout = function ArcanaPageLayout({ card, neighbors }) {
                 <button
                   type="button"
                   onClick={handleSealAct}
-                  className={"font-['Cinzel'] inline-flex items-center gap-2 px-6 py-3 rounded-full text-xs uppercase tracking-[0.2em] font-bold transition-all cursor-pointer " + (actSealed ? "bg-emerald-500/25 border border-emerald-400 text-emerald-200" : "bg-gradient-to-r from-[#2c1b08] via-[#d4af37] to-[#2c1b08] text-black border border-amber-200 hover:scale-105 shadow-[0_0_20px_rgba(212,175,55,0.45)]")}
+                  className={"font-ui inline-flex items-center gap-2 px-6 py-3 rounded-full text-xs uppercase tracking-[0.1em] font-bold transition-all cursor-pointer " + (actSealed ? "bg-emerald-500/25 border border-emerald-400 text-emerald-200" : "bg-gradient-to-r from-[#2c1b08] via-[#d4af37] to-[#2c1b08] text-black border border-amber-200 hover:scale-105 shadow-[0_0_20px_rgba(212,175,55,0.45)]")}
                 >
                   {actSealed ? (
                     <React.Fragment><CheckCircle2 className="w-4 h-4" /> Decreto Sellado • Talismán Copiado</React.Fragment>
@@ -772,19 +772,19 @@ window.ArcanaPageLayout = function ArcanaPageLayout({ card, neighbors }) {
         {/* SECCIÓN 05: FICHA TÉCNICA CABALÍSTICA Y ALQUÍMICA */}
         {activeCard.correspondences && (
           <section id="cabala" className="scroll-mt-20 p-6 rounded-2xl bg-[#090513]/85 border border-amber-500/30 space-y-4">
-            <h2 className="font-['Cinzel_Decorative'] text-xl sm:text-2xl text-amber-200">
+            <h2 className="font-display text-xl sm:text-2xl text-amber-200">
               Correspondencias Herméticas y Cabalísticas
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
               {activeCard.correspondences.hebrewLetter && (
                 <div className="p-3.5 rounded-xl bg-white/[0.03] border border-white/10">
-                  <span className="font-['Cinzel'] text-[10px] uppercase tracking-widest text-amber-400 block">Letra Hebrea</span>
+                  <span className="font-ui text-xs uppercase tracking-widest text-amber-400 block">Letra Hebrea</span>
                   <strong className="text-base text-amber-100">{activeCard.correspondences.hebrewLetter}</strong>
                 </div>
               )}
               {(activeCard.correspondences.treeOfLifePath || activeCard.correspondences.qliphoth) && (
                 <div className="p-3.5 rounded-xl bg-white/[0.03] border border-white/10">
-                  <span className="font-['Cinzel'] text-[10px] uppercase tracking-widest text-purple-300 block">
+                  <span className="font-ui text-xs uppercase tracking-widest text-purple-300 block">
                     {isReversed && activeCard.correspondences.qliphoth ? "Sombra Qliphótica" : "Sendero del Árbol de la Vida"}
                   </span>
                   <strong className="text-base text-amber-100">
@@ -794,13 +794,13 @@ window.ArcanaPageLayout = function ArcanaPageLayout({ card, neighbors }) {
               )}
               {activeCard.correspondences.alchemy && (
                 <div className="p-3.5 rounded-xl bg-white/[0.03] border border-white/10">
-                  <span className="font-['Cinzel'] text-[10px] uppercase tracking-widest text-emerald-300 block">Fórmula Alquímica</span>
+                  <span className="font-ui text-xs uppercase tracking-widest text-emerald-300 block">Fórmula Alquímica</span>
                   <strong className="text-base text-amber-100">{activeCard.correspondences.alchemy}</strong>
                 </div>
               )}
               {activeCard.correspondences.tarotTiming && (
                 <div className="p-3.5 rounded-xl bg-white/[0.03] border border-white/10">
-                  <span className="font-['Cinzel'] text-[10px] uppercase tracking-widest text-cyan-300 block">Tiempo y Estación Oracular</span>
+                  <span className="font-ui text-xs uppercase tracking-widest text-cyan-300 block">Tiempo y Estación Oracular</span>
                   <strong className="text-base text-amber-100">{activeCard.correspondences.tarotTiming}</strong>
                 </div>
               )}
@@ -810,32 +810,32 @@ window.ArcanaPageLayout = function ArcanaPageLayout({ card, neighbors }) {
 
         {/* CONSEJO ORACULAR DE CIERRE */}
         <div className="p-6 rounded-2xl bg-gradient-to-r from-amber-500/15 via-[#120924] to-amber-500/15 border border-[#d4af37] text-center space-y-2">
-          <span className="font-['Cinzel'] text-xs uppercase tracking-[0.25em] text-amber-300">✦ Consejo Oracular de {activeCard.name} ✦</span>
+          <span className="font-ui text-xs uppercase tracking-[0.12em] text-amber-300">✦ Consejo Oracular de {activeCard.name} ✦</span>
           <p className="text-xl italic font-semibold text-amber-100">“{activeCounsel}”</p>
         </div>
 
         {/* CTA AL ORÁCULO INTERACTIVO */}
         <div className="relative p-6 sm:p-8 rounded-3xl bg-gradient-to-b from-[#1a0f2e] to-[#090513] border-2 border-[#d4af37] text-center shadow-[0_0_50px_rgba(212,175,55,0.25)]">
-          <p className="font-['Cinzel'] text-xs uppercase tracking-[0.25em] text-amber-300 mb-2">✦ ¿Buscás respuesta a tu situación actual? ✦</p>
-          <h2 className="font-['Cinzel_Decorative'] text-xl sm:text-2xl text-amber-100 mb-5">Las cartas ya están barajadas en el altar astral</h2>
-          <a href="index.html" className="font-['Cinzel_Decorative'] inline-flex items-center gap-3 px-8 py-4 rounded-full bg-gradient-to-r from-[#2c1b08] via-[#d4af37] to-[#2c1b08] text-[#07050a] font-black tracking-[0.2em] uppercase text-sm sm:text-base border-2 border-amber-100 shadow-[0_0_35px_rgba(251,191,36,0.75)] hover:scale-105 transition-transform">
+          <p className="font-ui text-xs uppercase tracking-[0.12em] text-amber-300 mb-2">✦ ¿Buscás respuesta a tu situación actual? ✦</p>
+          <h2 className="font-display text-xl sm:text-2xl text-amber-100 mb-5">Las cartas ya están barajadas en el altar astral</h2>
+          <a href="index.html" className="font-display inline-flex items-center gap-3 px-8 py-4 rounded-full bg-gradient-to-r from-[#2c1b08] via-[#d4af37] to-[#2c1b08] text-[#07050a] font-black tracking-[0.1em] uppercase text-sm sm:text-base border-2 border-amber-100 shadow-[0_0_35px_rgba(251,191,36,0.75)] hover:scale-105 transition-transform">
             ✦ Consultar el Oráculo Gratis Ahora
           </a>
         </div>
 
         {/* SECCIÓN 06: PREGUNTAS FRECUENTES (FAQ SEO) */}
         <section id="faqs" className="scroll-mt-20 pt-8 border-t border-amber-500/30 space-y-4">
-          <h2 className="font-['Cinzel_Decorative'] text-2xl sm:text-3xl text-amber-200">
+          <h2 className="font-display text-2xl sm:text-3xl text-amber-200">
             Preguntas Frecuentes sobre {activeCard.name}
           </h2>
           <div className="space-y-3">
             {cardFaqs.map((faq, i) => (
-              <details key={i} className="group p-4 rounded-2xl bg-[#090513]/90 border border-amber-500/30">
-                <summary className="font-['Cinzel'] cursor-pointer font-bold text-amber-200 flex justify-between items-center text-sm sm:text-base">
+              <details key={i} className="group p-4 rounded-2xl bg-[#0c0717]/95 border border-amber-500/30">
+                <summary className="font-ui cursor-pointer font-bold text-amber-200 flex justify-between items-center text-sm sm:text-base">
                   <span>{faq.question}</span>
                   <span className="text-amber-400 group-open:rotate-45 transition-transform">+</span>
                 </summary>
-                <p className="mt-3 text-base text-amber-100/85 leading-relaxed">{faq.answer}</p>
+                <p className="mt-3 text-base sm:text-[17px] text-amber-50/95 leading-relaxed">{faq.answer}</p>
               </details>
             ))}
           </div>
@@ -844,12 +844,12 @@ window.ArcanaPageLayout = function ArcanaPageLayout({ card, neighbors }) {
         {/* CONCILIO DE AUTORÍA Y REVISIÓN */}
         <section aria-label="Autoría y revisión editorial" className="p-5 sm:p-7 rounded-3xl bg-gradient-to-r from-[#120924] via-[#090513] to-[#120924] border border-[#d4af37]/55 shadow-[0_14px_40px_rgba(0,0,0,0.65)] space-y-5">
           <div className="flex flex-wrap items-center justify-between gap-2 border-b border-amber-500/25 pb-3">
-            <span className="font-['Cinzel'] text-[10px] sm:text-xs uppercase tracking-[0.24em] text-amber-300 font-bold">
+            <span className="font-ui text-xs sm:text-[13px] uppercase tracking-[0.12em] text-amber-300 font-bold">
               ✦ Concilio del Velo Astral • Revisión Cruzada
             </span>
             <a
               href="sobre-nosotros.html"
-              className="font-['Cinzel'] text-[10px] sm:text-xs uppercase tracking-[0.18em] text-purple-200 hover:text-amber-300 transition-colors"
+              className="font-ui text-xs sm:text-[13px] uppercase tracking-[0.08em] text-purple-200 hover:text-amber-300 transition-colors"
             >
               Conocer al Concilio ›
             </a>
@@ -861,22 +861,22 @@ window.ArcanaPageLayout = function ArcanaPageLayout({ card, neighbors }) {
                 <CouncilPortrait member={author} accent="gold" />
               </a>
               <div className="min-w-0 space-y-1.5">
-                <span className="font-['Cinzel'] text-[10px] uppercase tracking-[0.22em] text-amber-400 font-bold block">
+                <span className="font-ui text-xs uppercase tracking-[0.12em] text-amber-400 font-bold block">
                   ✦ Redacción e Interpretación
                 </span>
-                <h4 className="font-['Cinzel'] text-base sm:text-lg font-bold text-amber-100 leading-snug">
+                <h4 className="font-display text-base sm:text-lg font-bold text-amber-100 leading-snug">
                   <a href={"sobre-nosotros.html#" + author.id} className="hover:text-amber-300 transition-colors">
                     <span className="text-amber-300 mr-1.5">{author.sigil}</span>{author.name}
                   </a>
                 </h4>
                 <p className="text-xs sm:text-sm text-purple-300 font-semibold leading-snug">{author.role}</p>
                 {author.shortCredential && (
-                  <p className="text-[11px] sm:text-xs text-amber-200/75 italic">{author.shortCredential}</p>
+                  <p className="text-xs sm:text-sm text-amber-200/95 italic">{author.shortCredential}</p>
                 )}
-                <p className="text-xs sm:text-sm text-amber-100/85 leading-relaxed">{author.cardBio || author.bio}</p>
+                <p className="text-xs sm:text-[15px] sm:text-base text-amber-50/95 leading-relaxed">{author.cardBio || author.bio}</p>
                 <a
                   href={"sobre-nosotros.html#" + author.id}
-                  className="font-['Cinzel'] inline-block pt-1 text-[10px] uppercase tracking-[0.18em] text-amber-300/90 hover:text-amber-200"
+                  className="font-ui inline-block pt-1 text-xs uppercase tracking-[0.08em] text-amber-300/90 hover:text-amber-200"
                 >
                   Ver perfil completo ›
                 </a>
@@ -888,22 +888,22 @@ window.ArcanaPageLayout = function ArcanaPageLayout({ card, neighbors }) {
                 <CouncilPortrait member={reviewer} accent="emerald" />
               </a>
               <div className="min-w-0 space-y-1.5">
-                <span className="font-['Cinzel'] text-[10px] uppercase tracking-[0.22em] text-emerald-300 font-bold block">
+                <span className="font-ui text-xs uppercase tracking-[0.12em] text-emerald-300 font-bold block">
                   ✔ Revisión Simbólica y Doctrinaria
                 </span>
-                <h4 className="font-['Cinzel'] text-base sm:text-lg font-bold text-amber-100 leading-snug">
+                <h4 className="font-display text-base sm:text-lg font-bold text-amber-100 leading-snug">
                   <a href={"sobre-nosotros.html#" + reviewer.id} className="hover:text-amber-300 transition-colors">
                     <span className="text-emerald-300 mr-1.5">{reviewer.sigil}</span>{reviewer.name}
                   </a>
                 </h4>
                 <p className="text-xs sm:text-sm text-purple-300 font-semibold leading-snug">{reviewer.role}</p>
                 {reviewer.shortCredential && (
-                  <p className="text-[11px] sm:text-xs text-amber-200/75 italic">{reviewer.shortCredential}</p>
+                  <p className="text-xs sm:text-sm text-amber-200/95 italic">{reviewer.shortCredential}</p>
                 )}
-                <p className="text-xs sm:text-sm text-amber-100/85 leading-relaxed">{reviewer.cardBio || reviewer.bio}</p>
+                <p className="text-xs sm:text-[15px] sm:text-base text-amber-50/95 leading-relaxed">{reviewer.cardBio || reviewer.bio}</p>
                 <a
                   href={"sobre-nosotros.html#" + reviewer.id}
-                  className="font-['Cinzel'] inline-block pt-1 text-[10px] uppercase tracking-[0.18em] text-emerald-300/90 hover:text-emerald-200"
+                  className="font-ui inline-block pt-1 text-xs uppercase tracking-[0.08em] text-emerald-300/90 hover:text-emerald-200"
                 >
                   Ver perfil completo ›
                 </a>
@@ -915,18 +915,18 @@ window.ArcanaPageLayout = function ArcanaPageLayout({ card, neighbors }) {
         {/* NAVEGACIÓN DEL MAZO */}
         {neighbors && (
           <footer className="pt-10 border-t border-amber-500/30 space-y-6">
-            <span className="font-['Cinzel'] text-xs uppercase tracking-[0.25em] text-amber-400 font-bold block">✦ Navegación del Mazo</span>
+            <span className="font-ui text-xs uppercase tracking-[0.12em] text-amber-400 font-bold block">✦ Navegación del Mazo</span>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {neighbors.prev && (
                 <a
                   href={"?arcano=" + neighbors.prev.id}
                   onClick={(e) => { e.preventDefault(); window.TarotRouter?.navigateTo(neighbors.prev.id); }}
-                  className="group p-4 rounded-xl bg-[#090513]/90 border border-amber-500/35 hover:border-amber-300 transition-all flex items-center gap-4"
+                  className="group p-4 rounded-xl bg-[#0c0717]/95 border border-amber-500/35 hover:border-amber-300 transition-all flex items-center gap-4"
                 >
-                  <div className="w-12 h-16 bg-[#120824] rounded-md border border-amber-500/30 flex items-center justify-center font-['Cinzel_Decorative'] text-amber-300 font-bold">{neighbors.prev.numeral}</div>
+                  <div className="w-12 h-16 bg-[#120824] rounded-md border border-amber-500/30 flex items-center justify-center font-display text-amber-300 font-bold">{neighbors.prev.numeral}</div>
                   <div>
-                    <span className="font-['Cinzel'] text-[9px] uppercase tracking-widest text-amber-400/80 flex items-center gap-1"><ArrowLeft className="w-3 h-3" /> Carta Anterior</span>
-                    <h4 className="font-['Cinzel_Decorative'] text-lg text-amber-100 group-hover:text-amber-300 transition-colors">{neighbors.prev.name}</h4>
+                    <span className="font-ui text-xs uppercase tracking-widest text-amber-300/95 flex items-center gap-1"><ArrowLeft className="w-3 h-3" /> Carta Anterior</span>
+                    <h4 className="font-display text-lg text-amber-100 group-hover:text-amber-300 transition-colors">{neighbors.prev.name}</h4>
                   </div>
                 </a>
               )}
@@ -934,20 +934,20 @@ window.ArcanaPageLayout = function ArcanaPageLayout({ card, neighbors }) {
                 <a
                   href={"?arcano=" + neighbors.next.id}
                   onClick={(e) => { e.preventDefault(); window.TarotRouter?.navigateTo(neighbors.next.id); }}
-                  className="group p-4 rounded-xl bg-[#090513]/90 border border-amber-500/35 hover:border-amber-300 transition-all flex items-center justify-end gap-4 text-right"
+                  className="group p-4 rounded-xl bg-[#0c0717]/95 border border-amber-500/35 hover:border-amber-300 transition-all flex items-center justify-end gap-4 text-right"
                 >
                   <div>
-                    <span className="font-['Cinzel'] text-[9px] uppercase tracking-widest text-amber-400/80 flex items-center justify-end gap-1">Carta Siguiente <ArrowRight className="w-3 h-3" /></span>
-                    <h4 className="font-['Cinzel_Decorative'] text-lg text-amber-100 group-hover:text-amber-300 transition-colors">{neighbors.next.name}</h4>
+                    <span className="font-ui text-xs uppercase tracking-widest text-amber-300/95 flex items-center justify-end gap-1">Carta Siguiente <ArrowRight className="w-3 h-3" /></span>
+                    <h4 className="font-display text-lg text-amber-100 group-hover:text-amber-300 transition-colors">{neighbors.next.name}</h4>
                   </div>
-                  <div className="w-12 h-16 bg-[#120824] rounded-md border border-amber-500/30 flex items-center justify-center font-['Cinzel_Decorative'] text-amber-300 font-bold">{neighbors.next.numeral}</div>
+                  <div className="w-12 h-16 bg-[#120824] rounded-md border border-amber-500/30 flex items-center justify-center font-display text-amber-300 font-bold">{neighbors.next.numeral}</div>
                 </a>
               )}
             </div>
 
             {neighbors.related && neighbors.related.length > 0 && (
               <div className="pt-4">
-                <span className="font-['Cinzel'] text-[11px] uppercase tracking-[0.2em] text-purple-300 block mb-3">
+                <span className="font-ui text-xs uppercase tracking-[0.1em] text-purple-300 block mb-3">
                   Alquimia y Sintonía Elemental ({activeCard.correspondences?.element}):
                 </span>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -958,8 +958,8 @@ window.ArcanaPageLayout = function ArcanaPageLayout({ card, neighbors }) {
                       onClick={(e) => { e.preventDefault(); window.TarotRouter?.navigateTo(rel.id); }}
                       className="p-3 rounded-xl bg-[#090513]/80 border border-purple-500/30 hover:border-amber-300 transition text-center"
                     >
-                      <span className="font-['Cinzel_Decorative'] text-xs text-amber-300 block">{rel.numeral}</span>
-                      <span className="font-['Cinzel'] text-sm font-bold text-amber-100">{rel.name}</span>
+                      <span className="font-display text-xs text-amber-300 block">{rel.numeral}</span>
+                      <span className="font-ui text-sm font-bold text-amber-100">{rel.name}</span>
                     </a>
                   ))}
                 </div>
@@ -968,7 +968,7 @@ window.ArcanaPageLayout = function ArcanaPageLayout({ card, neighbors }) {
           </footer>
         )}
 
-        <div className="pt-6 border-t border-amber-500/20 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-amber-200/65 font-['Cinzel'] uppercase tracking-[0.18em]">
+        <div className="pt-6 border-t border-amber-500/20 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-amber-200/90 font-ui uppercase tracking-[0.08em]">
           <span>✦ Oráculo del Velo Astral</span>
           <div className="flex flex-wrap items-center justify-center gap-4">
             <a href="index.html" className="hover:text-amber-300 transition-colors">Altar</a>

@@ -3,13 +3,23 @@
 @tailwind utilities;
 
 @font-face {
-  font-family: 'Cormorant Fallback';
+  font-family: 'Lora Fallback';
   src: local('Georgia'), local('Times New Roman');
-  ascent-override: 88%;
-  descent-override: 26%;
+  ascent-override: 98%;
+  descent-override: 25%;
   line-gap-override: 0%;
-  size-adjust: 102%;
+  size-adjust: 103%;
 }
 
-.font-cinzel { font-family: 'Cinzel', Georgia, serif; }
-.font-cinzel-dec { font-family: 'Cinzel Decorative', Georgia, serif; }
+@font-face {
+  font-family: 'Jakarta Fallback';
+  src: local('Segoe UI'), local('Arial'), local('Helvetica Neue');
+  ascent-override: 96%;
+  descent-override: 24%;
+  line-gap-override: 0%;
+  size-adjust: 101%;
+}
+
+.font-ui { font-family: 'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, -apple-system, sans-serif; }
+.font-body { font-family: 'Lora', 'Lora Fallback', Georgia, serif; }
+.font-display, .font-cinzel, .font-cinzel-dec { font-family: 'Cinzel', Georgia, serif; }

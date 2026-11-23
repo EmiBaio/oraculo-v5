@@ -22,7 +22,10 @@ module.exports = {
     "bg-emerald-400",
     "text-black",
     "border-amber-200",
-    "border-emerald-200"
+    "border-emerald-200",
+    "font-ui",
+    "font-display",
+    "font-body"
   ],
   theme: {
     extend: {}

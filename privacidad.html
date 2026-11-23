@@ -26,7 +26,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@600;700;800&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
   <script type="application/ld+json">
   {
@@ -50,11 +50,14 @@
       padding: 0;
       background-color: #040207;
       color: #fffbeb;
-      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-family: 'Lora', 'Lora Fallback', Georgia, serif;
+      font-size: 16px;
+      line-height: 1.65;
       -webkit-font-smoothing: antialiased;
     }
-    .font-cinzel { font-family: 'Cinzel', serif; }
-    .font-cinzel-dec { font-family: 'Cinzel Decorative', serif; }
+    .font-ui { font-family: 'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, -apple-system, sans-serif; }
+    .font-body { font-family: 'Lora', 'Lora Fallback', Georgia, serif; }
+    .font-display, .font-cinzel, .font-cinzel-dec { font-family: 'Cinzel', Georgia, serif; }
     ::-webkit-scrollbar { width: 6px; }
     ::-webkit-scrollbar-track { background: rgba(10, 5, 20, 0.7); }
     ::-webkit-scrollbar-thumb { background: rgba(212, 175, 55, 0.35); border-radius: 9999px; }
@@ -65,42 +68,42 @@
 
   <!-- Cabecera fija opaca -->
   <header class="sticky top-0 z-50 bg-[#040207] border-b border-[#d4af37]/35 shadow-[0_8px_24px_rgba(0,0,0,0.85)] px-3 sm:px-8 py-3">
-    <div class="max-w-4xl mx-auto flex flex-wrap items-center justify-between gap-2">
-      <nav aria-label="Ruta de navegación" class="font-cinzel text-[10px] sm:text-xs uppercase tracking-[0.14em] sm:tracking-[0.2em] text-amber-200/75 flex items-center min-w-0">
+    <div class="max-w-5xl mx-auto flex flex-wrap items-center justify-between gap-2">
+      <nav aria-label="Ruta de navegación" class="font-ui text-xs sm:text-[13px] uppercase tracking-[0.08em] sm:tracking-[0.1em] text-amber-200/95 flex items-center min-w-0">
         <a href="index.html" class="hover:text-amber-300 transition-colors whitespace-nowrap">Oráculo del Velo Astral</a>
         <span class="mx-2 text-amber-500">›</span>
         <span class="text-amber-300 font-bold truncate">Privacidad y Aviso Legal</span>
       </nav>
       <a
         href="index.html"
-        class="font-cinzel px-3.5 py-1.5 rounded-full bg-[#241608] hover:bg-amber-500/25 border border-[#d4af37]/70 text-[10px] sm:text-xs uppercase tracking-wider text-amber-200 transition-colors whitespace-nowrap"
+        class="font-ui px-3.5 py-1.5 rounded-full bg-[#241608] hover:bg-amber-500/25 border border-[#d4af37]/70 text-xs sm:text-[13px] uppercase tracking-wider text-amber-200 transition-colors whitespace-nowrap"
       >
         ✦ Volver al Altar
       </a>
     </div>
   </header>
 
-  <main class="max-w-4xl mx-auto px-4 sm:px-6 py-10 sm:py-14 space-y-10">
+  <main class="max-w-5xl mx-auto px-4 sm:px-8 py-10 sm:py-14 space-y-10">
 
     <!-- Portada institucional -->
     <header class="text-center space-y-4 pb-6 border-b border-amber-500/25">
-      <span class="font-cinzel inline-block px-4 py-1 rounded-full bg-amber-500/10 border border-amber-400/40 text-[10px] sm:text-xs uppercase tracking-[0.28em] text-amber-300">
+      <span class="font-ui inline-block px-4 py-1 rounded-full bg-amber-500/10 border border-amber-400/40 text-xs sm:text-[13px] uppercase tracking-[0.08em] text-amber-300">
         Marco Legal y Resguardo de Datos
       </span>
-      <h1 class="font-cinzel-dec text-3xl sm:text-4xl md:text-5xl font-bold text-amber-200 leading-tight">
+      <h1 class="font-display text-3xl sm:text-4xl md:text-5xl font-bold text-amber-200 leading-tight">
         Política de Privacidad y Aviso Legal
       </h1>
-      <p class="text-base sm:text-lg text-purple-200/85 max-w-2xl mx-auto italic leading-relaxed">
+      <p class="text-base sm:text-lg text-purple-100/95 max-w-2xl mx-auto italic leading-relaxed">
         Condiciones que regulan el acceso a Oráculo del Velo Astral, el tratamiento técnico de los registros guardados en tu equipo y el alcance de nuestras publicaciones.
       </p>
-      <p class="font-cinzel text-[10px] sm:text-xs uppercase tracking-[0.22em] text-amber-300/75 pt-1">
+      <p class="font-ui text-xs sm:text-[13px] uppercase tracking-[0.12em] text-amber-300/95 pt-1">
         Vigencia actual: Noviembre de 2026
       </p>
     </header>
 
     <!-- Índice rápido -->
-    <nav aria-label="Índice del documento" class="p-5 sm:p-6 rounded-2xl bg-[#090513]/90 border border-[#d4af37]/40">
-      <h2 class="font-cinzel text-xs uppercase tracking-[0.24em] text-amber-400 font-bold mb-3">
+    <nav aria-label="Índice del documento" class="p-5 sm:p-6 rounded-2xl bg-[#0c0717]/95 border border-[#d4af37]/40">
+      <h2 class="font-display text-xs uppercase tracking-[0.12em] text-amber-400 font-bold mb-3">
         ✦ Índice de Cláusulas
       </h2>
       <ol class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm sm:text-base text-amber-100/90">
@@ -116,11 +119,11 @@
     </nav>
 
     <!-- SECCIÓN 1 -->
-    <section id="naturaleza" class="scroll-mt-20 p-6 sm:p-8 rounded-3xl bg-[#090513]/95 border border-[#d4af37]/45 space-y-4">
-      <h2 class="font-cinzel-dec text-xl sm:text-2xl text-amber-200">
+    <section id="naturaleza" class="scroll-mt-20 p-6 sm:p-8 rounded-3xl bg-[#0c0717]/95 border border-[#d4af37]/45 space-y-4">
+      <h2 class="font-display text-xl sm:text-2xl text-amber-200">
         1. Naturaleza del sitio y exención de responsabilidad
       </h2>
-      <div class="space-y-3.5 text-base sm:text-lg text-amber-50/90 leading-relaxed">
+      <div class="space-y-3.5 text-base sm:text-lg text-amber-50/95 leading-relaxed">
         <p>
           Oráculo del Velo Astral es un espacio digital dedicado al estudio simbólico, literario e iconográfico del tarot. Las tiradas interactivas, las fichas de los arcanos y las notas personales se publican únicamente con propósito cultural, recreativo y de reflexión individual.
         </p>
@@ -134,11 +137,11 @@
     </section>
 
     <!-- SECCIÓN 2 -->
-    <section id="datos-locales" class="scroll-mt-20 p-6 sm:p-8 rounded-3xl bg-[#090513]/95 border border-purple-400/40 space-y-4">
-      <h2 class="font-cinzel-dec text-xl sm:text-2xl text-purple-200">
+    <section id="datos-locales" class="scroll-mt-20 p-6 sm:p-8 rounded-3xl bg-[#0c0717]/95 border border-purple-400/40 space-y-4">
+      <h2 class="font-display text-xl sm:text-2xl text-purple-200">
         2. Memoria local y ausencia de cuentas
       </h2>
-      <div class="space-y-3.5 text-base sm:text-lg text-amber-50/90 leading-relaxed">
+      <div class="space-y-3.5 text-base sm:text-lg text-amber-50/95 leading-relaxed">
         <p>
           Para utilizar Oráculo del Velo Astral no hace falta registrarse ni entregar datos de identidad. No pedimos nombres, números de documento, teléfonos, domicilios ni medios de pago, y tampoco administramos una base de datos de consultantes en servidores propios.
         </p>
@@ -152,11 +155,11 @@
     </section>
 
     <!-- SECCIÓN 3 -->
-    <section id="cookies-terceros" class="scroll-mt-20 p-6 sm:p-8 rounded-3xl bg-[#090513]/95 border border-[#d4af37]/40 space-y-4">
-      <h2 class="font-cinzel-dec text-xl sm:text-2xl text-amber-200">
+    <section id="cookies-terceros" class="scroll-mt-20 p-6 sm:p-8 rounded-3xl bg-[#0c0717]/95 border border-[#d4af37]/40 space-y-4">
+      <h2 class="font-display text-xl sm:text-2xl text-amber-200">
         3. Cookies e infraestructura de terceros
       </h2>
-      <div class="space-y-3.5 text-base sm:text-lg text-amber-50/90 leading-relaxed">
+      <div class="space-y-3.5 text-base sm:text-lg text-amber-50/95 leading-relaxed">
         <p>
           En su configuración actual, este sitio no coloca cookies propias de rastreo comercial ni vende perfiles de navegación a terceros. El almacenamiento en el equipo del visitante cumple una función estrictamente técnica: sostener las funciones del Grimorio y recordar las tiradas guardadas de forma local.
         </p>
@@ -167,11 +170,11 @@
     </section>
 
     <!-- SECCIÓN 4 -->
-    <section id="publicidad" class="scroll-mt-20 p-6 sm:p-8 rounded-3xl bg-[#090513]/95 border border-purple-400/40 space-y-4">
-      <h2 class="font-cinzel-dec text-xl sm:text-2xl text-purple-200">
+    <section id="publicidad" class="scroll-mt-20 p-6 sm:p-8 rounded-3xl bg-[#0c0717]/95 border border-purple-400/40 space-y-4">
+      <h2 class="font-display text-xl sm:text-2xl text-purple-200">
         4. Medición de audiencia y eventual publicidad
       </h2>
-      <div class="space-y-3.5 text-base sm:text-lg text-amber-50/90 leading-relaxed">
+      <div class="space-y-3.5 text-base sm:text-lg text-amber-50/95 leading-relaxed">
         <p>
           Con el objeto de financiar el mantenimiento gratuito del proyecto y seguir ampliando el catálogo editorial, el sitio podrá incorporar más adelante métricas agregadas de visitas o espacios publicitarios administrados por redes de terceros, incluida Google AdSense.
         </p>
@@ -188,11 +191,11 @@
     </section>
 
     <!-- SECCIÓN 5 + PANEL REAL DE CONTROL LOCAL -->
-    <section id="derechos" class="scroll-mt-20 p-6 sm:p-8 rounded-3xl bg-[#090513]/95 border border-[#d4af37]/50 space-y-5">
-      <h2 class="font-cinzel-dec text-xl sm:text-2xl text-amber-200">
+    <section id="derechos" class="scroll-mt-20 p-6 sm:p-8 rounded-3xl bg-[#0c0717]/95 border border-[#d4af37]/50 space-y-5">
+      <h2 class="font-display text-xl sm:text-2xl text-amber-200">
         5. Derechos sobre tus registros y borrado directo
       </h2>
-      <div class="space-y-3.5 text-base sm:text-lg text-amber-50/90 leading-relaxed">
+      <div class="space-y-3.5 text-base sm:text-lg text-amber-50/95 leading-relaxed">
         <p>
           El funcionamiento del sitio respeta los principios de transparencia, minimización y control personal contemplados por la Ley 25.326 de Protección de Datos Personales y por normativas internacionales equivalentes (como el Reglamento General de Protección de Datos de la Unión Europea), que reconocen los derechos de acceso, rectificación, actualización y supresión.
         </p>
@@ -204,21 +207,21 @@
       <!-- Panel interactivo de limpieza de localStorage -->
       <div class="p-5 rounded-2xl bg-[#05020a] border border-amber-400/45 space-y-3.5">
         <div class="flex flex-wrap items-center justify-between gap-2">
-          <span class="font-cinzel text-xs uppercase tracking-[0.2em] text-amber-300 font-bold">
+          <span class="font-ui text-xs uppercase tracking-[0.1em] text-amber-300 font-bold">
             ✦ Gestión de Memoria Local
           </span>
-          <span id="local-storage-status" class="text-xs sm:text-sm text-purple-200/85">
+          <span id="local-storage-status" class="text-xs sm:text-sm text-purple-100/95">
             Comprobando registros en este navegador...
           </span>
         </div>
-        <p class="text-sm sm:text-base text-amber-100/80 leading-snug">
+        <p class="text-sm sm:text-base text-amber-50/95 leading-snug">
           Al confirmar, se eliminan de este navegador tu avance del Grimorio, los sellos guardados, las notas del Diario, el historial de La Balanza Sí o No y el contador de repeticiones. La acción no se puede deshacer y no altera datos de otras páginas.
         </p>
         <div class="flex flex-wrap items-center gap-3 pt-1">
           <button
             id="btn-clear-local-data"
             type="button"
-            class="font-cinzel px-5 py-2.5 rounded-full bg-[#241608] hover:bg-rose-950/80 border border-[#d4af37]/70 hover:border-rose-400/70 text-[11px] sm:text-xs uppercase tracking-[0.16em] text-amber-200 hover:text-rose-100 transition-colors cursor-pointer"
+            class="font-ui px-5 py-2.5 rounded-full bg-[#241608] hover:bg-rose-950/80 border border-[#d4af37]/70 hover:border-rose-400/70 text-xs sm:text-sm uppercase tracking-[0.08em] text-amber-200 hover:text-rose-100 transition-colors cursor-pointer"
           >
             Borrar registros locales de este dispositivo
           </button>
@@ -228,11 +231,11 @@
     </section>
 
     <!-- SECCIÓN 6 -->
-    <section id="propiedad" class="scroll-mt-20 p-6 sm:p-8 rounded-3xl bg-[#090513]/95 border border-purple-400/40 space-y-4">
-      <h2 class="font-cinzel-dec text-xl sm:text-2xl text-purple-200">
+    <section id="propiedad" class="scroll-mt-20 p-6 sm:p-8 rounded-3xl bg-[#0c0717]/95 border border-purple-400/40 space-y-4">
+      <h2 class="font-display text-xl sm:text-2xl text-purple-200">
         6. Derechos de autor y uso permitido
       </h2>
-      <div class="space-y-3.5 text-base sm:text-lg text-amber-50/90 leading-relaxed">
+      <div class="space-y-3.5 text-base sm:text-lg text-amber-50/95 leading-relaxed">
         <p>
           Los textos del códice, las ilustraciones vectoriales de las cartas, el diseño sonoro, el código y la identidad gráfica de Oráculo del Velo Astral son creaciones originales protegidas por las leyes vigentes sobre propiedad intelectual.
         </p>
@@ -243,11 +246,11 @@
     </section>
 
     <!-- SECCIÓN 7 -->
-    <section id="menores" class="scroll-mt-20 p-6 sm:p-8 rounded-3xl bg-[#090513]/95 border border-[#d4af37]/40 space-y-4">
-      <h2 class="font-cinzel-dec text-xl sm:text-2xl text-amber-200">
+    <section id="menores" class="scroll-mt-20 p-6 sm:p-8 rounded-3xl bg-[#0c0717]/95 border border-[#d4af37]/40 space-y-4">
+      <h2 class="font-display text-xl sm:text-2xl text-amber-200">
         7. Edad mínima y actualizaciones del aviso
       </h2>
-      <div class="space-y-3.5 text-base sm:text-lg text-amber-50/90 leading-relaxed">
+      <div class="space-y-3.5 text-base sm:text-lg text-amber-50/95 leading-relaxed">
         <p>
           El contenido de esta plataforma está dirigido a personas mayores de 18 años. Cuando ingresen menores de edad, deberán hacerlo bajo la supervisión y criterio de sus padres o representantes legales.
         </p>
@@ -259,30 +262,30 @@
 
     <!-- SECCIÓN 8 -->
     <section id="contacto" class="scroll-mt-20 p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-[#140b26] via-[#090513] to-[#140b26] border border-[#d4af37]/55 space-y-4">
-      <h2 class="font-cinzel-dec text-xl sm:text-2xl text-amber-200">
+      <h2 class="font-display text-xl sm:text-2xl text-amber-200">
         8. Contacto editorial
       </h2>
-      <div class="space-y-3 text-base sm:text-lg text-amber-50/90 leading-relaxed">
+      <div class="space-y-3 text-base sm:text-lg text-amber-50/95 leading-relaxed">
         <p>
           Para consultas vinculadas con este aviso, pedidos formales sobre propiedad intelectual o reportes técnicos, podés escribir al correo del proyecto:
         </p>
-        <p class="font-cinzel text-sm sm:text-base text-amber-300 tracking-wider">
+        <p class="font-ui text-sm sm:text-base text-amber-300 tracking-wider">
           <a href="mailto:contacto@oraculodelveloastral.com" class="underline decoration-amber-400/50 hover:text-amber-200">
             contacto@oraculodelveloastral.com
           </a>
         </p>
-        <p class="text-sm text-purple-200/75 italic">
+        <p class="text-sm text-purple-100/90 italic">
           Las consultas recibidas por correo electrónico se emplean exclusivamente para responder al remitente; no se incorporan a listas de correo masivo ni se comparten con terceros.
         </p>
       </div>
     </section>
 
     <!-- Pie de página -->
-    <footer class="pt-6 border-t border-amber-500/25 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs sm:text-sm text-amber-200/70">
-      <p class="font-cinzel tracking-wider">
+    <footer class="pt-6 border-t border-amber-500/25 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs sm:text-sm text-amber-200/90">
+      <p class="font-ui tracking-wider">
         ✦ Oráculo del Velo Astral
       </p>
-      <div class="flex flex-wrap items-center justify-center gap-4 font-cinzel uppercase tracking-wider text-[11px]">
+      <div class="flex flex-wrap items-center justify-center gap-4 font-ui uppercase tracking-wider text-xs">
         <a href="index.html" class="hover:text-amber-300 transition-colors">Altar Interactivo</a>
         <span class="text-amber-500/40">•</span>
         <a href="tarot-si-o-no.html" class="hover:text-emerald-300 transition-colors">Tarot Sí o No</a>
