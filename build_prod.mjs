@@ -1,11 +1,14 @@
 // ============================================================================
-// ARCHIVO: build_prod.mjs (v8.2 • Optimizado para PageSpeed 95+ en Móvil 4G)
+// ARCHIVO: build_prod.mjs (v8.3 • 78 Cartas SEO Estáticas + 0 Render-Blocking)
 // Compilador de Producción para Oráculo del Velo Astral
 // - Elimina @babel/standalone (-2.8 MB) y cdn.tailwindcss.com (-410 KB JIT)
 // - Incrusta styles.min.css inline en cada HTML (0 ms de CSS bloqueante)
-// - Convierte Google Fonts a carga asíncrona no bloqueante (ahorra ~750 ms en 4G)
-// - Separa core.bundle (~45 KB) de grimorio.bundle (~400 KB diferido en index.html)
-// - Mantiene 100% intactos los archivos fuente y compatibilidad con file:/// y GitHub Pages
+// - Carga Google Fonts (Cinzel + Lora + Plus Jakarta Sans) de forma asíncrona
+// - Separa core.bundle (~45 KB) de grimorio.bundle (diferido en index.html)
+// - Empaqueta los 4 palos menores editoriales (Bastos, Copas, Espadas, Oros)
+// - Pre-renderiza 78 páginas HTML estáticas en dist/cartas/<slug>.html con
+//   <h1>, Luz y Sombra, 5 Dominios, Psicomagia, FAQs, Concilio y JSON-LD completo
+// - Genera automáticamente dist/sitemap.xml con las 82 URLs canónicas
 // ============================================================================
 
 import fs from "node:fs";
@@ -19,6 +22,12 @@ import esbuild from "esbuild";
 const ROOT = process.cwd();
 const DIST = path.join(ROOT, "dist");
 const ASSETS = path.join(DIST, "assets");
+const DIST_CARDS = path.join(DIST, "cartas");
+const SITE_URL = "https://emibaio.github.io/oraculo-v5/";
+const TODAY_ISO = new Date().toISOString().slice(0, 10);
+
+const GOOGLE_FONTS_URL =
+  "https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap";
 
 function shortHash(buf) {
   return crypto.createHash("sha256").update(buf).digest("hex").slice(0, 8);
@@ -34,6 +43,19 @@ function readUtf8(relPath) {
     throw new Error("Falta el archivo requerido: " + relPath);
   }
   return fs.readFileSync(full, "utf8");
+}
+
+function escHtml(val) {
+  return String(val == null ? "" : val)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+function safeJsonLd(obj) {
+  return JSON.stringify(obj).replace(/<\//g, "<\\/");
 }
 
 function copyDirRecursive(src, dest) {
@@ -132,7 +154,6 @@ function writeAssetAndReport(filename, contentStr, reportRows) {
   return { filename, hash, path: "assets/" + filename + "?v=" + hash };
 }
 
-// Convierte Google Fonts en no bloqueante (Cinzel + Lora + Plus Jakarta Sans, 0 ms render-blocking)
 function makeGoogleFontsNonBlocking(html) {
   return html.replace(
     /<link\s+href="(https:\/\/fonts\.googleapis\.com\/css2\?[^"]+)"\s+rel="stylesheet"\s*\/?>/i,
@@ -146,7 +167,6 @@ function makeGoogleFontsNonBlocking(html) {
   );
 }
 
-// Mantiene el fallback métricamente calibrado para minimizar CLS al cargar Lora
 function addMetricFontFallback(html) {
   return html.replace(
     /font-family:\s*'Cormorant Garamond',\s*Georgia,\s*serif;/g,
@@ -154,18 +174,459 @@ function addMetricFontFallback(html) {
   );
 }
 
+// Carga los 78 Arcanos normalizados y el Concilio en un sandbox Node para pre-renderizar SEO
+function loadFullTarotCatalog() {
+  const win = {
+    location: { search: "", pathname: "/", protocol: "https:", href: SITE_URL },
+    history: { pushState() {} },
+    dispatchEvent() {},
+    scrollTo() {},
+    localStorage: { getItem() { return null; }, setItem() {} }
+  };
+  const sandbox = {
+    window: win,
+    self: win,
+    globalThis: win,
+    localStorage: win.localStorage,
+    URLSearchParams,
+    navigator: { userAgent: 'node-build' },
+    document: { body: null },
+    console: { log() {}, warn() {}, error() {} }
+  };
+  win.window = win;
+  const ctx = vm.createContext(sandbox);
+
+  const loadList = [
+    "datos_cartas.js",
+    "datos_cartas/datos_sol_1.js",
+    "datos_cartas/datos_sol_2.js",
+    "datos_cartas/datos_sol_3.js",
+    "datos_cartas/datos_sol_4.js",
+    "datos_cartas/datos_sol_5.js",
+    "datos_cartas/datos_sol_6.js",
+    "datos_cartas/datos_luna_1.js",
+    "datos_cartas/datos_luna_2.js",
+    "datos_cartas/datos_luna_3.js",
+    "datos_cartas/datos_luna_4.js",
+    "datos_cartas/datos_luna_5.js",
+    "datos_cartas/datos_luna_6.js",
+    "datos_cartas/datos_menores_bastos.js",
+    "datos_cartas/datos_menores_copas.js",
+    "datos_cartas/datos_menores_espadas.js",
+    "datos_cartas/datos_menores_oros.js",
+    "datos_cartas_menores.js",
+    "concilio_tarotistas.js",
+    "motor_tarot.js"
+  ];
+
+  for (const rel of loadList) {
+    if (!fs.existsSync(path.join(ROOT, rel))) continue;
+    const code = readUtf8(rel);
+    vm.runInContext(code, ctx, { filename: rel });
+    if (rel === "datos_cartas.js") {
+      vm.runInContext(
+        'if(typeof MAJOR_ARCANA!=="undefined")window.MAJOR_ARCANA=MAJOR_ARCANA;' +
+        'if(typeof REVERSED_DATA!=="undefined")window.REVERSED_DATA=REVERSED_DATA;',
+        ctx
+      );
+    }
+  }
+  vm.runInContext("if(window.TAROT_DB&&window.TAROT_DB.syncExtendedData)window.TAROT_DB.syncExtendedData();", ctx);
+
+  const allCards = win.TAROT_DB.getAllCards();
+  if (!Array.isArray(allCards) || allCards.length !== 78) {
+    throw new Error("Se esperaban 78 cartas en TAROT_DB, se obtuvieron: " + (allCards ? allCards.length : 0));
+  }
+
+  return {
+    cards: allCards,
+    router: win.TarotRouter,
+    db: win.TAROT_DB,
+    concilio: win.ConcilioEditorial
+  };
+}
+
+// Reemplaza enlaces carta.html?arcano=ID en landings estáticas hacia cartas/<slug>.html
+function rewriteStaticCardLinks(html, slugById) {
+  return html.replace(
+    /href="carta\.html\?arcano=([a-z0-9_]+)(?:(?:&amp;|&)modo=sombra)?"/gi,
+    function (match, idKey) {
+      const slug = slugById[String(idKey).toLowerCase()];
+      if (!slug) return match;
+      const isShadow = /modo=sombra/i.test(match);
+      return 'href="cartas/' + slug + '.html' + (isShadow ? '?modo=sombra' : '') + '"';
+    }
+  );
+}
+
+// Genera una página HTML estática completa e hidratable en dist/cartas/<slug>.html
+function renderStaticCardHtml({ card, neighbors, author, reviewer, slug, inlineCssBlock, coreAsset, grimorioAsset, cartaAsset }) {
+  const isMajor = card.type === "major" || card.arcanaType === "major" || Number(card.id) <= 21;
+  const canonicalUrl = SITE_URL + "cartas/" + slug + ".html";
+  const corr = card.correspondences || {};
+  const rev = card.reversed || {};
+  const revCorr = rev.correspondences || {};
+  const domains = card.domains || {};
+  const revDomains = rev.domains || {};
+  const action = card.theAlchemy || card.actionOracle || null;
+
+  const pageTitle = isMajor
+    ? card.name + " (" + card.numeral + ") en el Tarot: Significado en Amor, Trabajo y Sombra | Oráculo del Velo Astral"
+    : card.name + " en el Tarot (" + card.suitName + "): Significado en Amor, Dinero y Sombra | Oráculo del Velo Astral";
+
+  const rawDesc =
+    "Significado completo de " + card.name + " al derecho e invertida: amor, trabajo, dinero, salud, respuesta Sí o No (" +
+    (corr.yesNo || "consultar") + ") y consejo práctico. " + String(card.meaning || "");
+  const metaDesc = rawDesc.replace(/\s+/g, " ").trim().slice(0, 158).replace(/\s+\S*$/, "") + ".";
+
+  const faqs = [
+    {
+      question: "¿Qué responde " + card.name + " en una tirada de Tarot Sí o No?",
+      answer:
+        "Al derecho (En Luz), la respuesta oracular de " + card.name + " es: “" + (corr.yesNo || "Sí") +
+        "”. En polaridad invertida (En Sombra), señala: “" +
+        (revCorr.yesNo || rev.yesNo || "Pausa o revisión previa antes de avanzar") + "”."
+    },
+    {
+      question: isMajor
+        ? "¿Cuál es la correspondencia cabalística y alquímica de " + card.name + "?"
+        : "¿Cuál es el elemento, decanato astrológico y tiempo de " + card.name + "?",
+      answer:
+        (corr.hebrewLetter
+          ? "Está regida por la letra hebrea " + corr.hebrewLetter + (corr.treeOfLifePath ? " (" + corr.treeOfLifePath + ")" : "") + ". "
+          : "Pertenece al elemento " + (corr.element || "") + " (" + (corr.astro || "") + "). ") +
+        (corr.alchemy ? "En alquimia representa: " + corr.alchemy + ". " : "") +
+        (corr.tarotTiming ? "Tiempo orientativo: " + corr.tarotTiming + "." : "")
+    },
+    {
+      question: "¿Qué significa " + card.name + " en el amor, el trabajo y el dinero?",
+      answer:
+        "En el amor: " + (domains.love || "") +
+        " En el trabajo: " + (domains.work || "") +
+        (domains.money ? " En el dinero: " + domains.money : "")
+    },
+    {
+      question: "¿Qué consejo práctico o acto simbólico propone " + card.name + "?",
+      answer:
+        (action && action.psychomagicAct
+          ? action.psychomagicAct + (action.talismanPhrase ? " Mantra: “" + action.talismanPhrase + "”. " : " ")
+          : "") +
+        "Consejo: “" + (card.counsel || "") + "”."
+    }
+  ];
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Article",
+        "headline": pageTitle.replace(" | Oráculo del Velo Astral", ""),
+        "description": metaDesc,
+        "inLanguage": "es",
+        "mainEntityOfPage": canonicalUrl,
+        "image": SITE_URL + "img/og-cover.jpg",
+        "dateModified": TODAY_ISO,
+        "author": {
+          "@type": "Person",
+          "name": author.name,
+          "jobTitle": author.role,
+          "image": SITE_URL + author.image,
+          "url": SITE_URL + "sobre-nosotros.html#" + author.id,
+          "knowsAbout": author.focusTags || []
+        },
+        "reviewedBy": {
+          "@type": "Person",
+          "name": reviewer.name,
+          "jobTitle": reviewer.role,
+          "image": SITE_URL + reviewer.image,
+          "url": SITE_URL + "sobre-nosotros.html#" + reviewer.id,
+          "knowsAbout": reviewer.focusTags || []
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "Oráculo del Velo Astral",
+          "url": SITE_URL
+        }
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Oráculo", "item": SITE_URL },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": isMajor ? "Arcanos Mayores" : "Palo de " + card.suitName,
+            "item": SITE_URL + "tarot-si-o-no.html"
+          },
+          { "@type": "ListItem", "position": 3, "name": card.name, "item": canonicalUrl }
+        ]
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": faqs.map(function (f) {
+          return {
+            "@type": "Question",
+            "name": f.question,
+            "acceptedAnswer": { "@type": "Answer", "text": f.answer }
+          };
+        })
+      }
+    ]
+  };
+
+  const prevLink = neighbors && neighbors.prev
+    ? '<a href="' + escHtml(neighbors.prev.slug) + '.html" class="p-4 rounded-xl bg-[#0c0717]/95 border border-amber-500/35 hover:border-amber-300 transition flex items-center gap-4">' +
+      '<span class="font-display text-amber-300 font-bold">' + escHtml(neighbors.prev.numeral) + '</span>' +
+      '<span><span class="block font-ui text-xs uppercase text-amber-300/95">← Carta Anterior</span><strong class="font-display text-lg text-amber-100">' + escHtml(neighbors.prev.name) + '</strong></span></a>'
+    : "";
+
+  const nextLink = neighbors && neighbors.next
+    ? '<a href="' + escHtml(neighbors.next.slug) + '.html" class="p-4 rounded-xl bg-[#0c0717]/95 border border-amber-500/35 hover:border-amber-300 transition flex items-center justify-end gap-4 text-right">' +
+      '<span><span class="block font-ui text-xs uppercase text-amber-300/95">Carta Siguiente →</span><strong class="font-display text-lg text-amber-100">' + escHtml(neighbors.next.name) + '</strong></span>' +
+      '<span class="font-display text-amber-300 font-bold">' + escHtml(neighbors.next.numeral) + '</span></a>'
+    : "";
+
+  const relatedLinks = ((neighbors && neighbors.related) || []).map(function (rel) {
+    return (
+      '<a href="' + escHtml(rel.slug) + '.html" class="p-3 rounded-xl bg-[#0c0717]/95 border border-purple-500/30 hover:border-amber-300 transition text-center">' +
+      '<span class="font-display text-xs text-amber-300 block">' + escHtml(rel.numeral) + '</span>' +
+      '<span class="font-ui text-sm font-bold text-amber-100">' + escHtml(rel.name) + '</span></a>'
+    );
+  }).join("");
+
+  const faqHtml = faqs.map(function (f) {
+    return (
+      '<details class="p-4 rounded-2xl bg-[#0c0717]/95 border border-amber-500/30" open>' +
+      '<summary class="font-ui cursor-pointer font-bold text-amber-200">' + escHtml(f.question) + '</summary>' +
+      '<p class="mt-3 text-base text-amber-50/95 leading-relaxed">' + escHtml(f.answer) + '</p>' +
+      '</details>'
+    );
+  }).join("\n        ");
+
+  const nodesHtml = (card.nodes || []).map(function (n) {
+    return (
+      '<li class="p-4 rounded-xl bg-white/[0.03] border border-amber-400/30">' +
+      '<strong class="font-ui text-sm text-amber-200 block">' + escHtml(n.title) + '</strong>' +
+      '<p class="text-base text-amber-50/95 mt-1">' + escHtml(n.secret) + '</p></li>'
+    );
+  }).join("");
+
+  return (
+    '<!DOCTYPE html>\n' +
+    '<html lang="es">\n' +
+    '<head>\n' +
+    '  <meta charset="UTF-8" />\n' +
+    '  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />\n' +
+    '  <meta name="theme-color" content="#040207" />\n' +
+    '  <title>' + escHtml(pageTitle) + '</title>\n' +
+    '  <meta name="description" content="' + escHtml(metaDesc) + '" />\n' +
+    '  <meta name="robots" content="index, follow" />\n' +
+    '  <link rel="icon" type="image/svg+xml" href="../favicon.svg" />\n' +
+    '  <link rel="canonical" href="' + escHtml(canonicalUrl) + '" />\n' +
+    '  <meta property="og:type" content="article" />\n' +
+    '  <meta property="og:locale" content="es_AR" />\n' +
+    '  <meta property="og:site_name" content="Oráculo del Velo Astral" />\n' +
+    '  <meta property="og:title" content="' + escHtml(pageTitle) + '" />\n' +
+    '  <meta property="og:description" content="' + escHtml(metaDesc) + '" />\n' +
+    '  <meta property="og:url" content="' + escHtml(canonicalUrl) + '" />\n' +
+    '  <meta property="og:image" content="' + SITE_URL + 'img/og-cover.jpg" />\n' +
+    '  <meta name="twitter:card" content="summary_large_image" />\n' +
+    '  <meta name="twitter:title" content="' + escHtml(pageTitle) + '" />\n' +
+    '  <meta name="twitter:description" content="' + escHtml(metaDesc) + '" />\n' +
+    '  <meta name="twitter:image" content="' + SITE_URL + 'img/og-cover.jpg" />\n\n' +
+    '  <script type="application/ld+json">' + safeJsonLd(jsonLd) + '</script>\n\n' +
+    '  <link rel="preconnect" href="https://unpkg.com" crossorigin />\n' +
+    '  <link rel="preconnect" href="https://fonts.googleapis.com" />\n' +
+    '  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />\n' +
+    '  <link rel="preload" as="style" href="' + GOOGLE_FONTS_URL + '" />\n' +
+    '  <link rel="stylesheet" href="' + GOOGLE_FONTS_URL + '" media="print" onload="this.media=\'all\'" />\n' +
+    '  <noscript><link rel="stylesheet" href="' + GOOGLE_FONTS_URL + '" /></noscript>\n' +
+    '  ' + inlineCssBlock + '\n\n' +
+    '  <script>window.__VELO_STATIC_CARDS__=true;window.__VELO_STATIC_CARD_ID__=' + JSON.stringify(String(card.id)) + ';window.__VELO_BASE_PREFIX__="../";</script>\n' +
+    '  <script defer crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>\n' +
+    '  <script defer crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>\n' +
+    '  <script defer crossorigin src="https://unpkg.com/framer-motion@10.18.0/dist/framer-motion.js"></script>\n' +
+    '  <script defer src="../' + coreAsset.path + '"></script>\n' +
+    '  <script defer src="../' + grimorioAsset.path + '"></script>\n' +
+    '  <script defer src="../' + cartaAsset.path + '"></script>\n\n' +
+    '  <style>\n' +
+    '    * { box-sizing: border-box; }\n' +
+    '    html, body { margin: 0; padding: 0; min-height: 100%; background-color: #040207; color: #fffbeb; font-family: \'Lora\', \'Lora Fallback\', Georgia, serif; font-size: 16px; line-height: 1.65; overflow-x: hidden; -webkit-font-smoothing: antialiased; }\n' +
+    '    .font-ui { font-family: \'Plus Jakarta Sans\', \'Jakarta Fallback\', system-ui, -apple-system, sans-serif; }\n' +
+    '    .font-body { font-family: \'Lora\', \'Lora Fallback\', Georgia, serif; }\n' +
+    '    .font-display, .font-cinzel, .font-cinzel-dec { font-family: \'Cinzel\', Georgia, serif; }\n' +
+    '  </style>\n' +
+    '</head>\n' +
+    '<body>\n' +
+    '  <div id="root">\n' +
+    '    <div style="background:radial-gradient(ellipse at 50% 25%, #190e30 0%, #090510 55%, #040207 100%)" class="min-h-screen text-amber-50 pb-24">\n' +
+    '      <header class="sticky top-0 z-50 bg-[#040207] border-b border-[#d4af37]/35 px-4 py-3">\n' +
+    '        <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">\n' +
+    '          <nav aria-label="Breadcrumb" class="font-ui text-xs sm:text-[13px] uppercase tracking-[0.08em] text-amber-200/95 flex items-center gap-2">\n' +
+    '            <a href="../index.html" class="hover:text-amber-300">Oráculo</a>\n' +
+    '            <span class="text-amber-500">›</span>\n' +
+    '            <span>' + escHtml(isMajor ? "Arcanos Mayores" : "Palo de " + card.suitName) + '</span>\n' +
+    '            <span class="text-amber-500">›</span>\n' +
+    '            <span class="text-amber-300 font-bold">' + escHtml(card.name) + '</span>\n' +
+    '          </nav>\n' +
+    '          <a href="../index.html" class="font-ui px-4 py-1.5 rounded-full bg-amber-400 text-[#09050e] text-xs font-bold uppercase tracking-wider">✦ Consultar Altar</a>\n' +
+    '        </div>\n' +
+    '      </header>\n\n' +
+    '      <main class="max-w-7xl mx-auto px-4 sm:px-8 py-10 sm:py-12 space-y-12">\n' +
+    '        <header class="text-center space-y-4">\n' +
+    '          <span class="font-ui inline-block px-4 py-1 rounded-full bg-amber-500/10 border border-amber-400/40 text-xs uppercase tracking-[0.12em] text-amber-300">' +
+    escHtml(isMajor ? "Arcano Mayor " + card.numeral : "Arcano Menor • Palo de " + card.suitName + " (" + card.numeral + ")") + '</span>\n' +
+    '          <h1 class="font-display text-3xl sm:text-5xl md:text-6xl font-bold text-amber-200">' + escHtml(card.name) + '</h1>\n' +
+    '          <p class="font-ui text-sm sm:text-base uppercase tracking-[0.08em] text-amber-400">“' + escHtml(card.subtitle) + '”</p>\n' +
+    '          <div class="flex flex-wrap justify-center gap-2 pt-2 text-xs font-ui">\n' +
+    '            <span class="px-3 py-1 rounded-full bg-amber-500/15 border border-amber-400/40 text-amber-200">Elemento: <strong>' + escHtml(corr.element || card.rootElement) + '</strong></span>\n' +
+    '            <span class="px-3 py-1 rounded-full bg-purple-500/15 border border-purple-400/40 text-purple-200">Regente: <strong>' + escHtml(corr.astro || "") + '</strong></span>\n' +
+    '            <span class="px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-400/40 text-emerald-200">Tarot Sí/No: <strong>' + escHtml(corr.yesNo || "") + '</strong></span>\n' +
+    (corr.tarotTiming ? '            <span class="px-3 py-1 rounded-full bg-white/[0.05] border border-amber-400/30 text-amber-100">Tiempo: <strong>' + escHtml(corr.tarotTiming) + '</strong></span>\n' : "") +
+    '          </div>\n' +
+    '        </header>\n\n' +
+    (card.oracleVoice
+      ? '        <section class="p-6 sm:p-8 rounded-3xl bg-[#0c0717]/95 border-2 border-[#d4af37]/60 space-y-3">\n' +
+        '          <span class="font-ui text-xs uppercase tracking-[0.12em] font-bold text-amber-300 block">☉ La Voz de ' + escHtml(card.name) + ' en Luz</span>\n' +
+        '          <blockquote class="text-xl sm:text-2xl italic text-amber-50 leading-relaxed">“' + escHtml(card.oracleVoice) + '”</blockquote>\n' +
+        (corr.hermeticAxiom ? '          <p class="text-sm text-amber-200/95 pt-2 border-t border-white/10"><strong>Axioma:</strong> ' + escHtml(corr.hermeticAxiom) + '</p>\n' : "") +
+        '        </section>\n\n'
+      : "") +
+    '        <section class="p-6 sm:p-8 rounded-3xl bg-[#0c0717]/95 border border-amber-400/35 space-y-5">\n' +
+    '          <h2 class="font-display text-2xl sm:text-3xl text-amber-200">Significado de ' + escHtml(card.name) + ' al Derecho (En Luz)</h2>\n' +
+    '          <p class="text-lg text-amber-50/95 leading-relaxed">' + escHtml(card.meaning) + '</p>\n' +
+    (card.psyche ? '          <div class="p-5 rounded-2xl bg-purple-950/30 border border-purple-400/30"><h3 class="font-ui text-xs uppercase tracking-wider text-purple-300 font-bold mb-2">Espejo Psicológico</h3><p class="text-base text-amber-50/95 leading-relaxed">' + escHtml(card.psyche) + '</p></div>\n' : "") +
+    (nodesHtml ? '          <div><h3 class="font-ui text-xs uppercase tracking-wider text-amber-300 font-bold mb-3">Claves Simbólicas de la Carta</h3><ul class="grid grid-cols-1 md:grid-cols-3 gap-4">' + nodesHtml + '</ul></div>\n' : "") +
+    '        </section>\n\n' +
+    '        <section class="space-y-5">\n' +
+    '          <h2 class="font-display text-2xl sm:text-3xl text-amber-200">Los 5 Dominios de ' + escHtml(card.name) + '</h2>\n' +
+    '          <div class="grid grid-cols-1 md:grid-cols-2 gap-5">\n' +
+    '            <article class="p-6 rounded-2xl bg-[#0c0717]/95 border border-rose-500/40 space-y-2"><h3 class="font-ui text-sm uppercase tracking-wider text-rose-300 font-bold">♥ Amor y Vínculos</h3><p class="text-base text-amber-50/95 leading-relaxed">' + escHtml(domains.love || "") + '</p></article>\n' +
+    '            <article class="p-6 rounded-2xl bg-[#0c0717]/95 border border-amber-500/30 space-y-2"><h3 class="font-ui text-sm uppercase tracking-wider text-amber-300 font-bold">✦ Trabajo y Vocación</h3><p class="text-base text-amber-50/95 leading-relaxed">' + escHtml(domains.work || "") + '</p></article>\n' +
+    (domains.money ? '            <article class="p-6 rounded-2xl bg-[#0c0717]/95 border border-emerald-400/40 space-y-2"><h3 class="font-ui text-sm uppercase tracking-wider text-emerald-300 font-bold">◈ Dinero y Recursos</h3><p class="text-base text-amber-50/95 leading-relaxed">' + escHtml(domains.money) + '</p></article>\n' : "") +
+    '            <article class="p-6 rounded-2xl bg-[#0c0717]/95 border border-purple-500/30 space-y-2"><h3 class="font-ui text-sm uppercase tracking-wider text-purple-300 font-bold">☾ Espíritu y Propósito</h3><p class="text-base text-amber-50/95 leading-relaxed">' + escHtml(domains.spirit || "") + '</p></article>\n' +
+    (domains.healthAndEnergy ? '            <article class="p-6 rounded-2xl bg-[#0c0717]/95 border border-sky-500/40 space-y-2"><h3 class="font-ui text-sm uppercase tracking-wider text-sky-300 font-bold">✧ Cuerpo y Energía</h3><p class="text-base text-amber-50/95 leading-relaxed">' + escHtml(domains.healthAndEnergy) + '</p></article>\n' : "") +
+    '          </div>\n' +
+    '        </section>\n\n' +
+    '        <section class="p-6 sm:p-8 rounded-3xl bg-[#0c0717]/95 border border-purple-400/45 space-y-5">\n' +
+    '          <h2 class="font-display text-2xl sm:text-3xl text-purple-200">' + escHtml(card.name) + ' Invertida (En Sombra)</h2>\n' +
+    (rev.subtitle ? '          <p class="font-ui text-sm uppercase tracking-wider text-purple-300">“' + escHtml(rev.subtitle) + '”</p>\n' : "") +
+    '          <p class="text-lg text-amber-50/95 leading-relaxed">' + escHtml(rev.meaning || card.lightAndShadow || "") + '</p>\n' +
+    (rev.theWound || rev.theIllusion
+      ? '          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">' +
+        (rev.theWound ? '<div class="p-5 rounded-2xl bg-white/[0.03] border border-purple-400/35"><h3 class="font-ui text-xs uppercase tracking-wider text-purple-300 font-bold mb-2">✦ La Herida Raíz</h3><p class="text-base text-amber-50/95 leading-relaxed">' + escHtml(rev.theWound) + '</p></div>' : "") +
+        (rev.theIllusion ? '<div class="p-5 rounded-2xl bg-amber-500/[0.06] border border-amber-400/35"><h3 class="font-ui text-xs uppercase tracking-wider text-amber-300 font-bold mb-2">✦ El Espejismo del Ego</h3><p class="text-base text-amber-50/95 leading-relaxed">' + escHtml(rev.theIllusion) + '</p></div>' : "") +
+        '</div>\n'
+      : "") +
+    (revDomains.love || revDomains.work
+      ? '          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">' +
+        (revDomains.love ? '<div class="p-4 rounded-xl bg-white/[0.02] border border-white/10"><strong class="font-ui text-xs uppercase text-rose-300 block mb-1">Amor en Sombra</strong><p class="text-base text-amber-50/95">' + escHtml(revDomains.love) + '</p></div>' : "") +
+        (revDomains.work ? '<div class="p-4 rounded-xl bg-white/[0.02] border border-white/10"><strong class="font-ui text-xs uppercase text-amber-300 block mb-1">Trabajo en Sombra</strong><p class="text-base text-amber-50/95">' + escHtml(revDomains.work) + '</p></div>' : "") +
+        '</div>\n'
+      : "") +
+    '        </section>\n\n' +
+    (action
+      ? '        <section class="p-6 sm:p-8 rounded-3xl bg-[#0c0717]/95 border border-amber-400/45 space-y-4">\n' +
+        '          <h2 class="font-display text-2xl sm:text-3xl text-amber-200">Oráculo de Acción y Psicomagia</h2>\n' +
+        '          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">\n' +
+        '            <div class="p-5 rounded-2xl bg-emerald-950/35 border border-emerald-400/40"><h3 class="font-ui text-xs uppercase tracking-wider text-emerald-300 font-bold mb-1">✦ Decreto Ejecutivo</h3><p class="text-base text-amber-50/95">' + escHtml(action.command || "") + '</p></div>\n' +
+        '            <div class="p-5 rounded-2xl bg-rose-950/35 border border-rose-400/40"><h3 class="font-ui text-xs uppercase tracking-wider text-rose-300 font-bold mb-1">⊘ Prohibición Iniciática</h3><p class="text-base text-amber-50/95">' + escHtml(action.prohibition || "") + '</p></div>\n' +
+        '          </div>\n' +
+        '          <div class="p-5 rounded-2xl bg-amber-500/[0.08] border border-amber-400/45"><h3 class="font-ui text-xs uppercase tracking-wider text-amber-300 font-bold mb-1">⚗ Acto Simbólico</h3><p class="text-base text-amber-100">' + escHtml(action.psychomagicAct || "") + '</p></div>\n' +
+        (action.talismanPhrase ? '          <p class="text-center text-xl italic text-amber-200 font-semibold pt-2">“' + escHtml(action.talismanPhrase) + '”</p>\n' : "") +
+        '        </section>\n\n'
+      : "") +
+    '        <section class="space-y-4">\n' +
+    '          <h2 class="font-display text-2xl sm:text-3xl text-amber-200">Preguntas Frecuentes sobre ' + escHtml(card.name) + '</h2>\n' +
+    '          ' + faqHtml + '\n' +
+    '        </section>\n\n' +
+    '        <section class="p-6 rounded-3xl bg-[#0c0717]/95 border border-amber-500/35 space-y-3">\n' +
+    '          <span class="font-ui text-xs uppercase tracking-wider text-amber-300 font-bold block">✦ Autoría y Revisión del Concilio del Velo Astral</span>\n' +
+    '          <p class="text-base text-amber-50/95">Redacción: <a href="../sobre-nosotros.html#' + escHtml(author.id) + '" class="text-amber-200 underline">' + escHtml(author.name) + '</a> (' + escHtml(author.role) + ') • Revisión simbólica: <a href="../sobre-nosotros.html#' + escHtml(reviewer.id) + '" class="text-emerald-300 underline">' + escHtml(reviewer.name) + '</a>.</p>\n' +
+    '        </section>\n\n' +
+    '        <footer class="pt-8 border-t border-amber-500/30 space-y-6">\n' +
+    '          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">' + prevLink + nextLink + '</div>\n' +
+    (relatedLinks ? '          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">' + relatedLinks + '</div>\n' : "") +
+    '          <div class="pt-6 border-t border-amber-500/20 flex flex-wrap items-center justify-between gap-3 text-xs font-ui text-amber-200/90">\n' +
+    '            <span>✦ Oráculo del Velo Astral</span>\n' +
+    '            <div class="flex flex-wrap gap-4"><a href="../index.html">Altar</a><a href="../tarot-si-o-no.html">Tarot Sí o No</a><a href="../sobre-nosotros.html">Sobre Nosotros</a><a href="../privacidad.html">Privacidad</a></div>\n' +
+    '          </div>\n' +
+    '        </footer>\n' +
+    '      </main>\n' +
+    '    </div>\n' +
+    '  </div>\n\n' +
+    '  <script>\n' +
+    '    document.addEventListener("DOMContentLoaded", function mountStaticCard() {\n' +
+    '      if (!window.React || !window.ReactDOM || !window.ArcanaPageLayout || !window.TarotRouter) return;\n' +
+    '      const { useState, useEffect } = React;\n' +
+    '      function StaticCardApp() {\n' +
+    '        const [routeData, setRouteData] = useState(function () { return window.TarotRouter.resolveCurrentUrl(' + JSON.stringify(String(card.id)) + '); });\n' +
+    '        useEffect(function () {\n' +
+    '          function onPop() { setRouteData(window.TarotRouter.resolveCurrentUrl(' + JSON.stringify(String(card.id)) + ')); }\n' +
+    '          window.addEventListener("popstate", onPop);\n' +
+    '          return function () { window.removeEventListener("popstate", onPop); };\n' +
+    '        }, []);\n' +
+    '        if (!routeData || !routeData.card) return null;\n' +
+    '        return React.createElement(window.ArcanaPageLayout, { card: routeData.card, neighbors: routeData.neighbors });\n' +
+    '      }\n' +
+    '      const rootEl = document.getElementById("root");\n' +
+    '      if (rootEl) {\n' +
+    '        ReactDOM.createRoot(rootEl).render(React.createElement(StaticCardApp));\n' +
+    '      }\n' +
+    '    });\n' +
+    '  </script>\n' +
+    '</body>\n' +
+    '</html>\n'
+  );
+}
+
+function buildSitemapXml(cards) {
+  const entries = [
+    { loc: SITE_URL, changefreq: "weekly", priority: "1.0" },
+    { loc: SITE_URL + "tarot-si-o-no.html", changefreq: "weekly", priority: "0.9" },
+    { loc: SITE_URL + "sobre-nosotros.html", changefreq: "monthly", priority: "0.7" },
+    { loc: SITE_URL + "privacidad.html", changefreq: "yearly", priority: "0.4" }
+  ];
+  for (const c of cards) {
+    const isMajor = c.type === "major" || c.arcanaType === "major" || Number(c.id) <= 21;
+    entries.push({
+      loc: SITE_URL + "cartas/" + c.slug + ".html",
+      changefreq: "monthly",
+      priority: isMajor ? "0.85" : "0.75"
+    });
+  }
+  const body = entries.map(function (e) {
+    return (
+      "  <url>\n" +
+      "    <loc>" + escHtml(e.loc) + "</loc>\n" +
+      "    <lastmod>" + TODAY_ISO + "</lastmod>\n" +
+      "    <changefreq>" + e.changefreq + "</changefreq>\n" +
+      "    <priority>" + e.priority + "</priority>\n" +
+      "  </url>"
+    );
+  }).join("\n");
+
+  return (
+    '<?xml version="1.0" encoding="UTF-8"?>\n' +
+    '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
+    body + "\n" +
+    "</urlset>\n"
+  );
+}
+
 async function main() {
   const t0 = Date.now();
-  console.log("✦ Iniciando build de producción v8.2 (Core Diferido + 0 Render-Blocking)...\n");
+  console.log("✦ Iniciando build de producción v8.3 (78 Cartas SEO Estáticas + 0 Render-Blocking)...\n");
 
   if (fs.existsSync(DIST)) {
     fs.rmSync(DIST, { recursive: true, force: true });
   }
   fs.mkdirSync(ASSETS, { recursive: true });
+  fs.mkdirSync(DIST_CARDS, { recursive: true });
   fs.writeFileSync(path.join(DIST, ".nojekyll"), "", "utf8");
 
   copyDirRecursive(path.join(ROOT, "img"), path.join(DIST, "img"));
-  for (const staticFile of ["favicon.svg", "robots.txt", "sitemap.xml", "oraculo.html", "CNAME"]) {
+  for (const staticFile of ["favicon.svg", "robots.txt", "oraculo.html", "CNAME"]) {
     const src = path.join(ROOT, staticFile);
     if (fs.existsSync(src)) {
       fs.copyFileSync(src, path.join(DIST, staticFile));
@@ -175,7 +636,7 @@ async function main() {
   const reportRows = [];
 
   // --------------------------------------------------------------------------
-  // 1. Compilar Tailwind CSS v3 estático -> assets/styles.min.css (también inline)
+  // 1. Compilar Tailwind CSS v3 estático -> assets/styles.min.css (inline)
   // --------------------------------------------------------------------------
   const twBin = path.join(ROOT, "node_modules", "tailwindcss", "lib", "cli.js");
   if (!fs.existsSync(twBin)) {
@@ -198,12 +659,10 @@ async function main() {
   const cssGz = zlib.gzipSync(cssBuf, { level: 9 });
   const cssHash = shortHash(cssBuf);
   reportRows.push({ file: "assets/styles.min.css (inline)", raw: kb(cssBuf.length), gzip: kb(cssGz.length), hash: cssHash });
-
   const inlineCssBlock = '<style id="velo-tw-css">' + cssStr + "</style>";
 
   // --------------------------------------------------------------------------
   // 2. Bundle Crítico 1: assets/core.bundle.min.js (~45 KB gzip)
-  //    Solo lo necesario para pintar Sibilia, el mazo y los 3 botones al instante
   // --------------------------------------------------------------------------
   const coreParts = [];
   coreParts.push("window.ARCANA_REGISTRY=window.ARCANA_REGISTRY||{};");
@@ -218,13 +677,21 @@ async function main() {
   const coreAsset = writeAssetAndReport("core.bundle.min.js", coreParts.join(";\n"), reportRows);
 
   // --------------------------------------------------------------------------
-  // 3. Bundle Diferido: assets/grimorio.bundle.min.js (~400 KB gzip)
-  //    12 volúmenes Solar/Lunar + 56 Menores + Trina + Sí/No + Concilio + 22 Dioramas
-  //    En index.html se descarga en segundo plano SIN frenar el FCP/LCP inicial.
-  //    En carta.html se descarga con defer y reutiliza la misma caché.
+  // 3. Bundle Diferido: assets/grimorio.bundle.min.js
+  //    Incluye los 4 palos menores editoriales + 12 volúmenes + Trina + Sí/No + Concilio + 22 Dioramas
   // --------------------------------------------------------------------------
   const grimorioParts = [];
   grimorioParts.push("window.ARCANA_REGISTRY=window.ARCANA_REGISTRY||{};");
+  for (const mf of [
+    "datos_cartas/datos_menores_bastos.js",
+    "datos_cartas/datos_menores_copas.js",
+    "datos_cartas/datos_menores_espadas.js",
+    "datos_cartas/datos_menores_oros.js"
+  ]) {
+    if (fs.existsSync(path.join(ROOT, mf))) {
+      grimorioParts.push(await minifyPlainJs(readUtf8(mf), mf));
+    }
+  }
   grimorioParts.push(await minifyPlainJs(readUtf8("datos_cartas_menores.js"), "datos_cartas_menores.js"));
   grimorioParts.push('if(typeof MINOR_ARCANA!=="undefined"&&!window.MINOR_ARCANA)window.MINOR_ARCANA=MINOR_ARCANA;');
 
@@ -324,7 +791,7 @@ async function main() {
   const grimorioAsset = writeAssetAndReport("grimorio.bundle.min.js", grimorioParts.join(";\n"), reportRows);
 
   // --------------------------------------------------------------------------
-  // 4. Bundle Crítico 2 (index.html): assets/altar.bundle.min.js (~54 KB gzip)
+  // 4. Bundle Crítico 2 (index.html): assets/altar.bundle.min.js
   // --------------------------------------------------------------------------
   const altarParts = [];
   for (const af of [
@@ -341,7 +808,7 @@ async function main() {
   const altarAsset = writeAssetAndReport("altar.bundle.min.js", altarParts.join(";\n"), reportRows);
 
   // --------------------------------------------------------------------------
-  // 5. Bundle Crítico 2 (carta.html): assets/carta.bundle.min.js
+  // 5. Bundle Crítico 2 (carta.html y 78 páginas): assets/carta.bundle.min.js
   // --------------------------------------------------------------------------
   const cartaAsset = writeAssetAndReport("carta.bundle.min.js", await compileJsxFile("layout_arcano.js"), reportRows);
 
@@ -360,10 +827,18 @@ async function main() {
   );
 
   // --------------------------------------------------------------------------
-  // 7. Reescritura optimizada de las 5 páginas HTML hacia dist/
+  // 7. Cargar catálogo unificado de 78 Arcanos para SEO estático + mapa de slugs
   // --------------------------------------------------------------------------
+  const catalog = loadFullTarotCatalog();
+  const slugById = {};
+  for (const c of catalog.cards) {
+    slugById[String(c.id).toLowerCase()] = c.slug;
+  }
 
-  // 7A. index.html (Carga crítica ultraliviana + grimorio diferido en segundo plano)
+  // --------------------------------------------------------------------------
+  // 8. Reescritura optimizada de las 5 páginas principales hacia dist/
+  // --------------------------------------------------------------------------
+  // 8A. index.html
   {
     let html = readUtf8("index.html");
     html = html.replace(
@@ -372,6 +847,7 @@ async function main() {
     );
     html = makeGoogleFontsNonBlocking(html);
     html = addMetricFontFallback(html);
+    html = rewriteStaticCardLinks(html, slugById);
     html = html.replace(/^\s*<script[^>]*@babel\/standalone[^>]*><\/script>\s*\r?\n?/gim, "");
     html = html.replace(
       /<script(\s+crossorigin)?\s+src="(https:\/\/unpkg\.com\/(?:react|react-dom|framer-motion)[^"]+)"><\/script>/gi,
@@ -380,6 +856,7 @@ async function main() {
 
     const lazyLoaderInline =
       '<script>' +
+      'window.__VELO_STATIC_CARDS__=true;' +
       '(function(){' +
       'var url="' + grimorioAsset.path + '";' +
       'var p=null;' +
@@ -407,7 +884,7 @@ async function main() {
 
     html = html.replace(
       /<!--\s*1\.\s*Bases de datos[\s\S]*?<script\s+src="motor_tirada\.js[^"]*"><\/script>/i,
-      '<!-- Bundles críticos de producción (0 Babel, 0 Tailwind CDN, Grimorio diferido) -->\n' +
+      '<!-- Bundles críticos de producción (0 Babel, 0 Tailwind CDN, Grimorio 78 cartas diferido) -->\n' +
       '  ' + lazyLoaderInline + '\n' +
       '  <script defer src="' + coreAsset.path + '"></script>\n' +
       '  <script defer src="' + altarAsset.path + '"></script>'
@@ -420,9 +897,13 @@ async function main() {
     fs.writeFileSync(path.join(DIST, "index.html"), html, "utf8");
   }
 
-  // 7B. carta.html (Carga core + grimorio + carta con defer y CSS inline)
+  // 8B. carta.html (respaldo retrocompatible para URLs ?arcano=...; noindex para evitar duplicado con /cartas/*.html)
   {
     let html = readUtf8("carta.html");
+    html = html.replace(
+      /<meta\s+name="robots"\s+content="index,\s*follow"\s*\/?>/i,
+      '<meta name="robots" content="noindex, follow" />'
+    );
     html = html.replace(
       /<script\s+src="https:\/\/cdn\.tailwindcss\.com"><\/script>/i,
       '<link rel="preconnect" href="https://unpkg.com" crossorigin />\n  ' + inlineCssBlock
@@ -436,7 +917,7 @@ async function main() {
     );
     html = html.replace(
       /(\s*<style>)/i,
-      '\n  <!-- Bundles de producción pre-compilados compartidos con index.html -->\n' +
+      '\n  <script>window.__VELO_STATIC_CARDS__=true;</script>\n' +
       '  <script defer src="' + coreAsset.path + '"></script>\n' +
       '  <script defer src="' + grimorioAsset.path + '"></script>\n' +
       '  <script defer src="' + cartaAsset.path + '"></script>\n$1'
@@ -452,7 +933,7 @@ async function main() {
     fs.writeFileSync(path.join(DIST, "carta.html"), html, "utf8");
   }
 
-  // 7C. tarot-si-o-no.html (0 render-blocking, 0 JS en <head>)
+  // 8C. tarot-si-o-no.html (con enlaces estáticos hacia cartas/<slug>.html)
   {
     let html = readUtf8("tarot-si-o-no.html");
     html = html.replace(
@@ -461,6 +942,23 @@ async function main() {
     );
     html = makeGoogleFontsNonBlocking(html);
     html = addMetricFontFallback(html);
+    html = rewriteStaticCardLinks(html, slugById);
+    html = html.replace(
+      /href="carta\.html\?arcano='\s*\+\s*encodeURIComponent\(([^)]+)\)\s*\+\s*\(([^?]+)\?\s*"&modo=sombra"\s*:\s*""\)\s*\+\s*'"/g,
+      function (_, idExpr, revExpr) {
+        return (
+          'href="cartas/\' + ((window.__VELO_SLUG_MAP__ && window.__VELO_SLUG_MAP__[String(' +
+          idExpr.trim() +
+          ').toLowerCase()]) || "el-loco") + \'.html\' + (' +
+          revExpr.trim() +
+          ' ? "?modo=sombra" : "") + \'"'
+        );
+      }
+    );
+    html = html.replace(
+      /(<script>\s*\(function initTarotSiNoLanding)/i,
+      '<script>window.__VELO_SLUG_MAP__=' + JSON.stringify(slugById) + ';</script>\n  $1'
+    );
     html = html.replace(/\s*<script>\s*window\.__loadSiNoFallback[\s\S]*?<\/script>/i, "");
     html = html.replace(/^\s*<script\s+src="datos_cartas\/datos_sino\.js[^"]*"[^>]*><\/script>\s*\r?\n?/gim, "");
     html = html.replace(/^\s*<script\s+src="concilio_tarotistas\.js[^"]*"[^>]*><\/script>\s*\r?\n?/gim, "");
@@ -471,7 +969,7 @@ async function main() {
     fs.writeFileSync(path.join(DIST, "tarot-si-o-no.html"), html, "utf8");
   }
 
-  // 7D. sobre-nosotros.html (0 render-blocking, 0 JS en <head>)
+  // 8D. sobre-nosotros.html (con enlaces estáticos hacia cartas/<slug>.html)
   {
     let html = readUtf8("sobre-nosotros.html");
     html = html.replace(
@@ -480,6 +978,21 @@ async function main() {
     );
     html = makeGoogleFontsNonBlocking(html);
     html = addMetricFontFallback(html);
+    html = rewriteStaticCardLinks(html, slugById);
+    html = html.replace(
+      /href="carta\.html\?arcano='\s*\+\s*encodeURIComponent\(([^)]+)\)\s*\+\s*'"/g,
+      function (_, idExpr) {
+        return (
+          'href="cartas/\' + ((window.__VELO_SLUG_MAP__ && window.__VELO_SLUG_MAP__[String(' +
+          idExpr.trim() +
+          ').toLowerCase()]) || "el-loco") + \'.html"'
+        );
+      }
+    );
+    html = html.replace(
+      /(<script>\s*\(function hydrateConcilioPage)/i,
+      '<script>window.__VELO_SLUG_MAP__=' + JSON.stringify(slugById) + ';</script>\n  $1'
+    );
     html = html.replace(/^\s*<script\s+src="concilio_tarotistas\.js[^"]*"[^>]*><\/script>\s*\r?\n?/gim, "");
     html = html.replace(
       /(<script>\s*\(function hydrateConcilioPage)/i,
@@ -488,7 +1001,7 @@ async function main() {
     fs.writeFileSync(path.join(DIST, "sobre-nosotros.html"), html, "utf8");
   }
 
-  // 7E. privacidad.html (0 render-blocking, 0 JS en <head>)
+  // 8E. privacidad.html
   {
     let html = readUtf8("privacidad.html");
     html = html.replace(
@@ -497,11 +1010,41 @@ async function main() {
     );
     html = makeGoogleFontsNonBlocking(html);
     html = addMetricFontFallback(html);
+    html = rewriteStaticCardLinks(html, slugById);
     fs.writeFileSync(path.join(DIST, "privacidad.html"), html, "utf8");
   }
 
   // --------------------------------------------------------------------------
-  // 8. Auditoría automática post-build
+  // 9. PASO 3 SEO: Generar las 78 páginas HTML estáticas en dist/cartas/<slug>.html
+  // --------------------------------------------------------------------------
+  let totalStaticBytes = 0;
+  for (const card of catalog.cards) {
+    const neighbors = catalog.router.getNeighbors(card);
+    const pair = catalog.concilio.getPairForCard(card.id);
+    const pageHtml = renderStaticCardHtml({
+      card,
+      neighbors,
+      author: pair.author,
+      reviewer: pair.reviewer,
+      slug: card.slug,
+      inlineCssBlock,
+      coreAsset,
+      grimorioAsset,
+      cartaAsset
+    });
+    const outPath = path.join(DIST_CARDS, card.slug + ".html");
+    fs.writeFileSync(outPath, pageHtml, "utf8");
+    totalStaticBytes += Buffer.byteLength(pageHtml, "utf8");
+  }
+
+  // --------------------------------------------------------------------------
+  // 10. Generar dist/sitemap.xml con las 82 URLs canónicas (4 principales + 78 arcanos)
+  // --------------------------------------------------------------------------
+  const sitemapXml = buildSitemapXml(catalog.cards);
+  fs.writeFileSync(path.join(DIST, "sitemap.xml"), sitemapXml, "utf8");
+
+  // --------------------------------------------------------------------------
+  // 11. Auditoría automática post-build (5 principales + 78 cartas + sitemap)
   // --------------------------------------------------------------------------
   const htmlPages = ["index.html", "carta.html", "tarot-si-o-no.html", "sobre-nosotros.html", "privacidad.html"];
   for (const page of htmlPages) {
@@ -516,11 +1059,26 @@ async function main() {
     }
   }
 
+  const generatedCardFiles = fs.readdirSync(DIST_CARDS).filter((f) => f.endsWith(".html"));
+  if (generatedCardFiles.length !== 78) {
+    throw new Error("Se esperaban 78 páginas en dist/cartas/, se generaron: " + generatedCardFiles.length);
+  }
+  for (const cf of generatedCardFiles) {
+    const content = fs.readFileSync(path.join(DIST_CARDS, cf), "utf8");
+    if (!content.includes("<h1")) throw new Error("dist/cartas/" + cf + " no tiene <h1>");
+    if (!content.includes("application/ld+json")) throw new Error("dist/cartas/" + cf + " no tiene JSON-LD");
+    if (!content.includes('id="velo-tw-css"')) throw new Error("dist/cartas/" + cf + " no tiene CSS inline");
+  }
+  const urlCount = (sitemapXml.match(/<url>/g) || []).length;
+  if (urlCount !== 82) {
+    throw new Error("sitemap.xml debería tener 82 URLs, tiene: " + urlCount);
+  }
+
   const elapsed = ((Date.now() - t0) / 1000).toFixed(2);
-  console.log("\n✔ BUILD v8.2 COMPLETADO EN " + elapsed + " s (0 Render-Blocking • Core Diferido)\n");
+  console.log("\n✔ BUILD v8.3 COMPLETADO EN " + elapsed + " s (78 Cartas SEO Estáticas + Sitemap 82 URLs)\n");
   console.table(reportRows);
-  console.log("✦ Carga crítica inicial de index.html: solo core.bundle + altar.bundle (~99 KB gzip vs 496 KB antes)");
-  console.log("✦ grimorio.bundle (~400 KB) se precarga en segundo plano sin afectar FCP ni LCP.\n");
+  console.log("✦ Páginas SEO pre-renderizadas en dist/cartas/: " + generatedCardFiles.length + " (" + kb(totalStaticBytes) + " totales)");
+  console.log("✦ dist/sitemap.xml actualizado automáticamente con " + urlCount + " URLs canónicas.\n");
 }
 
 main().catch((err) => {

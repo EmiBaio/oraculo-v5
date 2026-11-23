@@ -803,7 +803,7 @@ const SiNoRevealView = memo(function SiNoRevealView({
                       Arcano Mayor {result.cardData.numeral} • {result.cardData.isReversed ? "Faz Lunar (Sombra)" : "Faz Solar (Luz)"}
                     </span>
                     <a
-                      href={"carta.html?arcano=" + result.card.id + (result.cardData.isReversed ? "&modo=sombra" : "")}
+                      href={(window.TarotRouter && window.TarotRouter.getCardUrl) ? window.TarotRouter.getCardUrl(result.card, { isReversed: result.cardData.isReversed }) : ("carta.html?arcano=" + result.card.id + (result.cardData.isReversed ? "&modo=sombra" : ""))}
                       style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }}
                       className="px-3 py-1 rounded-full bg-purple-500/20 hover:bg-purple-500/35 border border-purple-400/50 text-purple-200 text-xs uppercase tracking-wider transition-colors"
                     >
@@ -891,7 +891,7 @@ const SiNoRevealView = memo(function SiNoRevealView({
                         </div>
 
                         <a
-                          href={"carta.html?arcano=" + it.card.id + (it.data.isReversed ? "&modo=sombra" : "")}
+                          href={(window.TarotRouter && window.TarotRouter.getCardUrl) ? window.TarotRouter.getCardUrl(it.card, { isReversed: it.data.isReversed }) : ("carta.html?arcano=" + it.card.id + (it.data.isReversed ? "&modo=sombra" : ""))}
                           style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }}
                           className="mt-2 inline-block text-xs uppercase tracking-[0.08em] text-purple-300 hover:text-amber-300 transition-colors"
                         >

@@ -663,6 +663,10 @@ const SacredGeometryBackplate = memo(function SacredGeometryBackplate({
 // --- 6. RESOLUCIÓN DE CARTAS MODULARES (/cartas/*.js) ---
 function resolveRegisteredCard(card) {
   if (!card) return null;
+  // Nunca resolver Arcanos Menores contra ARCANA_REGISTRY (evita colisión de numerales II..X con Mayores)
+  if (card.type === "minor" || card.arcanaType === "minor" || Boolean(card.suit)) {
+    return null;
+  }
   const reg = window.ARCANA_REGISTRY || {};
   return (
     reg[card.archetype] ||
@@ -749,6 +753,17 @@ const ReliquaryFrame3D = memo(function ReliquaryFrame3D({ card }) {
     name: (entry && entry.name) || (card && card.name) || "Arcano",
     subtitle: (card && card.subtitle) || (entry && entry.subtitle) || "Oráculo del Velo"
   };
+  const rawNum = String(safeCard.numeral || "I").toUpperCase();
+  const displayNum = rawNum === "CABALLERO" ? "CAB." : rawNum;
+  const numFontSize = displayNum.length >= 5 ? 6.8 : displayNum.length === 4 ? 7.6 : displayNum.length === 3 ? 8.8 : 10.5;
+  const numSpacing = displayNum.length >= 4 ? 0.5 : 1.1;
+  const displayName = String(safeCard.name || "ARCANO").toUpperCase();
+  const nameFontSize = displayName.length > 18 ? 10.2 : displayName.length > 14 ? 11.8 : 13.6;
+  const nameSpacing = displayName.length > 16 ? 0.7 : 1.3;
+  const rawSub = String(safeCard.subtitle || "").toUpperCase();
+  const displaySub = rawSub.length > 36 ? (rawSub.slice(0, 35).trim() + "…") : rawSub;
+  const subFontSize = displaySub.length > 26 ? 5.5 : 6.4;
+  const subSpacing = displaySub.length > 26 ? 0.85 : 1.4;
 
   return (
     <svg viewBox="0 0 240 380" className="w-full h-full pointer-events-none">
@@ -779,8 +794,8 @@ const ReliquaryFrame3D = memo(function ReliquaryFrame3D({ card }) {
         <polygon points="-15,-9 15,-9 21,0 15,9 -15,9 -21,0" fill="none" stroke="url(#v-gold)" strokeWidth="0.6" opacity="0.8" />
         <circle cx="-20" cy="0" r="1.4" fill="#fff9e2" />
         <circle cx="20" cy="0" r="1.4" fill="#fff9e2" />
-        <Gold3DText x={0} y={4} fontSize={10.5} letterSpacing={1.2}>
-          {safeCard.numeral}
+        <Gold3DText x={0} y={3.5} fontSize={numFontSize} letterSpacing={numSpacing}>
+          {displayNum}
         </Gold3DText>
       </g>
 
@@ -793,12 +808,12 @@ const ReliquaryFrame3D = memo(function ReliquaryFrame3D({ card }) {
         <circle cx="26" cy="328" r="2" fill="url(#v-gold-3d-face)" />
         <circle cx="214" cy="328" r="2" fill="url(#v-gold-3d-face)" />
 
-        <Gold3DText x={120} y={326} fontSize={14} letterSpacing={1.4}>
-          {(safeCard.name || "").toUpperCase()}
+        <Gold3DText x={120} y={326} fontSize={nameFontSize} letterSpacing={nameSpacing}>
+          {displayName}
         </Gold3DText>
 
-        <text x="120" y="347" textAnchor="middle" fill="#e9d5ff" fontSize="6.6" fontFamily="'Cinzel', serif" fontWeight="700" letterSpacing="1.8">
-          {(safeCard.subtitle || "").toUpperCase()}
+        <text x="120" y="347" textAnchor="middle" fill="#e9d5ff" fontSize={subFontSize} fontFamily="'Cinzel', serif" fontWeight="700" letterSpacing={subSpacing}>
+          {displaySub}
         </text>
       </g>
     </svg>

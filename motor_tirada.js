@@ -66,6 +66,14 @@ function ensureGrimorioLoaded() {
   return Promise.resolve(true);
 }
 
+function getCardHref(cardOrId, isRev) {
+  if (typeof window !== 'undefined' && window.TarotRouter && typeof window.TarotRouter.getCardUrl === 'function') {
+    return window.TarotRouter.getCardUrl(cardOrId, { isReversed: Boolean(isRev) });
+  }
+  const id = typeof cardOrId === 'object' && cardOrId !== null ? cardOrId.id : cardOrId;
+  return "carta.html?arcano=" + encodeURIComponent(id) + (isRev ? "&modo=sombra" : "");
+}
+
 // Helper universal para resolver una carta en Luz o en Sombra con todo el Grimorio
 function resolvePolymorphicCard(card, isReversed, recordDraw) {
   if (!card) return null;
@@ -767,16 +775,40 @@ function TarotSpreadApp() {
   const [sinoPickingIdx, setSinoPickingIdx] = useState(null);
   const [sinoResult, setSinoResult] = useState(null);
 
-  const [deckMode] = useState('majors');
-  const CARTAS_DISPONIBLES = useMemo(() => {
-    if (deckMode === 'all' && window.TAROT_DB?.getAllCards) {
-      return window.TAROT_DB.getAllCards();
-    }
+  const [deckMode, setDeckMode] = useState('majors');
+  const [grimorioRev, setGrimorioRev] = useState(0);
+
+  useEffect(() => {
+    const onReady = () => setGrimorioRev((v) => v + 1);
+    window.addEventListener('velo-grimorio-ready', onReady);
+    return () => window.removeEventListener('velo-grimorio-ready', onReady);
+  }, []);
+
+  const MAJORS_POOL = useMemo(() => {
     if (window.TAROT_DB?.getMajorArcana) {
       const maj = window.TAROT_DB.getMajorArcana();
       if (maj && maj.length > 0) return maj;
     }
     return typeof MAJOR_ARCANA !== 'undefined' ? MAJOR_ARCANA : (window.MAJOR_ARCANA || []);
+  }, [grimorioRev]);
+
+  const CARTAS_DISPONIBLES = useMemo(() => {
+    if (deckMode === 'all' && window.TAROT_DB?.getAllCards) {
+      const all = window.TAROT_DB.getAllCards();
+      if (all && all.length > 22) return all;
+    }
+    return MAJORS_POOL;
+  }, [deckMode, MAJORS_POOL, grimorioRev]);
+
+  const handleSelectDeckMode = useCallback((nextMode) => {
+    const target = nextMode === 'all' ? 'all' : 'majors';
+    if (target === deckMode) return;
+    sound?.init?.();
+    sound?.playHarpNote?.(target === 'all' ? 4 : 2);
+    setDeckMode(target);
+    if (target === 'all') {
+      ensureGrimorioLoaded().then(() => setGrimorioRev((v) => v + 1));
+    }
   }, [deckMode]);
 
   const [deck, setDeck] = useState(() => CARTAS_DISPONIBLES.slice(0, 7));
@@ -899,8 +931,12 @@ function TarotSpreadApp() {
       timersRef.current.push(setTimeout(() => sound?.playHeavyCardThud(0.8 + (i % 5) * 0.08), ms));
     });
     timersRef.current.push(setTimeout(() => {
+      const livePool = (deckMode === 'all' && window.TAROT_DB?.getAllCards)
+        ? window.TAROT_DB.getAllCards()
+        : CARTAS_DISPONIBLES;
+      const sourcePool = (livePool && livePool.length >= 7) ? livePool : CARTAS_DISPONIBLES;
       setDeck(
-        [...CARTAS_DISPONIBLES]
+        [...sourcePool]
           .sort(() => Math.random() - 0.5)
           .slice(0, 7)
           .map((card) => ({ ...card, isReversed: Math.random() < 0.5 }))
@@ -909,7 +945,7 @@ function TarotSpreadApp() {
       sound?.playHarpNote(3);
       setPhase('SPREAD');
     }, 2550));
-  }, [CARTAS_DISPONIBLES, clearManagedTimers, stopRumble, quality]);
+  }, [CARTAS_DISPONIBLES, deckMode, clearManagedTimers, stopRumble, quality]);
 
   // --- Tirada Trina ("El Hilo de las Tres Lunas") ---
   const runTrinaShuffleAct = useCallback((actIndex, alreadyPicked) => {
@@ -929,8 +965,12 @@ function TarotSpreadApp() {
 
     const usedIds = new Set((alreadyPicked || []).map((c) => String(c.id)));
     timersRef.current.push(setTimeout(() => {
-      const remainingPool = CARTAS_DISPONIBLES.filter((c) => !usedIds.has(String(c.id)));
-      const fanSource = remainingPool.length >= 7 ? remainingPool : CARTAS_DISPONIBLES;
+      const liveTrinaPool = (deckMode === 'all' && window.TAROT_DB?.getAllCards)
+        ? window.TAROT_DB.getAllCards()
+        : CARTAS_DISPONIBLES;
+      const activeTrinaPool = (liveTrinaPool && liveTrinaPool.length >= 7) ? liveTrinaPool : CARTAS_DISPONIBLES;
+      const remainingPool = activeTrinaPool.filter((c) => !usedIds.has(String(c.id)));
+      const fanSource = remainingPool.length >= 7 ? remainingPool : activeTrinaPool;
       setDeck(
         [...fanSource]
           .sort(() => Math.random() - 0.5)
@@ -941,7 +981,7 @@ function TarotSpreadApp() {
       sound?.playHarpNote(2 + actIndex * 2);
       setPhase('SPREAD');
     }, 2550));
-  }, [CARTAS_DISPONIBLES, clearManagedTimers]);
+  }, [CARTAS_DISPONIBLES, deckMode, clearManagedTimers]);
 
   const handleStartTrina = useCallback(() => {
     ensureGrimorioLoaded();
@@ -991,8 +1031,9 @@ function TarotSpreadApp() {
     const usedIds = new Set((alreadyPicked || []).map((c) => String(c.id)));
     const shuffleDurationMs = subModeArg === 'triad' ? 1180 : 1220;
     timersRef.current.push(setTimeout(() => {
-      const remainingPool = CARTAS_DISPONIBLES.filter((c) => !usedIds.has(String(c.id)));
-      const fanSource = remainingPool.length >= 7 ? remainingPool : CARTAS_DISPONIBLES;
+      const sinoBasePool = MAJORS_POOL.length > 0 ? MAJORS_POOL : CARTAS_DISPONIBLES;
+      const remainingPool = sinoBasePool.filter((c) => !usedIds.has(String(c.id)));
+      const fanSource = remainingPool.length >= 7 ? remainingPool : sinoBasePool;
       setDeck(
         [...fanSource]
           .sort(() => Math.random() - 0.5)
@@ -1003,7 +1044,7 @@ function TarotSpreadApp() {
       sound?.playHarpNote?.(3 + actIndex);
       setPhase('SPREAD');
     }, shuffleDurationMs));
-  }, [CARTAS_DISPONIBLES, clearManagedTimers]);
+  }, [MAJORS_POOL, CARTAS_DISPONIBLES, clearManagedTimers]);
 
   const handleStartSiNo = useCallback(({ subMode, domain, question }) => {
     ensureGrimorioLoaded();
@@ -1620,6 +1661,40 @@ function TarotSpreadApp() {
                   </span>
                 </motion.button>
 
+                <div
+                  role="group"
+                  aria-label="Selector de mazo de tarot"
+                  style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }}
+                  className="inline-flex items-center gap-1 p-1 rounded-full bg-[#0c0717]/95 border border-[#d4af37]/45 shadow-[0_8px_22px_rgba(0,0,0,0.65)]"
+                >
+                  <button
+                    type="button"
+                    onClick={() => handleSelectDeckMode('majors')}
+                    aria-pressed={deckMode === 'majors'}
+                    className={
+                      "px-3.5 sm:px-4 py-1.5 rounded-full text-xs sm:text-[13px] font-semibold transition-colors cursor-pointer " +
+                      (deckMode === 'majors'
+                        ? "bg-amber-400 text-[#09050e] shadow-[0_0_12px_rgba(251,191,36,0.35)]"
+                        : "text-amber-100/90 hover:text-white")
+                    }
+                  >
+                    ✦ 22 Mayores
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleSelectDeckMode('all')}
+                    aria-pressed={deckMode === 'all'}
+                    className={
+                      "px-3.5 sm:px-4 py-1.5 rounded-full text-xs sm:text-[13px] font-semibold transition-colors cursor-pointer " +
+                      (deckMode === 'all'
+                        ? "bg-purple-500 text-white shadow-[0_0_12px_rgba(168,85,247,0.45)]"
+                        : "text-purple-100/90 hover:text-white")
+                    }
+                  >
+                    78 Cartas (Completo)
+                  </button>
+                </div>
+
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-2.5 w-full">
                   {TrinaEngine && (
                     <motion.button
@@ -1902,7 +1977,7 @@ function TarotSpreadApp() {
                   <BookOpen className="w-3 h-3 text-amber-300" /> Grimorio
                 </button>
                 <a
-                  href={"carta.html?arcano=" + revealedCard.id + (isReversed ? "&modo=sombra" : "")}
+                  href={getCardHref(revealedCard, isReversed)}
                   style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }}
                   className="px-2.5 py-1.5 rounded-full bg-purple-950/90 border border-purple-400/60 text-purple-200 text-xs uppercase tracking-wider whitespace-nowrap"
                 >
@@ -2003,7 +2078,7 @@ function TarotSpreadApp() {
                     >
                       <BookOpen className="w-3.5 h-3.5 text-amber-300" /> Grimorio
                     </button>
-                    <a href={"carta.html?arcano=" + revealedCard.id + (isReversed ? "&modo=sombra" : "")} style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }} className="px-3.5 py-1.5 rounded-full bg-purple-500/20 hover:bg-purple-500/35 border border-purple-400/60 text-purple-200 text-xs lg:text-sm uppercase tracking-wider transition-colors">
+                    <a href={getCardHref(revealedCard, isReversed)} style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }} className="px-3.5 py-1.5 rounded-full bg-purple-500/20 hover:bg-purple-500/35 border border-purple-400/60 text-purple-200 text-xs lg:text-sm uppercase tracking-wider transition-colors">
                       ✦ Códice Completo
                     </a>
                     <button onClick={handleReset} style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }} className="flex items-center gap-1.5 px-3.5 sm:px-4 py-1.5 rounded-full bg-amber-500/15 hover:bg-amber-500/30 border border-[#d4af37] text-amber-200 text-xs lg:text-sm uppercase tracking-wider transition-colors cursor-pointer">

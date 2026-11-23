@@ -820,7 +820,7 @@ const TrinaCardStation = memo(function TrinaCardStation({
         </div>
 
         <a
-          href={"carta.html?arcano=" + card.id + (isRev ? "&modo=sombra" : "")}
+          href={(window.TarotRouter && window.TarotRouter.getCardUrl) ? window.TarotRouter.getCardUrl(card, { isReversed: isRev }) : ("carta.html?arcano=" + card.id + (isRev ? "&modo=sombra" : ""))}
           style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }}
           className="px-3.5 py-1.5 rounded-full bg-purple-500/20 hover:bg-purple-500/35 border border-purple-400/55 text-purple-200 text-xs sm:text-sm uppercase tracking-wider transition-colors"
         >
@@ -854,7 +854,7 @@ const TrinaCardStation = memo(function TrinaCardStation({
         <div className="flex-1 w-full space-y-4">
           <div>
             <span style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }} className="text-xs uppercase tracking-[0.12em] text-amber-400/90 font-bold">
-              Arcano Mayor {card.numeral}
+              {card.type === "minor" ? ("Arcano Menor • Palo de " + card.suitName + " (" + card.numeral + ")") : ("Arcano Mayor " + card.numeral)}
             </span>
             <h3 style={{ fontFamily: "'Cinzel', Georgia, serif" }} className="text-2xl sm:text-3xl text-amber-200 font-bold leading-tight">
               {card.name}: <span className={isRev ? "text-purple-300" : "text-amber-300"}>{card.subtitle}</span>

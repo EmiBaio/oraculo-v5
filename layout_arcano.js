@@ -7,6 +7,20 @@
 
 const LAYOUT_ARCANO_SOURCE = `
 const { useState, useEffect, useRef, useMemo, useCallback, memo } = React;
+const BASE_PREFIX = (typeof window !== 'undefined' && typeof window.__VELO_BASE_PREFIX__ === 'string') ? window.__VELO_BASE_PREFIX__ : '';
+const SITE_ORIGIN = 'https://emibaio.github.io/oraculo-v5/';
+const resolveSitePath = (rel) => {
+  if (!rel) return BASE_PREFIX;
+  if (/^https?:\/\//i.test(rel) || rel.startsWith('data:') || rel.startsWith('../')) return rel;
+  return BASE_PREFIX + rel;
+};
+const getNeighborHref = (c) => {
+  if (typeof window !== 'undefined' && window.TarotRouter && typeof window.TarotRouter.getLink === 'function') {
+    return window.TarotRouter.getLink(c);
+  }
+  return "?arcano=" + encodeURIComponent(c.id);
+};
+const isStaticMode = () => Boolean(typeof window !== 'undefined' && window.TarotRouter && window.TarotRouter.isStaticCardPage && window.TarotRouter.isStaticCardPage());
 const sound = window.sound;
 const SharedArtDefs = window.SharedArtDefs;
 const ArcanaDioramaArt = window.ArcanaDioramaArt;
@@ -106,7 +120,7 @@ const CouncilPortrait = memo(function CouncilPortrait({ member, accent = 'gold' 
 
   return (
     <img
-      src={member.image}
+      src={resolveSitePath(member.image)}
       alt={member.imageAlt || ("Retrato de " + member.name)}
       width="80"
       height="80"
@@ -358,8 +372,10 @@ window.ArcanaPageLayout = function ArcanaPageLayout({ card, neighbors }) {
       answer: "Al derecho (En Luz), la respuesta oracular de " + activeCard.name + " es: “" + (card.correspondences?.yesNo || activeYesNo) + "”. En polaridad invertida (En Sombra), su respuesta es: “" + (card.reversed?.correspondences?.yesNo || card.reversed?.yesNo || "Bloqueo o demora que exige transmutación previa") + "”."
     },
     {
-      question: "¿Cuál es la correspondencia cabalística y alquímica de " + activeCard.name + "?",
-      answer: (activeCard.correspondences?.hebrewLetter ? ("Está regida por la letra hebrea " + activeCard.correspondences.hebrewLetter + " (" + (activeCard.correspondences.treeOfLifePath || "") + "). ") : "") + (activeCard.correspondences?.alchemy ? ("En alquimia representa: " + activeCard.correspondences.alchemy + ".") : ("Elemento " + activeCard.correspondences?.element + " y regencia de " + activeCard.correspondences?.astro + "."))
+      question: isMajor
+        ? ("¿Cuál es la correspondencia cabalística y alquímica de " + activeCard.name + "?")
+        : ("¿Cuál es el elemento, decanato astrológico y tiempo de " + activeCard.name + "?"),
+      answer: (activeCard.correspondences?.hebrewLetter ? ("Está regida por la letra hebrea " + activeCard.correspondences.hebrewLetter + " (" + (activeCard.correspondences.treeOfLifePath || "") + "). ") : ("Pertenece al elemento " + (activeCard.correspondences?.element || "") + " (" + (activeCard.correspondences?.astro || "") + "). ")) + (activeCard.correspondences?.alchemy ? ("En alquimia representa: " + activeCard.correspondences.alchemy + ". ") : "") + (activeCard.correspondences?.tarotTiming ? ("Tiempo orientativo: " + activeCard.correspondences.tarotTiming + ".") : "")
     },
     {
       question: "¿Qué significa " + activeCard.name + " en el amor, el trabajo y el dinero?",
@@ -382,23 +398,23 @@ window.ArcanaPageLayout = function ArcanaPageLayout({ card, neighbors }) {
           "@type": "Person",
           "name": author.name,
           "jobTitle": author.role,
-          "image": author.image,
-          "url": "sobre-nosotros.html#" + author.id,
+          "image": SITE_ORIGIN + author.image,
+          "url": SITE_ORIGIN + "sobre-nosotros.html#" + author.id,
           "knowsAbout": author.focusTags || []
         },
         "reviewedBy": {
           "@type": "Person",
           "name": reviewer.name,
           "jobTitle": reviewer.role,
-          "image": reviewer.image,
-          "url": "sobre-nosotros.html#" + reviewer.id,
+          "image": SITE_ORIGIN + reviewer.image,
+          "url": SITE_ORIGIN + "sobre-nosotros.html#" + reviewer.id,
           "knowsAbout": reviewer.focusTags || []
         }
       },
       {
         "@type": "BreadcrumbList",
         "itemListElement": [
-          { "@type": "ListItem", "position": 1, "name": "Oráculo", "item": "index.html" },
+          { "@type": "ListItem", "position": 1, "name": "Oráculo", "item": SITE_ORIGIN },
           { "@type": "ListItem", "position": 2, "name": activeCard.type === 'minor' ? ("Palo de " + activeCard.suitName) : "Arcanos Mayores" },
           { "@type": "ListItem", "position": 3, "name": activeCard.name }
         ]
@@ -417,13 +433,13 @@ window.ArcanaPageLayout = function ArcanaPageLayout({ card, neighbors }) {
   return (
     <div style={{ background: 'radial-gradient(ellipse at 50% 25%, #190e30 0%, #090510 55%, #040207 100%)' }} className="min-h-screen text-amber-50 selection:bg-amber-400 selection:text-black">
       {SharedArtDefs && <SharedArtDefs />}
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdSchema) }} />
+      {!isStaticMode() && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdSchema) }} />}
 
       {/* Cabecera sticky opaca para 60+ FPS al scrollear */}
       <header className="sticky top-0 z-50 bg-[#040207] border-b border-[#d4af37]/35 shadow-[0_8px_24px_rgba(0,0,0,0.85)] px-3 sm:px-8 py-2.5 sm:py-3">
         <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
           <nav aria-label="Breadcrumb" className="font-ui text-xs sm:text-[13px] uppercase tracking-[0.08em] sm:tracking-[0.1em] text-amber-200/95 flex items-center min-w-0">
-            <a href="index.html" className="hover:text-amber-300 whitespace-nowrap">Oráculo</a>
+            <a href={resolveSitePath("index.html")} className="hover:text-amber-300 whitespace-nowrap">Oráculo</a>
             <span className="mx-1.5 sm:mx-2 text-amber-500 hidden sm:inline">›</span>
             <span className="hidden sm:inline whitespace-nowrap">{activeCard.type === 'minor' ? ("Palo de " + activeCard.suitName) : 'Arcanos Mayores'}</span>
             <span className="mx-1.5 sm:mx-2 text-amber-500">›</span>
@@ -818,7 +834,7 @@ window.ArcanaPageLayout = function ArcanaPageLayout({ card, neighbors }) {
         <div className="relative p-6 sm:p-8 rounded-3xl bg-gradient-to-b from-[#1a0f2e] to-[#090513] border-2 border-[#d4af37] text-center shadow-[0_0_50px_rgba(212,175,55,0.25)]">
           <p className="font-ui text-xs uppercase tracking-[0.12em] text-amber-300 mb-2">✦ ¿Buscás respuesta a tu situación actual? ✦</p>
           <h2 className="font-display text-xl sm:text-2xl text-amber-100 mb-5">Las cartas ya están barajadas en el altar astral</h2>
-          <a href="index.html" className="font-display inline-flex items-center gap-3 px-8 py-4 rounded-full bg-gradient-to-r from-[#2c1b08] via-[#d4af37] to-[#2c1b08] text-[#07050a] font-black tracking-[0.1em] uppercase text-sm sm:text-base border-2 border-amber-100 shadow-[0_0_35px_rgba(251,191,36,0.75)] hover:scale-105 transition-transform">
+          <a href={resolveSitePath("index.html")} className="font-display inline-flex items-center gap-3 px-8 py-4 rounded-full bg-gradient-to-r from-[#2c1b08] via-[#d4af37] to-[#2c1b08] text-[#07050a] font-black tracking-[0.1em] uppercase text-sm sm:text-base border-2 border-amber-100 shadow-[0_0_35px_rgba(251,191,36,0.75)] hover:scale-105 transition-transform">
             ✦ Consultar el Oráculo Gratis Ahora
           </a>
         </div>
@@ -848,7 +864,7 @@ window.ArcanaPageLayout = function ArcanaPageLayout({ card, neighbors }) {
               ✦ Concilio del Velo Astral • Revisión Cruzada
             </span>
             <a
-              href="sobre-nosotros.html"
+              href={resolveSitePath("sobre-nosotros.html")}
               className="font-ui text-xs sm:text-[13px] uppercase tracking-[0.08em] text-purple-200 hover:text-amber-300 transition-colors"
             >
               Conocer al Concilio ›
@@ -857,7 +873,7 @@ window.ArcanaPageLayout = function ArcanaPageLayout({ card, neighbors }) {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <article className="flex items-start gap-4">
-              <a href={"sobre-nosotros.html#" + author.id} className="flex-shrink-0 hover:scale-105 transition-transform">
+              <a href={resolveSitePath("sobre-nosotros.html#" + author.id)} className="flex-shrink-0 hover:scale-105 transition-transform">
                 <CouncilPortrait member={author} accent="gold" />
               </a>
               <div className="min-w-0 space-y-1.5">
@@ -865,7 +881,7 @@ window.ArcanaPageLayout = function ArcanaPageLayout({ card, neighbors }) {
                   ✦ Redacción e Interpretación
                 </span>
                 <h4 className="font-display text-base sm:text-lg font-bold text-amber-100 leading-snug">
-                  <a href={"sobre-nosotros.html#" + author.id} className="hover:text-amber-300 transition-colors">
+                  <a href={resolveSitePath("sobre-nosotros.html#" + author.id)} className="hover:text-amber-300 transition-colors">
                     <span className="text-amber-300 mr-1.5">{author.sigil}</span>{author.name}
                   </a>
                 </h4>
@@ -875,7 +891,7 @@ window.ArcanaPageLayout = function ArcanaPageLayout({ card, neighbors }) {
                 )}
                 <p className="text-xs sm:text-[15px] sm:text-base text-amber-50/95 leading-relaxed">{author.cardBio || author.bio}</p>
                 <a
-                  href={"sobre-nosotros.html#" + author.id}
+                  href={resolveSitePath("sobre-nosotros.html#" + author.id)}
                   className="font-ui inline-block pt-1 text-xs uppercase tracking-[0.08em] text-amber-300/90 hover:text-amber-200"
                 >
                   Ver perfil completo ›
@@ -884,7 +900,7 @@ window.ArcanaPageLayout = function ArcanaPageLayout({ card, neighbors }) {
             </article>
 
             <article className="flex items-start gap-4 border-t md:border-t-0 md:border-l border-amber-500/25 pt-5 md:pt-0 md:pl-6">
-              <a href={"sobre-nosotros.html#" + reviewer.id} className="flex-shrink-0 hover:scale-105 transition-transform">
+              <a href={resolveSitePath("sobre-nosotros.html#" + reviewer.id)} className="flex-shrink-0 hover:scale-105 transition-transform">
                 <CouncilPortrait member={reviewer} accent="emerald" />
               </a>
               <div className="min-w-0 space-y-1.5">
@@ -892,7 +908,7 @@ window.ArcanaPageLayout = function ArcanaPageLayout({ card, neighbors }) {
                   ✔ Revisión Simbólica y Doctrinaria
                 </span>
                 <h4 className="font-display text-base sm:text-lg font-bold text-amber-100 leading-snug">
-                  <a href={"sobre-nosotros.html#" + reviewer.id} className="hover:text-amber-300 transition-colors">
+                  <a href={resolveSitePath("sobre-nosotros.html#" + reviewer.id)} className="hover:text-amber-300 transition-colors">
                     <span className="text-emerald-300 mr-1.5">{reviewer.sigil}</span>{reviewer.name}
                   </a>
                 </h4>
@@ -902,7 +918,7 @@ window.ArcanaPageLayout = function ArcanaPageLayout({ card, neighbors }) {
                 )}
                 <p className="text-xs sm:text-[15px] sm:text-base text-amber-50/95 leading-relaxed">{reviewer.cardBio || reviewer.bio}</p>
                 <a
-                  href={"sobre-nosotros.html#" + reviewer.id}
+                  href={resolveSitePath("sobre-nosotros.html#" + reviewer.id)}
                   className="font-ui inline-block pt-1 text-xs uppercase tracking-[0.08em] text-emerald-300/90 hover:text-emerald-200"
                 >
                   Ver perfil completo ›
@@ -919,8 +935,8 @@ window.ArcanaPageLayout = function ArcanaPageLayout({ card, neighbors }) {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {neighbors.prev && (
                 <a
-                  href={"?arcano=" + neighbors.prev.id}
-                  onClick={(e) => { e.preventDefault(); window.TarotRouter?.navigateTo(neighbors.prev.id); }}
+                  href={getNeighborHref(neighbors.prev)}
+                  onClick={(e) => { if (!isStaticMode()) { e.preventDefault(); window.TarotRouter?.navigateTo(neighbors.prev); } }}
                   className="group p-4 rounded-xl bg-[#0c0717]/95 border border-amber-500/35 hover:border-amber-300 transition-all flex items-center gap-4"
                 >
                   <div className="w-12 h-16 bg-[#120824] rounded-md border border-amber-500/30 flex items-center justify-center font-display text-amber-300 font-bold">{neighbors.prev.numeral}</div>
@@ -932,8 +948,8 @@ window.ArcanaPageLayout = function ArcanaPageLayout({ card, neighbors }) {
               )}
               {neighbors.next && (
                 <a
-                  href={"?arcano=" + neighbors.next.id}
-                  onClick={(e) => { e.preventDefault(); window.TarotRouter?.navigateTo(neighbors.next.id); }}
+                  href={getNeighborHref(neighbors.next)}
+                  onClick={(e) => { if (!isStaticMode()) { e.preventDefault(); window.TarotRouter?.navigateTo(neighbors.next); } }}
                   className="group p-4 rounded-xl bg-[#0c0717]/95 border border-amber-500/35 hover:border-amber-300 transition-all flex items-center justify-end gap-4 text-right"
                 >
                   <div>
@@ -954,8 +970,8 @@ window.ArcanaPageLayout = function ArcanaPageLayout({ card, neighbors }) {
                   {neighbors.related.map((rel) => (
                     <a
                       key={rel.id}
-                      href={"?arcano=" + rel.id}
-                      onClick={(e) => { e.preventDefault(); window.TarotRouter?.navigateTo(rel.id); }}
+                      href={getNeighborHref(rel)}
+                      onClick={(e) => { if (!isStaticMode()) { e.preventDefault(); window.TarotRouter?.navigateTo(rel); } }}
                       className="p-3 rounded-xl bg-[#090513]/80 border border-purple-500/30 hover:border-amber-300 transition text-center"
                     >
                       <span className="font-display text-xs text-amber-300 block">{rel.numeral}</span>
@@ -971,13 +987,13 @@ window.ArcanaPageLayout = function ArcanaPageLayout({ card, neighbors }) {
         <div className="pt-6 border-t border-amber-500/20 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-amber-200/90 font-ui uppercase tracking-[0.08em]">
           <span>✦ Oráculo del Velo Astral</span>
           <div className="flex flex-wrap items-center justify-center gap-4">
-            <a href="index.html" className="hover:text-amber-300 transition-colors">Altar</a>
+            <a href={resolveSitePath("index.html")} className="hover:text-amber-300 transition-colors">Altar</a>
             <span className="text-amber-500/35">•</span>
-            <a href="tarot-si-o-no.html" className="hover:text-emerald-300 transition-colors">Tarot Sí o No</a>
+            <a href={resolveSitePath("tarot-si-o-no.html")} className="hover:text-emerald-300 transition-colors">Tarot Sí o No</a>
             <span className="text-amber-500/35">•</span>
-            <a href="sobre-nosotros.html" className="hover:text-amber-300 transition-colors">Sobre Nosotros</a>
+            <a href={resolveSitePath("sobre-nosotros.html")} className="hover:text-amber-300 transition-colors">Sobre Nosotros</a>
             <span className="text-amber-500/35">•</span>
-            <a href="privacidad.html" className="hover:text-amber-300 transition-colors">Privacidad y Aviso Legal</a>
+            <a href={resolveSitePath("privacidad.html")} className="hover:text-amber-300 transition-colors">Privacidad y Aviso Legal</a>
           </div>
         </div>
       </main>

@@ -10,150 +10,486 @@
     <loc>https://emibaio.github.io/oraculo-v5/tarot-si-o-no.html</loc>
     <lastmod>2026-11-23</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.95</priority>
+    <priority>0.9</priority>
   </url>
   <url>
     <loc>https://emibaio.github.io/oraculo-v5/sobre-nosotros.html</loc>
     <lastmod>2026-11-23</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.70</priority>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://emibaio.github.io/oraculo-v5/privacidad.html</loc>
     <lastmod>2026-11-23</lastmod>
     <changefreq>yearly</changefreq>
-    <priority>0.40</priority>
+    <priority>0.4</priority>
   </url>
   <url>
-    <loc>https://emibaio.github.io/oraculo-v5/carta.html?arcano=0</loc>
+    <loc>https://emibaio.github.io/oraculo-v5/cartas/el-loco.html</loc>
     <lastmod>2026-11-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://emibaio.github.io/oraculo-v5/carta.html?arcano=1</loc>
+    <loc>https://emibaio.github.io/oraculo-v5/cartas/el-mago.html</loc>
     <lastmod>2026-11-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://emibaio.github.io/oraculo-v5/carta.html?arcano=2</loc>
+    <loc>https://emibaio.github.io/oraculo-v5/cartas/la-sacerdotisa.html</loc>
     <lastmod>2026-11-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://emibaio.github.io/oraculo-v5/carta.html?arcano=3</loc>
+    <loc>https://emibaio.github.io/oraculo-v5/cartas/la-emperatriz.html</loc>
     <lastmod>2026-11-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://emibaio.github.io/oraculo-v5/carta.html?arcano=4</loc>
+    <loc>https://emibaio.github.io/oraculo-v5/cartas/el-emperador.html</loc>
     <lastmod>2026-11-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://emibaio.github.io/oraculo-v5/carta.html?arcano=5</loc>
+    <loc>https://emibaio.github.io/oraculo-v5/cartas/el-hierofante.html</loc>
     <lastmod>2026-11-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://emibaio.github.io/oraculo-v5/carta.html?arcano=6</loc>
+    <loc>https://emibaio.github.io/oraculo-v5/cartas/los-amantes.html</loc>
     <lastmod>2026-11-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://emibaio.github.io/oraculo-v5/carta.html?arcano=7</loc>
+    <loc>https://emibaio.github.io/oraculo-v5/cartas/el-carro.html</loc>
     <lastmod>2026-11-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://emibaio.github.io/oraculo-v5/carta.html?arcano=8</loc>
+    <loc>https://emibaio.github.io/oraculo-v5/cartas/la-fuerza.html</loc>
     <lastmod>2026-11-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://emibaio.github.io/oraculo-v5/carta.html?arcano=9</loc>
+    <loc>https://emibaio.github.io/oraculo-v5/cartas/el-ermitano.html</loc>
     <lastmod>2026-11-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://emibaio.github.io/oraculo-v5/carta.html?arcano=10</loc>
+    <loc>https://emibaio.github.io/oraculo-v5/cartas/la-rueda-de-la-fortuna.html</loc>
     <lastmod>2026-11-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://emibaio.github.io/oraculo-v5/carta.html?arcano=11</loc>
+    <loc>https://emibaio.github.io/oraculo-v5/cartas/la-justicia.html</loc>
     <lastmod>2026-11-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://emibaio.github.io/oraculo-v5/carta.html?arcano=12</loc>
+    <loc>https://emibaio.github.io/oraculo-v5/cartas/el-colgado.html</loc>
     <lastmod>2026-11-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://emibaio.github.io/oraculo-v5/carta.html?arcano=13</loc>
+    <loc>https://emibaio.github.io/oraculo-v5/cartas/la-muerte.html</loc>
     <lastmod>2026-11-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://emibaio.github.io/oraculo-v5/carta.html?arcano=14</loc>
+    <loc>https://emibaio.github.io/oraculo-v5/cartas/la-templanza.html</loc>
     <lastmod>2026-11-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://emibaio.github.io/oraculo-v5/carta.html?arcano=15</loc>
+    <loc>https://emibaio.github.io/oraculo-v5/cartas/el-diablo.html</loc>
     <lastmod>2026-11-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://emibaio.github.io/oraculo-v5/carta.html?arcano=16</loc>
+    <loc>https://emibaio.github.io/oraculo-v5/cartas/la-torre.html</loc>
     <lastmod>2026-11-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://emibaio.github.io/oraculo-v5/carta.html?arcano=17</loc>
+    <loc>https://emibaio.github.io/oraculo-v5/cartas/la-estrella.html</loc>
     <lastmod>2026-11-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://emibaio.github.io/oraculo-v5/carta.html?arcano=18</loc>
+    <loc>https://emibaio.github.io/oraculo-v5/cartas/la-luna.html</loc>
     <lastmod>2026-11-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://emibaio.github.io/oraculo-v5/carta.html?arcano=19</loc>
+    <loc>https://emibaio.github.io/oraculo-v5/cartas/el-sol.html</loc>
     <lastmod>2026-11-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://emibaio.github.io/oraculo-v5/carta.html?arcano=20</loc>
+    <loc>https://emibaio.github.io/oraculo-v5/cartas/el-juicio.html</loc>
     <lastmod>2026-11-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://emibaio.github.io/oraculo-v5/carta.html?arcano=21</loc>
+    <loc>https://emibaio.github.io/oraculo-v5/cartas/el-mundo.html</loc>
     <lastmod>2026-11-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://emibaio.github.io/oraculo-v5/cartas/as-de-bastos.html</loc>
+    <lastmod>2026-11-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://emibaio.github.io/oraculo-v5/cartas/dos-de-bastos.html</loc>
+    <lastmod>2026-11-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://emibaio.github.io/oraculo-v5/cartas/tres-de-bastos.html</loc>
+    <lastmod>2026-11-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://emibaio.github.io/oraculo-v5/cartas/cuatro-de-bastos.html</loc>
+    <lastmod>2026-11-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://emibaio.github.io/oraculo-v5/cartas/cinco-de-bastos.html</loc>
+    <lastmod>2026-11-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://emibaio.github.io/oraculo-v5/cartas/seis-de-bastos.html</loc>
+    <lastmod>2026-11-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://emibaio.github.io/oraculo-v5/cartas/siete-de-bastos.html</loc>
+    <lastmod>2026-11-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://emibaio.github.io/oraculo-v5/cartas/ocho-de-bastos.html</loc>
+    <lastmod>2026-11-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://emibaio.github.io/oraculo-v5/cartas/nueve-de-bastos.html</loc>
+    <lastmod>2026-11-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://emibaio.github.io/oraculo-v5/cartas/diez-de-bastos.html</loc>
+    <lastmod>2026-11-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://emibaio.github.io/oraculo-v5/cartas/sota-de-bastos.html</loc>
+    <lastmod>2026-11-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://emibaio.github.io/oraculo-v5/cartas/caballero-de-bastos.html</loc>
+    <lastmod>2026-11-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://emibaio.github.io/oraculo-v5/cartas/reina-de-bastos.html</loc>
+    <lastmod>2026-11-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://emibaio.github.io/oraculo-v5/cartas/rey-de-bastos.html</loc>
+    <lastmod>2026-11-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://emibaio.github.io/oraculo-v5/cartas/as-de-copas.html</loc>
+    <lastmod>2026-11-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://emibaio.github.io/oraculo-v5/cartas/dos-de-copas.html</loc>
+    <lastmod>2026-11-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://emibaio.github.io/oraculo-v5/cartas/tres-de-copas.html</loc>
+    <lastmod>2026-11-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://emibaio.github.io/oraculo-v5/cartas/cuatro-de-copas.html</loc>
+    <lastmod>2026-11-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://emibaio.github.io/oraculo-v5/cartas/cinco-de-copas.html</loc>
+    <lastmod>2026-11-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://emibaio.github.io/oraculo-v5/cartas/seis-de-copas.html</loc>
+    <lastmod>2026-11-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://emibaio.github.io/oraculo-v5/cartas/siete-de-copas.html</loc>
+    <lastmod>2026-11-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://emibaio.github.io/oraculo-v5/cartas/ocho-de-copas.html</loc>
+    <lastmod>2026-11-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://emibaio.github.io/oraculo-v5/cartas/nueve-de-copas.html</loc>
+    <lastmod>2026-11-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://emibaio.github.io/oraculo-v5/cartas/diez-de-copas.html</loc>
+    <lastmod>2026-11-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://emibaio.github.io/oraculo-v5/cartas/sota-de-copas.html</loc>
+    <lastmod>2026-11-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://emibaio.github.io/oraculo-v5/cartas/caballero-de-copas.html</loc>
+    <lastmod>2026-11-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://emibaio.github.io/oraculo-v5/cartas/reina-de-copas.html</loc>
+    <lastmod>2026-11-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://emibaio.github.io/oraculo-v5/cartas/rey-de-copas.html</loc>
+    <lastmod>2026-11-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://emibaio.github.io/oraculo-v5/cartas/as-de-espadas.html</loc>
+    <lastmod>2026-11-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://emibaio.github.io/oraculo-v5/cartas/dos-de-espadas.html</loc>
+    <lastmod>2026-11-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://emibaio.github.io/oraculo-v5/cartas/tres-de-espadas.html</loc>
+    <lastmod>2026-11-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://emibaio.github.io/oraculo-v5/cartas/cuatro-de-espadas.html</loc>
+    <lastmod>2026-11-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://emibaio.github.io/oraculo-v5/cartas/cinco-de-espadas.html</loc>
+    <lastmod>2026-11-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://emibaio.github.io/oraculo-v5/cartas/seis-de-espadas.html</loc>
+    <lastmod>2026-11-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://emibaio.github.io/oraculo-v5/cartas/siete-de-espadas.html</loc>
+    <lastmod>2026-11-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://emibaio.github.io/oraculo-v5/cartas/ocho-de-espadas.html</loc>
+    <lastmod>2026-11-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://emibaio.github.io/oraculo-v5/cartas/nueve-de-espadas.html</loc>
+    <lastmod>2026-11-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://emibaio.github.io/oraculo-v5/cartas/diez-de-espadas.html</loc>
+    <lastmod>2026-11-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://emibaio.github.io/oraculo-v5/cartas/sota-de-espadas.html</loc>
+    <lastmod>2026-11-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://emibaio.github.io/oraculo-v5/cartas/caballero-de-espadas.html</loc>
+    <lastmod>2026-11-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://emibaio.github.io/oraculo-v5/cartas/reina-de-espadas.html</loc>
+    <lastmod>2026-11-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://emibaio.github.io/oraculo-v5/cartas/rey-de-espadas.html</loc>
+    <lastmod>2026-11-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://emibaio.github.io/oraculo-v5/cartas/as-de-oros.html</loc>
+    <lastmod>2026-11-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://emibaio.github.io/oraculo-v5/cartas/dos-de-oros.html</loc>
+    <lastmod>2026-11-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://emibaio.github.io/oraculo-v5/cartas/tres-de-oros.html</loc>
+    <lastmod>2026-11-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://emibaio.github.io/oraculo-v5/cartas/cuatro-de-oros.html</loc>
+    <lastmod>2026-11-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://emibaio.github.io/oraculo-v5/cartas/cinco-de-oros.html</loc>
+    <lastmod>2026-11-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://emibaio.github.io/oraculo-v5/cartas/seis-de-oros.html</loc>
+    <lastmod>2026-11-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://emibaio.github.io/oraculo-v5/cartas/siete-de-oros.html</loc>
+    <lastmod>2026-11-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://emibaio.github.io/oraculo-v5/cartas/ocho-de-oros.html</loc>
+    <lastmod>2026-11-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://emibaio.github.io/oraculo-v5/cartas/nueve-de-oros.html</loc>
+    <lastmod>2026-11-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://emibaio.github.io/oraculo-v5/cartas/diez-de-oros.html</loc>
+    <lastmod>2026-11-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://emibaio.github.io/oraculo-v5/cartas/sota-de-oros.html</loc>
+    <lastmod>2026-11-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://emibaio.github.io/oraculo-v5/cartas/caballero-de-oros.html</loc>
+    <lastmod>2026-11-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://emibaio.github.io/oraculo-v5/cartas/reina-de-oros.html</loc>
+    <lastmod>2026-11-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://emibaio.github.io/oraculo-v5/cartas/rey-de-oros.html</loc>
+    <lastmod>2026-11-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
   </url>
 </urlset>

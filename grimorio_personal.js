@@ -190,12 +190,32 @@ function deleteReading(entryId) {
   return next;
 }
 
+function getAllCardsPool() {
+  if (window.TAROT_DB && typeof window.TAROT_DB.getAllCards === "function") {
+    const all = window.TAROT_DB.getAllCards();
+    if (Array.isArray(all) && all.length > 0) return all;
+  }
+  const majors = getMajorPool();
+  const minors = (window.TAROT_DB && typeof window.TAROT_DB.getMinorArcana === "function")
+    ? window.TAROT_DB.getMinorArcana()
+    : (window.MINOR_ARCANA || []);
+  return majors.concat(Array.isArray(minors) ? minors : []);
+}
+
+function getGrimoireCardHref(cardOrId, isRev) {
+  if (window.TarotRouter && typeof window.TarotRouter.getCardUrl === "function") {
+    return window.TarotRouter.getCardUrl(cardOrId, { isReversed: Boolean(isRev) });
+  }
+  const id = typeof cardOrId === "object" && cardOrId !== null ? cardOrId.id : cardOrId;
+  return "carta.html?arcano=" + encodeURIComponent(id) + (isRev ? "&modo=sombra" : "");
+}
+
 function getSealedActsList() {
   const sealsData = safeReadJson(SEALS_KEY, { seals: {} });
   const sealsMap = sealsData.seals || {};
-  const majors = getMajorPool();
+  const allCards = getAllCardsPool();
   const byId = {};
-  majors.forEach(function (c) { byId[String(c.id)] = c; });
+  allCards.forEach(function (c) { byId[String(c.id)] = c; });
 
   return Object.keys(sealsMap)
     .map(function (sealKey) {
@@ -233,13 +253,15 @@ function releaseSeal(sealKey) {
 }
 
 function getArcanaProgressList() {
-  const majors = getMajorPool();
+  const allCards = getAllCardsPool();
   const solarCards = (safeReadJson(SOLAR_KEY, { cards: {} }).cards) || {};
   const lunarCards = (safeReadJson(LUNAR_KEY, { cards: {} }).cards) || {};
   const sealsMap = (safeReadJson(SEALS_KEY, { seals: {} }).seals) || {};
 
-  return majors.map(function (card) {
+  return allCards.map(function (card) {
     const idStr = String(card.id);
+    const isMinor = card.type === "minor" || card.arcanaType === "minor" || Boolean(card.suit);
+    const suitGroup = isMinor ? (card.suit || "wands") : "major";
     const solarDraws = Number(solarCards[idStr] && solarCards[idStr].totalDraws) || 0;
     const lunarDraws = Number(lunarCards[idStr] && lunarCards[idStr].totalDraws) || 0;
     const totalDraws = solarDraws + lunarDraws;
@@ -248,6 +270,9 @@ function getArcanaProgressList() {
     return {
       card: card,
       id: idStr,
+      isMinor: isMinor,
+      suitGroup: suitGroup,
+      suitName: isMinor ? ("Palo de " + (card.suitName || "")) : "Arcanos Mayores",
       name: card.name || ("Arcano " + idStr),
       numeral: card.numeral || "",
       subtitle: card.subtitle || "",
@@ -267,14 +292,20 @@ function getArcanaProgressList() {
 function getSummaryCounts() {
   const list = getArcanaProgressList();
   let unlockedCount = 0;
+  let majorUnlockedCount = 0;
+  let minorUnlockedCount = 0;
   let solarUnlocked = 0;
   let lunarUnlocked = 0;
   let totalDraws = 0;
 
   list.forEach(function (item) {
-    if (item.unlocked) unlockedCount += 1;
-    if (item.solarDraws > 0) solarUnlocked += 1;
-    if (item.lunarDraws > 0) lunarUnlocked += 1;
+    if (item.unlocked) {
+      unlockedCount += 1;
+      if (item.isMinor) minorUnlockedCount += 1;
+      else majorUnlockedCount += 1;
+    }
+    if (!item.isMinor && item.solarDraws > 0) solarUnlocked += 1;
+    if (!item.isMinor && item.lunarDraws > 0) lunarUnlocked += 1;
     totalDraws += item.totalDraws;
   });
 
@@ -282,8 +313,11 @@ function getSummaryCounts() {
   const readings = getReadings();
 
   return {
-    unlockedCount: unlockedCount,
-    totalMajors: list.length || 22,
+    unlockedCount: majorUnlockedCount,
+    totalUnlockedAll: unlockedCount,
+    minorUnlockedCount: minorUnlockedCount,
+    totalMajors: 22,
+    totalCards: list.length || 78,
     solarUnlocked: solarUnlocked,
     lunarUnlocked: lunarUnlocked,
     totalDraws: totalDraws,
@@ -389,8 +423,9 @@ const GrimorioModal = memo(function GrimorioModal({
   const [activeTab, setActiveTab] = useState(initialTab);
   const [refreshTick, setRefreshTick] = useState(0);
 
-  // Filtros del Códice (22 Arcanos)
+  // Filtros del Códice (78 Arcanos: 22 Mayores + 56 Menores)
   const [searchQuery, setSearchQuery] = useState("");
+  const [suitFilter, setSuitFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
   const [elementFilter, setElementFilter] = useState("all");
 
@@ -436,18 +471,19 @@ const GrimorioModal = memo(function GrimorioModal({
   const filteredArcana = useMemo(function () {
     const q = normalizeSearchText(searchQuery);
     return snapshot.progress.filter(function (item) {
+      if (suitFilter !== "all" && item.suitGroup !== suitFilter) return false;
       if (statusFilter === "unlocked" && !item.unlocked) return false;
       if (statusFilter === "locked" && item.unlocked) return false;
       if (elementFilter !== "all" && item.element !== elementFilter) return false;
       if (q) {
         const haystack = normalizeSearchText(
-          item.name + " " + item.numeral + " " + item.subtitle + " " + item.element + " " + item.astro + " " + (item.keywords || []).join(" ")
+          item.name + " " + item.numeral + " " + item.suitName + " " + item.subtitle + " " + item.element + " " + item.astro + " " + (item.keywords || []).join(" ")
         );
         if (haystack.indexOf(q) === -1) return false;
       }
       return true;
     });
-  }, [snapshot.progress, searchQuery, statusFilter, elementFilter]);
+  }, [snapshot.progress, searchQuery, suitFilter, statusFilter, elementFilter]);
 
   const filteredReadings = useMemo(function () {
     if (diaryFilter === "all") return snapshot.readings;
@@ -612,7 +648,7 @@ const GrimorioModal = memo(function GrimorioModal({
               {/* 3 PESTAÑAS PRINCIPALES */}
               <div className="grid grid-cols-3 gap-1.5 p-1 rounded-xl bg-[#05020a] border border-amber-500/25">
                 {[
-                  { id: "codice", label: "I • Códice (22)", icon: BookOpenIcon, count: snapshot.summary.unlockedCount + "/22" },
+                  { id: "codice", label: "I • Códice (78)", icon: BookOpenIcon, count: String(snapshot.summary.totalCards || 78) },
                   { id: "seals", label: "II • Talismanes", icon: FlameIcon, count: String(snapshot.summary.sealedCount) },
                   { id: "diary", label: "III • Diario", icon: ScrollIcon, count: String(snapshot.summary.readingsCount) }
                 ].map(function (tab) {
@@ -689,6 +725,38 @@ const GrimorioModal = memo(function GrimorioModal({
                   </div>
 
                   <div className="flex flex-wrap items-center gap-1.5">
+                    <span style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }} className="text-xs uppercase tracking-wider text-amber-300/95 mr-1">
+                      Mazo:
+                    </span>
+                    {[
+                      { id: "all", label: "Todos (78)" },
+                      { id: "major", label: "✦ Mayores (22)" },
+                      { id: "wands", label: "🜂 Bastos" },
+                      { id: "cups", label: "🜄 Copas" },
+                      { id: "swords", label: "🜁 Espadas" },
+                      { id: "pentacles", label: "🜃 Oros" }
+                    ].map(function (sf) {
+                      const sel = suitFilter === sf.id;
+                      return (
+                        <button
+                          key={sf.id}
+                          type="button"
+                          onClick={function () { setSuitFilter(sf.id); }}
+                          style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }}
+                          className={
+                            "px-3 py-1 rounded-full text-xs font-semibold border transition-colors cursor-pointer " +
+                            (sel
+                              ? "bg-amber-400 border-amber-200 text-black"
+                              : "bg-white/[0.04] border-white/15 text-amber-50/95 hover:border-amber-400/50")
+                          }
+                        >
+                          {sf.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-1.5">
                     <span style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }} className="text-xs uppercase tracking-widest text-purple-200/95 mr-1">
                       Elemento:
                     </span>
@@ -742,7 +810,7 @@ const GrimorioModal = memo(function GrimorioModal({
                                         : "bg-white/[0.03] border-white/15 text-purple-200/50")
                                     }
                                   >
-                                    {item.numeral}
+                                    {item.numeral === "CABALLERO" ? "CAB" : item.numeral === "REINA" ? "REI" : item.numeral === "SOTA" ? "SOT" : item.numeral}
                                   </span>
                                   <div className="min-w-0">
                                     <h3 style={{ fontFamily: "'Cinzel', Georgia, serif" }} className={"text-base font-bold truncate " + (item.unlocked ? "text-amber-200" : "text-purple-100/90")}>
@@ -763,7 +831,7 @@ const GrimorioModal = memo(function GrimorioModal({
 
                               <div className="flex flex-wrap items-center gap-1.5 text-xs">
                                 <span className={"px-2 py-0.5 rounded-md border " + elBadge}>
-                                  {item.element}
+                                  {item.isMinor ? item.suitName : item.element}
                                 </span>
                                 {item.unlocked ? (
                                   <React.Fragment>
@@ -791,7 +859,7 @@ const GrimorioModal = memo(function GrimorioModal({
 
                             <div className="flex items-center gap-1.5 pt-2 border-t border-white/10">
                               <a
-                                href={"carta.html?arcano=" + item.id}
+                                href={getGrimoireCardHref(item.card || item.id, false)}
                                 style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }}
                                 className={
                                   "flex-1 inline-flex items-center justify-center gap-1.5 py-1.5 px-2.5 rounded-lg text-xs uppercase tracking-wider font-bold border transition-colors " +
@@ -804,7 +872,7 @@ const GrimorioModal = memo(function GrimorioModal({
                                 <ExternalIcon className="w-3 h-3" />
                               </a>
                               <a
-                                href={"carta.html?arcano=" + item.id + "&modo=sombra"}
+                                href={getGrimoireCardHref(item.card || item.id, true)}
                                 title="Abrir directamente en Faz Lunar (Sombra)"
                                 style={{ fontFamily: "'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, sans-serif" }}
                                 className="inline-flex items-center justify-center gap-1 py-1.5 px-2.5 rounded-lg text-xs uppercase tracking-wider border bg-purple-950/50 hover:bg-purple-900/70 border-purple-400/40 text-purple-200 transition-colors"
@@ -872,7 +940,7 @@ const GrimorioModal = memo(function GrimorioModal({
                                 </div>
 
                                 <a
-                                  href={"carta.html?arcano=" + seal.cardId + (seal.isReversed ? "&modo=sombra" : "")}
+                                  href={getGrimoireCardHref(seal.cardId, seal.isReversed)}
                                   className="text-xs text-purple-300 hover:text-amber-300 inline-flex items-center gap-1"
                                 >
                                   <span>Códice</span>
@@ -1066,7 +1134,7 @@ const GrimorioModal = memo(function GrimorioModal({
                                       </span>
                                     </div>
                                     <a
-                                      href={"carta.html?arcano=" + c.id + (c.isReversed ? "&modo=sombra" : "")}
+                                      href={getGrimoireCardHref(c.id, c.isReversed)}
                                       title="Abrir en el Códice"
                                       className="p-1.5 rounded-lg bg-white/[0.05] hover:bg-amber-400/20 text-amber-200 flex-shrink-0"
                                     >

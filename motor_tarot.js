@@ -98,6 +98,50 @@
     });
   });
 
+  // Slugs canónicos inmutables para los 22 Arcanos Mayores (evita desfase La Maga / El Mago antes del merge Solar)
+  const CANONICAL_MAJOR_SLUGS = {
+    '0': 'el-loco',
+    '1': 'el-mago',
+    '2': 'la-sacerdotisa',
+    '3': 'la-emperatriz',
+    '4': 'el-emperador',
+    '5': 'el-hierofante',
+    '6': 'los-amantes',
+    '7': 'el-carro',
+    '8': 'la-fuerza',
+    '9': 'el-ermitano',
+    '10': 'la-rueda-de-la-fortuna',
+    '11': 'la-justicia',
+    '12': 'el-colgado',
+    '13': 'la-muerte',
+    '14': 'la-templanza',
+    '15': 'el-diablo',
+    '16': 'la-torre',
+    '17': 'la-estrella',
+    '18': 'la-luna',
+    '19': 'el-sol',
+    '20': 'el-juicio',
+    '21': 'el-mundo'
+  };
+
+  function getCanonicalSlugForCard(cardOrId) {
+    if (cardOrId === null || cardOrId === undefined) return 'el-loco';
+    if (typeof cardOrId === 'object') {
+      const idStr = String(cardOrId.id);
+      if (CANONICAL_MAJOR_SLUGS[idStr]) return CANONICAL_MAJOR_SLUGS[idStr];
+      if (cardOrId.slug) return cardOrId.slug;
+      return crearSlug(cardOrId.name || idStr);
+    }
+    const idStr = String(cardOrId);
+    if (CANONICAL_MAJOR_SLUGS[idStr]) return CANONICAL_MAJOR_SLUGS[idStr];
+    const found = getCardByQuery(idStr);
+    if (found) {
+      if (CANONICAL_MAJOR_SLUGS[String(found.id)]) return CANONICAL_MAJOR_SLUGS[String(found.id)];
+      return found.slug || crearSlug(found.name);
+    }
+    return crearSlug(idStr);
+  }
+
   // 1-3. Sincronización dinámica (soporta carga inicial completa y carga diferida de Grimorio en producción)
   const mayoresNormalizados = [];
   const menoresNormalizados = [];
@@ -131,7 +175,7 @@
       return {
         ...card,
         id: String(card.id),
-        slug: crearSlug(card.name),
+        slug: CANONICAL_MAJOR_SLUGS[String(card.id)] || crearSlug(card.name),
         type: 'major',
         arcanaType: 'major',
         suit: null,
@@ -151,6 +195,7 @@
       };
     });
 
+    if (typeof window !== 'undefined' && typeof window.rebuildMinorArcana === 'function') { window.rebuildMinorArcana(); }
     const rawMinors = typeof MINOR_ARCANA !== 'undefined' ? MINOR_ARCANA : (window.MINOR_ARCANA || []);
     const nextMinors = rawMinors.map((card) => {
       const rootElem = extractRootElement(card.correspondences && card.correspondences.element);
@@ -255,16 +300,50 @@
       }
     }
 
+    // Registrar aparición de Arcanos Menores en el Grimorio local (compatible con localStorage v2)
+    if (shouldRecord && baseCard.type === 'minor') {
+      try {
+        const storageKey = rev ? 'velo_astral_lunar_grimoire_v2' : 'velo_astral_solar_grimoire_v2';
+        const rawMem = localStorage.getItem(storageKey);
+        const mem = rawMem ? JSON.parse(rawMem) : { cards: {} };
+        mem.cards = mem.cards || {};
+        const key = String(baseCard.id);
+        const prevRec = mem.cards[key] || { totalDraws: 0 };
+        prevRec.totalDraws = (Number(prevRec.totalDraws) || 0) + 1;
+        prevRec.lastDrawAt = Date.now();
+        mem.cards[key] = prevRec;
+        localStorage.setItem(storageKey, JSON.stringify(mem));
+      } catch (e) {}
+    }
+
     if (rev && baseCard.reversed) {
-      return Object.assign({}, baseCard, baseCard.reversed, {
+      const r = baseCard.reversed;
+      const mergedAlchemy = r.theAlchemy || r.actionOracle || baseCard.actionOracle || null;
+      return Object.assign({}, baseCard, r, {
         id: baseCard.id,
         name: baseCard.name,
         numeral: baseCard.numeral,
+        slug: baseCard.slug,
+        type: baseCard.type,
+        arcanaType: baseCard.arcanaType,
+        suit: baseCard.suit,
+        suitName: baseCard.suitName,
+        rootElement: baseCard.rootElement,
+        palette: baseCard.palette,
+        nodes: baseCard.nodes,
+        correspondences: Object.assign({}, baseCard.correspondences || {}, r.correspondences || {}),
+        domains: Object.assign({}, baseCard.domains || {}, r.domains || {}),
+        theAlchemy: mergedAlchemy,
+        actionOracle: mergedAlchemy,
         isReversed: true
       });
     }
 
-    return Object.assign({}, baseCard, { isReversed: rev });
+    return Object.assign({}, baseCard, {
+      theAlchemy: baseCard.theAlchemy || baseCard.actionOracle || null,
+      actionOracle: baseCard.actionOracle || baseCard.theAlchemy || null,
+      isReversed: rev
+    });
   }
 
   // 5. Resolución por Octava Específica (0..4) para Modo Estudio en carta.html
@@ -360,25 +439,44 @@
     let lunarUnlockedCount = 0;
     let totalDraws = 0;
 
+    const majorKeys = {};
+    const minorKeys = {};
+    const isMajorKey = (k) => /^\d+$/.test(String(k)) && Number(k) >= 0 && Number(k) <= 21;
+
     Object.keys(solarCards).forEach((k) => {
       const draws = Number(solarCards[k] && solarCards[k].totalDraws) || 0;
       if (draws > 0) {
-        solarUnlockedCount += 1;
         totalDraws += draws;
+        if (isMajorKey(k)) {
+          solarUnlockedCount += 1;
+          majorKeys[k] = true;
+        } else {
+          minorKeys[k] = true;
+        }
       }
     });
     Object.keys(lunarCards).forEach((k) => {
       const draws = Number(lunarCards[k] && lunarCards[k].totalDraws) || 0;
       if (draws > 0) {
-        lunarUnlockedCount += 1;
         totalDraws += draws;
+        if (isMajorKey(k)) {
+          lunarUnlockedCount += 1;
+          majorKeys[k] = true;
+        } else {
+          minorKeys[k] = true;
+        }
       }
     });
+
+    const totalMajorUnlocked = Object.keys(majorKeys).length;
+    const totalMinorUnlocked = Object.keys(minorKeys).length;
 
     return {
       solarUnlockedCount,
       lunarUnlockedCount,
-      totalMajorUnlocked: Object.keys(Object.assign({}, solarCards, lunarCards)).length,
+      totalMajorUnlocked,
+      totalMinorUnlocked,
+      totalAllUnlocked: totalMajorUnlocked + totalMinorUnlocked,
       totalDraws,
       sealedActsCount: Object.keys(sealsMap).length,
       sealsMap
@@ -477,10 +575,43 @@
       };
     },
 
+    getStaticSlug: function (cardOrId) {
+      return getCanonicalSlugForCard(cardOrId);
+    },
+
+    isStaticCardPage: function () {
+      if (typeof window === 'undefined') return false;
+      if (window.__VELO_STATIC_CARD_ID__ !== undefined && window.__VELO_STATIC_CARD_ID__ !== null) return true;
+      return /\/cartas\/[^/]+\.html$/i.test(window.location.pathname || '');
+    },
+
+    getCardUrl: function (cardOrId, opts) {
+      const id = typeof cardOrId === 'object' && cardOrId !== null ? cardOrId.id : cardOrId;
+      const isShadow = Boolean(opts && (opts.shadow || opts.isReversed));
+      const useStatic = typeof window !== 'undefined' && Boolean(window.__VELO_STATIC_CARDS__) && window.location.protocol !== 'file:';
+      const inCardsDir = this.isStaticCardPage() || (typeof window !== 'undefined' && window.__VELO_BASE_PREFIX__ === '../');
+
+      if (useStatic || inCardsDir) {
+        const slug = getCanonicalSlugForCard(cardOrId);
+        const prefix = inCardsDir ? '' : 'cartas/';
+        return prefix + slug + '.html' + (isShadow ? '?modo=sombra' : '');
+      }
+      return 'carta.html?arcano=' + encodeURIComponent(id) + (isShadow ? '&modo=sombra' : '');
+    },
+
     resolveCurrentUrl: function (defaultId) {
       const fallback = defaultId !== undefined ? defaultId : '11';
       const params = new URLSearchParams(window.location.search);
-      const requested = params.get('arcano') || params.get('id') || fallback;
+      let requested = params.get('arcano') || params.get('id');
+      if (!requested && typeof window !== 'undefined' && window.__VELO_STATIC_CARD_ID__ !== undefined && window.__VELO_STATIC_CARD_ID__ !== null) {
+        requested = String(window.__VELO_STATIC_CARD_ID__);
+      }
+      if (!requested && typeof window !== 'undefined') {
+        const m = String(window.location.pathname || '').match(/\/cartas\/([^/]+)\.html$/i);
+        if (m && m[1]) requested = m[1];
+      }
+      requested = requested || fallback;
+
       const baseCard =
         this.getCard(requested) ||
         this.getCard(fallback) ||
@@ -497,6 +628,9 @@
     },
 
     getLink: function (cardOrId, opts) {
+      if (this.isStaticCardPage() || (typeof window !== 'undefined' && window.__VELO_STATIC_CARDS__ && window.location.protocol !== 'file:')) {
+        return this.getCardUrl(cardOrId, opts);
+      }
       const id = typeof cardOrId === 'object' && cardOrId !== null ? cardOrId.id : cardOrId;
       const isShadow = Boolean(opts && (opts.shadow || opts.isReversed));
       return "?arcano=" + encodeURIComponent(id) + (isShadow ? "&modo=sombra" : "");
@@ -504,6 +638,10 @@
 
     navigateTo: function (cardOrId, opts) {
       const url = this.getLink(cardOrId, opts);
+      if (/\.html(?:\?|$)/i.test(url)) {
+        window.location.href = url;
+        return;
+      }
       window.history.pushState({}, '', url);
       window.dispatchEvent(new PopStateEvent('popstate'));
       window.scrollTo({ top: 0, behavior: 'smooth' });
